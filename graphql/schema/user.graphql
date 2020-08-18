@@ -1,0 +1,18 @@
+type User {
+  id: ID!
+	company: Company! @goField(forceResolver: true) @hasPerm(perm: "Company:Read")
+	email: String!
+  firstname: String!
+  lastname: String!
+}
+
+extend type Query {
+  me: User! @hasPerm(perm: "Me:Read")
+  user(id: ID!): User! @hasPerm(perm: "User:Read")
+  searchUsers(search: String!): [User!]! @hasPerm(perm: "Users:Read")
+}
+
+extend type Mutation {
+  createUser(code: String, email: String!, password: String!): User @hasPerm(perm: "User:Create")
+  deleteUser(id: ID!): Boolean! @hasPerm(perm: "User:Delete")
+}
