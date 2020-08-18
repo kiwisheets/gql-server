@@ -18,9 +18,19 @@ stages:
 jobs:
   include:
     - stage: release
-      before_script:
+      install:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      script:
-        - docker build -t $DOCKER_NAMESPACE/gql-server .
-        - docker images
-        - docker push $DOCKER_NAMESPACE/gql-server
+      script: ./.travis/
+        - docker build -t gql-server .
+        - |
+          if [-z $TRAVIS_TAG]
+          then
+            docker tag gql-server $DOCKER_NAMESPACE/gql-server:master
+            docker push $DOCKER_NAMESPACE/gql-server:master
+          else
+            docker tag gql-server $DOCKER_NAMESPACE/gql-server:latest
+            docker tag gql-server $DOCKER_NAMESPACE/gql-server:$TRAVIS_TAG
+            docker push $DOCKER_NAMESPACE/gql-server:latest
+            docker push $DOCKER_NAMESPACE/gql-server:$TRAVIS_TAG
+          fi
+        - 
