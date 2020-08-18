@@ -33,4 +33,3 @@ jobs:
             docker push $DOCKER_NAMESPACE/gql-server:latest
             docker push $DOCKER_NAMESPACE/gql-server:$TRAVIS_TAG
           fi
-        - 
