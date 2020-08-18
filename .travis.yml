@@ -23,7 +23,7 @@ jobs:
       script:
         - docker build -t gql-server .
         - |
-          if [-z $TRAVIS_TAG]
+          if [ -z $TRAVIS_TAG ]
           then
             docker tag gql-server $DOCKER_NAMESPACE/gql-server:master
             docker push $DOCKER_NAMESPACE/gql-server:master
