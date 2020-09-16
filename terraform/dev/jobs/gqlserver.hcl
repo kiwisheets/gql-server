@@ -102,6 +102,8 @@ job "gql-server-dev" {
         destination = "${NOMAD_SECRETS_DIR}/db-password"
       }
     }
+    
+    network {}
 
     service {
        name = "postgres"
@@ -123,6 +125,8 @@ job "gql-server-dev" {
         image = "redis:latest"
       }
     }
+
+    network {}
 
     service {
        name = "redis"

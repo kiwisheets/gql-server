@@ -103,6 +103,8 @@ job "gql-server-prod" {
       }
     }
 
+    network {}
+
     service {
        name = "postgres"
        port = "5432"
@@ -123,6 +125,8 @@ job "gql-server-prod" {
         image = "redis:latest"
       }
     }
+
+    network {}
 
     service {
        name = "redis"
