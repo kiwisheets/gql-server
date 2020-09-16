@@ -29,7 +29,7 @@ job "gql-server-prod" {
 
       template {
         data = <<EOF
-          {{with secret "secret/data/prod"}}{{.Data.data.postgres-password}}{{end}}
+          {{with secret "secret/data/kv/prod"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "${NOMAD_SECRETS_DIR}/db-password"
       }
@@ -97,7 +97,7 @@ job "gql-server-prod" {
 
       template {
         data = <<EOF
-          {{with secret "secret/data/prod"}}{{.Data.data.postgres-password}}{{end}}
+          {{with secret "secret/data/kv/prod"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "${NOMAD_SECRETS_DIR}/db-password"
       }
