@@ -23,11 +23,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: npm install
-        run: npm install --silent
-
-      - name: npm test
-        run: npm test
+      - name: go test
+        run: go test
 
   set-var:
     name: "Set Variables"
