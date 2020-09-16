@@ -111,6 +111,7 @@ jobs:
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          CONSUL_TOKEN: ${{ secrets.CONSUL_TOKEN }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve
@@ -119,3 +120,4 @@ jobs:
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          CONSUL_TOKEN: ${{ secrets.CONSUL_TOKEN }}
