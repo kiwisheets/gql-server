@@ -103,7 +103,9 @@ job "gql-server-dev" {
       }
     }
     
-    network {}
+    network {
+      mode = "bridge"
+    }
 
     service {
        name = "postgres"
@@ -126,7 +128,9 @@ job "gql-server-dev" {
       }
     }
 
-    network {}
+    network {
+      mode = "bridge"
+    }
 
     service {
        name = "redis"
