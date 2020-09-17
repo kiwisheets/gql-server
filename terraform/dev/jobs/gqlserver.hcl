@@ -1,4 +1,4 @@
-job "gql-server-dev" {
+job "graphql-server-dev" {
   datacenters = ["hetzner"]
 
   group "gql-server" {
