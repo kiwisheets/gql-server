@@ -35,14 +35,14 @@ job "main-server-dev" {
 
       template {
         data = <<EOF
-          {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
-          {{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
+{{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
         EOF
         destination = "secrets/jwt-secret-key.secret"
       }
@@ -118,7 +118,7 @@ job "main-server-dev" {
 
       template {
         data = <<EOF
-          {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
