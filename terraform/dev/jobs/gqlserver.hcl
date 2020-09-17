@@ -9,9 +9,6 @@ job "graphql-server-dev" {
 
       config {
         image = "kiwisheets/gql-server:develop"
-        port_map = {
-          http = 3000
-        }
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
