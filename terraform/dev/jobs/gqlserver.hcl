@@ -60,37 +60,36 @@ job "graphql-server-dev" {
           port  "http" {}
         }
       }
+    }
+    service {
+      name = "gql-server-dev"
+      port = "http"
 
-      service {
-        name = "gql-server-dev"
-        port = "http"
-
-        connect {
-          sidecar_service {
-            proxy {
-              upstreams {
-                destination_name = "postgres"
-                local_bind_port = 5432
-              }
-              upstreams {
-                destination_name = "redis"
-                local_bind_port = 6379
-              }
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "postgres"
+              local_bind_port = 5432
+            }
+            upstreams {
+              destination_name = "redis"
+              local_bind_port = 6379
             }
           }
         }
+      }
 
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.gql-server-dev.rule=Host(`beta.kiwisheets.com`) && PathPrefix(`/api/`)",
-        ]
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.gql-server-dev.rule=Host(`beta.kiwisheets.com`) && PathPrefix(`/api/`)",
+      ]
 
-        check {
-          type     = "http"
-          path     = "/"
-          interval = "2s"
-          timeout  = "2s"
-        }
+      check {
+        type     = "http"
+        path     = "/"
+        interval = "2s"
+        timeout  = "2s"
       }
     }
   }
