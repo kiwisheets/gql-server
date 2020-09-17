@@ -1,10 +1,6 @@
 job "gql-server-dev" {
   datacenters = ["hetzner"]
 
-  vault {
-    policies = ["gql-server-dev"]
-  }
-
   group "gql-server" {
     count = 1
 
@@ -36,6 +32,10 @@ job "gql-server-dev" {
           {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "${NOMAD_SECRETS_DIR}/db-password"
+      }
+
+      vault {
+        policies = ["gql-server-dev"]
       }
 
       resources {
@@ -104,6 +104,10 @@ job "gql-server-dev" {
           {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "${NOMAD_SECRETS_DIR}/db-password"
+      }
+
+      vault {
+        policies = ["gql-server-dev"]
       }
     }
     
