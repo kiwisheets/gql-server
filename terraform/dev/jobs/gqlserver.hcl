@@ -87,7 +87,7 @@ job "graphql-server-dev" {
 
       check {
         type     = "http"
-        path     = "/"
+        path     = "/api/"
         interval = "2s"
         timeout  = "2s"
       }
