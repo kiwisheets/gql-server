@@ -54,13 +54,13 @@ job "graphql-server-dev" {
       resources {
         cpu    = 256
         memory = 256
-
-        network {
-          mbits = 10
-          port  "http" {}
-        }
       }
     }
+
+    network {
+      port "http" {}
+    }
+
     service {
       name = "gql-server-dev"
       port = "http"
