@@ -72,6 +72,10 @@ job "main-server-dev" {
                 destination_name = "postgres"
                 local_bind_port = 5432
               }
+              upstreams {
+                destination_name = "redis"
+                local_bind_port = 6379
+              }
             }
           }
         }
