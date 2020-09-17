@@ -110,7 +110,7 @@ jobs:
           TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
-          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          # VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve
@@ -118,4 +118,4 @@ jobs:
           TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
-          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          # VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
