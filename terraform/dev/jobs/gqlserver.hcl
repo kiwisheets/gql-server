@@ -12,6 +12,11 @@ job "main-server-dev" {
         port_map = {
           http = 3000
         }
+
+        volumes = [
+          "${NOMAD_SECRETS_DIR}/db-password:/run/secrets/db-password",
+          "${NOMAD_SECRETS_DIR}/jwt-secret-key:/run/secrets/jwt-secret-key"
+        ]
       }
 
       env {
@@ -22,9 +27,10 @@ job "main-server-dev" {
         POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "${NOMAD_SECRETS_DIR}/db-password"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password"
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
+        JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key"
       }
 
       template {
@@ -32,6 +38,13 @@ job "main-server-dev" {
           {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "${NOMAD_SECRETS_DIR}/db-password"
+      }
+
+      template {
+        data = <<EOF
+          {{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
+        EOF
+        destination = "${NOMAD_SECRETS_DIR}/jwt-secret-key"
       }
 
       vault {
@@ -90,13 +103,17 @@ job "main-server-dev" {
 
       config {
         image = "postgres:latest"
+
+        volumes = [
+          "${NOMAD_SECRETS_DIR}/db-password:/run/secrets/db-password"
+        ]
       }
 
       env {
         PGDATA = "/var/lib/postgresql/data/db"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "${NOMAD_SECRETS_DIR}/db-password"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password"
       }
 
       template {
