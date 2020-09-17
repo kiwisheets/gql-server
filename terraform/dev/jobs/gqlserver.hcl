@@ -68,16 +68,10 @@ job "main-server-dev" {
         connect {
           sidecar_service {
             proxy {
-              upstreams = [
-                {
-                  destination_name = "postgres"
-                  local_bind_port = 5432
-                },
-                {
-                  destination_name = "redis"
-                  local_bind_port = 6379
-                }
-              ]
+              upstreams {
+                destination_name = "postgres"
+                local_bind_port = 5432
+              }
             }
           }
         }
