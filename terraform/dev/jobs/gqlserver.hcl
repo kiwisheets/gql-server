@@ -2,7 +2,7 @@ job "gql-server-dev" {
   datacenters = ["hetzner"]
 
   vault {
-    policies = ["root"]
+    policies = ["gql-server-dev"]
   }
 
   group "gql-server" {
