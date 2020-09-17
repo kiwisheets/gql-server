@@ -14,8 +14,8 @@ job "main-server-dev" {
         }
 
         volumes = [
-          "${NOMAD_SECRETS_DIR}/db-password.secret:/secrets/db-password.secret",
-          "${NOMAD_SECRETS_DIR}/jwt-secret-key.secret:/secrets/jwt-secret-key.secret"
+          "secrets/db-password.secret:/run/secrets/db-password.secret",
+          "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret"
         ]
       }
 
@@ -27,24 +27,24 @@ job "main-server-dev" {
         POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "/secrets/db-password.secret"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
-        JWT_SECRET_KEY_FILE = "/secrets/jwt-secret-key.secret"
+        JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
       }
 
       template {
         data = <<EOF
           {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
-        destination = "${NOMAD_SECRETS_DIR}/db-password.secret"
+        destination = "secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
           {{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
         EOF
-        destination = "${NOMAD_SECRETS_DIR}/jwt-secret-key.secret"
+        destination = "secrets/jwt-secret-key.secret"
       }
 
       vault {
@@ -105,7 +105,7 @@ job "main-server-dev" {
         image = "postgres:latest"
 
         volumes = [
-          "${NOMAD_SECRETS_DIR}/db-password.secret:/secrets/db-password.secret"
+          "secrets/db-password.secret:/run/secrets/db-password.secret"
         ]
       }
 
@@ -113,14 +113,14 @@ job "main-server-dev" {
         PGDATA = "/var/lib/postgresql/data/db"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "/secrets/db-password.secret"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
           {{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
         EOF
-        destination = "${NOMAD_SECRETS_DIR}/db-password.secret"
+        destination = "secrets/db-password.secret"
       }
 
       vault {
