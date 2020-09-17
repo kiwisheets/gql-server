@@ -14,8 +14,8 @@ job "main-server-dev" {
         }
 
         volumes = [
-          "${NOMAD_SECRETS_DIR}/db-password:/run/secrets/db-password",
-          "${NOMAD_SECRETS_DIR}/jwt-secret-key:/run/secrets/jwt-secret-key"
+          "${NOMAD_SECRETS_DIR}/db-password:/secrets/db-password",
+          "${NOMAD_SECRETS_DIR}/jwt-secret-key:/secrets/jwt-secret-key"
         ]
       }
 
@@ -27,10 +27,10 @@ job "main-server-dev" {
         POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password"
+        POSTGRES_PASSWORD_FILE = "/secrets/db-password"
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
-        JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key"
+        JWT_SECRET_KEY_FILE = "/secrets/jwt-secret-key"
       }
 
       template {
