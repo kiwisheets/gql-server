@@ -59,7 +59,9 @@ job "graphql-server-dev" {
 
     network {
       mode = "bridge"
-      port "http" {}
+      port "http" {
+        to = 3000
+      }
     }
 
     service {
