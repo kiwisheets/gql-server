@@ -1,6 +1,10 @@
 job "gql-server-dev" {
   datacenters = ["hetzner"]
 
+  vault {
+    policies = ["root"]
+  }
+
   group "gql-server" {
     count = 1
 
