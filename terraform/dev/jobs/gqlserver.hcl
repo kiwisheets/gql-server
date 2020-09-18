@@ -8,7 +8,7 @@ job "graphql-server-dev" {
       driver = "docker"
 
       config {
-        image = "kiwisheets/gql-server:develop"
+        image = "kiwisheets/gql-server:develop-${version}"
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
