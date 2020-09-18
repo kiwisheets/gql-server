@@ -14,7 +14,7 @@ provider "nomad" {
 
 resource "nomad_job" "gql-server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    version = var.version
+    version = var.image_version
   })
   detach = false
 }
