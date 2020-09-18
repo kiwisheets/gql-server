@@ -21,12 +21,12 @@ job "graphql-server-dev" {
         API_PATH = "/api/"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_redis}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
       }
 
