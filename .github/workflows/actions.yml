@@ -61,14 +61,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: "ENV"
+        uses: rlespinasse/github-slug-action@v2.x
+
       - name: Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Build
-        run: docker build -t kiwisheets/gql-server:${{ needs.set-var.outputs.docker-tag }} .
+        run: docker build -t kiwisheets/gql-server:${{ needs.set-var.outputs.docker-tag }}-${{ env.GITHUB_SHA_SHORT }} .
 
       - name: Push
-        run: docker push kiwisheets/gql-server:${{ needs.set-var.outputs.docker-tag }}
+        run: docker push kiwisheets/gql-server:${{ needs.set-var.outputs.docker-tag }}-${{ env.GITHUB_SHA_SHORT }}
 
   deploy:
     name: "Deploy"
@@ -93,6 +96,9 @@ jobs:
         env:
           NOMAD_CACERT: ${{ secrets.NOMAD_CACERT }}
 
+      - name: "ENV"
+        uses: rlespinasse/github-slug-action@v2.x
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -108,6 +114,7 @@ jobs:
         run: terraform plan -input=false
         env:
           TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+          TF_VAR_image_version: ${{ env.GITHUB_SHA_SHORT }}
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           # VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
@@ -116,6 +123,7 @@ jobs:
         run: terraform apply -input=false -auto-approve
         env:
           TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+          TF_VAR_image_version: ${{ env.GITHUB_SHA_SHORT }}
           NOMAD_ADDR: ${{ secrets.NOMAD_ADDRESS }}
           NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           # VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}

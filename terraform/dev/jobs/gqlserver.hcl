@@ -8,10 +8,7 @@ job "graphql-server-dev" {
       driver = "docker"
 
       config {
-        image = "kiwisheets/gql-server:develop"
-        port_map = {
-          http = 3000
-        }
+        image = "kiwisheets/gql-server:develop-${version}"
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
@@ -24,12 +21,12 @@ job "graphql-server-dev" {
         API_PATH = "/api/"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_redis}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
       }
 
@@ -54,43 +51,45 @@ job "graphql-server-dev" {
       resources {
         cpu    = 256
         memory = 256
-
-        network {
-          mbits = 10
-          port  "http" {}
-        }
       }
+    }
 
-      service {
-        name = "gql-server-dev"
-        port = "http"
+    network {
+      mode = "bridge"
+      port "http" {
+        to = 3000
+      }
+    }
 
-        connect {
-          sidecar_service {
-            proxy {
-              upstreams {
-                destination_name = "postgres"
-                local_bind_port = 5432
-              }
-              upstreams {
-                destination_name = "redis"
-                local_bind_port = 6379
-              }
+    service {
+      name = "gql-server-dev"
+      port = "http"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "postgres"
+              local_bind_port = 5432
+            }
+            upstreams {
+              destination_name = "redis"
+              local_bind_port = 6379
             }
           }
         }
+      }
 
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.gql-server-dev.rule=Host(`beta.kiwisheets.com`) && PathPrefix(`/api/`)",
-        ]
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.gql-server-dev.rule=Host(`beta.kiwisheets.com`) && PathPrefix(`/api/`)",
+      ]
 
-        check {
-          type     = "http"
-          path     = "/"
-          interval = "2s"
-          timeout  = "2s"
-        }
+      check {
+        type     = "http"
+        path     = "/api/"
+        interval = "2s"
+        timeout  = "2s"
       }
     }
   }
