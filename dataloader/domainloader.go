@@ -5,8 +5,7 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"github.com/emvi/hide"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func newDomainsByCompanyIDLoader(db *gorm.DB) *generated.DomainSliceLoader {
@@ -14,19 +13,32 @@ func newDomainsByCompanyIDLoader(db *gorm.DB) *generated.DomainSliceLoader {
 		MaxBatch: 1000,
 		Wait:     1 * time.Millisecond,
 		Fetch: func(companyIDs []int64) ([][]*model.Domain, []error) {
+			rows, err := db.Model(&model.Domain{}).Where("company_id IN (?)", companyIDs).Rows()
+
+			if err != nil {
+				if rows != nil {
+					rows.Close()
+					return nil, []error{err}
+				}
+				// log error
+			}
+			defer rows.Close()
+
+			groupByCompanyID := make(map[int64][]*model.Domain, len(companyIDs))
+			for rows.Next() {
+				var domain model.Domain
+				db.ScanRows(rows, &domain)
+				if domain.ID == 0 {
+					// no value returned
+				} else {
+					groupByCompanyID[int64(domain.CompanyID)] = append(groupByCompanyID[int64(domain.CompanyID)], &domain)
+				}
+			}
+
 			companyDomains := make([][]*model.Domain, len(companyIDs))
 			var errs []error
-
 			for i, companyID := range companyIDs {
-				err := db.Model(model.Company{
-					SoftDelete: model.SoftDelete{
-						ID: hide.ID(companyID),
-					},
-				}).Related(&companyDomains[i]).Error
-
-				if err != nil {
-					errs[i] = err
-				}
+				companyDomains[i] = groupByCompanyID[companyID]
 			}
 
 			return companyDomains, errs

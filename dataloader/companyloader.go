@@ -5,7 +5,7 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func newCompanyByIDLoader(db *gorm.DB) *generated.CompanyLoader {
@@ -16,34 +16,36 @@ func newCompanyByIDLoader(db *gorm.DB) *generated.CompanyLoader {
 			rows, err := db.Model(&model.Company{}).Where(ids).Rows()
 
 			if err != nil {
-				if rows != nil {
-					rows.Close()
+				if rows == nil {
+					return nil, []error{err}
 				}
-				return nil, []error{err}
+				// log error
 			}
 			defer rows.Close()
 
-			// map
 			companyByID := map[int64]*model.Company{}
-
 			for rows.Next() {
 				var company model.Company
 				db.ScanRows(rows, &company)
-				companyByID[int64(company.ID)] = &company
+				if company.ID == 0 {
+					// no value returned
+				} else {
+					companyByID[int64(company.ID)] = &company
+				}
 			}
 
-			// order
-			companies := make([]*model.Company, len(ids))
+			orderedCompanies := make([]*model.Company, len(ids))
 			for i, id := range ids {
-				companies[i] = companyByID[id]
+				orderedCompanies[i] = companyByID[id]
 				i++
 			}
 
-			return companies, nil
+			return orderedCompanies, nil
 		},
 	})
 }
 
+// TODO: Fix this, what is this
 func newCompanyByUserIDLoader(db *gorm.DB) *generated.CompanyLoader {
 	return generated.NewCompanyLoader(generated.CompanyLoaderConfig{
 		MaxBatch: 1000,
@@ -90,28 +92,27 @@ func newCompanyByUserIDLoader(db *gorm.DB) *generated.CompanyLoader {
 			}
 			defer companyRows.Close()
 
-			// map companies to company IDs
-
 			for companyRows.Next() {
 				var company model.Company
 				db.ScanRows(companyRows, &company)
-				companyByCompanyID[int64(company.ID)] = &company
+				if company.ID == 0 {
+					// no value returned
+				} else {
+					companyByCompanyID[int64(company.ID)] = &company
+				}
 			}
 
-			// map companies to user IDs
 			companyByUserID := map[int64]*model.Company{}
 			for userID, companyID := range companyIDbyUserID {
 				companyByUserID[userID] = companyByCompanyID[companyID]
 			}
 
-			// order
-			companies := make([]*model.Company, len(userIDs))
+			orderedCompanies := make([]*model.Company, len(userIDs))
 			for i, id := range userIDs {
-				companies[i] = companyByUserID[id]
-				i++
+				orderedCompanies[i] = companyByUserID[id]
 			}
 
-			return companies, nil
+			return orderedCompanies, nil
 		},
 	})
 }
@@ -124,30 +125,30 @@ func newCompanyByCodeLoader(db *gorm.DB) *generated.CompanyStringLoader {
 			rows, err := db.Model(&model.Company{}).Where("code IN (?)", companyCodes).Rows()
 
 			if err != nil {
-				if rows != nil {
-					rows.Close()
+				if rows == nil {
+					return nil, []error{err}
 				}
-				return nil, []error{err}
+				// log error
 			}
 			defer rows.Close()
 
-			// map
 			companyByCode := map[string]*model.Company{}
-
 			for rows.Next() {
 				var company model.Company
 				db.ScanRows(rows, &company)
-				companyByCode[company.Code] = &company
+				if company.ID == 0 {
+					// no value returned
+				} else {
+					companyByCode[company.Code] = &company
+				}
 			}
 
-			// order
-			companies := make([]*model.Company, len(companyCodes))
+			orderedCompanies := make([]*model.Company, len(companyCodes))
 			for i, code := range companyCodes {
-				companies[i] = companyByCode[code]
-				i++
+				orderedCompanies[i] = companyByCode[code]
 			}
 
-			return companies, nil
+			return orderedCompanies, nil
 		},
 	})
 }

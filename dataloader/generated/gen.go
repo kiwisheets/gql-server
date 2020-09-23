@@ -12,6 +12,7 @@ package generated
 //go:generate go run github.com/vektah/dataloaden DomainSliceLoader int64 []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Domain
 
 //ignore me go:generate go run github.com/vektah/dataloaden PermissionsLoader int64 []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Permission
+//go:generate go run github.com/vektah/dataloaden PermissionsLoader int64 []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Permission
 
 // Checks if user has permission by ID
 //go:generate go run github.com/vektah/dataloaden RoleLoader int64 []git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Role

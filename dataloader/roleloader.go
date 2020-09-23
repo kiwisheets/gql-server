@@ -6,25 +6,31 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/emvi/hide"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func newRoleByUserIDLoader(db *gorm.DB) *generated.RoleLoader {
 	return generated.NewRoleLoader(generated.RoleLoaderConfig{
 		MaxBatch: 1000,
 		Wait:     1 * time.Millisecond,
-		Fetch: func(keys []int64) ([][]model.Role, []error) {
-			roles := make([][]model.Role, len(keys))
-			errors := make([]error, len(keys))
+		Fetch: func(userIDs []int64) ([][]model.Role, []error) {
+			// db.Model(&model.)
 
-			for i, key := range keys {
+			db.Model(&model.BuiltinRole{})
+
+			roles := make([][]model.Role, len(userIDs))
+			errors := make([]error, len(userIDs))
+
+			for i, userID := range userIDs {
 				{
 					var builtinRoles []model.BuiltinRole
 					err := db.Model(&model.User{
 						SoftDelete: model.SoftDelete{
-							ID: hide.ID(key),
+							ID: hide.ID(userID),
 						},
-					}).Preload("Permissions").Related(&builtinRoles, "BuiltinRoles").Error
+					}).Preload("Permissions").Association("BuiltinRoles").Find(&builtinRoles)
+
+					// db.Table("user_builtinroles").Select("builtin_role_id").Where("user_id", userID)
 
 					if err != nil {
 						errors[i] = err
@@ -39,9 +45,9 @@ func newRoleByUserIDLoader(db *gorm.DB) *generated.RoleLoader {
 				{
 					err := db.Model(&model.User{
 						SoftDelete: model.SoftDelete{
-							ID: hide.ID(key),
+							ID: hide.ID(userID),
 						},
-					}).Preload("Permissions").Related(&customRoles, "CustomRoles").Error
+					}).Preload("Permissions").Association("CustomRoles").Find(&customRoles)
 
 					if err != nil {
 						errors[i] = err
