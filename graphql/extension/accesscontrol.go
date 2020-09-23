@@ -1,4 +1,4 @@
-package extension
+package accesscontrolext
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/emvi/hide"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type AccessControl struct {
