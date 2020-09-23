@@ -5,7 +5,7 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/go-chi/chi"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func registerMiddleware(router *chi.Mux, db *gorm.DB, cfg *util.ServerConfig) {

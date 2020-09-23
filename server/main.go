@@ -6,7 +6,7 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/go-chi/chi"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Run starts a new server
