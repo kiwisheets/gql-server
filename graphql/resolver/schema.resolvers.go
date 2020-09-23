@@ -13,10 +13,6 @@ func (r *queryResolver) Version(ctx context.Context) (string, error) {
 	return "0.0.0", nil
 }
 
-func (r *queryResolver) Test(ctx context.Context) (string, error) {
-	return "Test response", nil
-}
-
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 

@@ -9,4 +9,5 @@ type Company struct {
 	Name    string
 	Users   []User
 	Domains []Domain
+	Clients []Client
 }

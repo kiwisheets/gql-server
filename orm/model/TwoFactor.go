@@ -9,7 +9,6 @@ import (
 type TwoFactor struct {
 	Model
 	UserID     hide.ID
-	User       User
 	Secret     string
 	BackupKeys pq.StringArray `gorm:"type:varchar(10)[]"`
 }

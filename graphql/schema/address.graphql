@@ -1,0 +1,29 @@
+type Address {
+  name: String!
+  street1: String!
+  street2: String
+  city: String!
+  state: String
+  postalCode: Int!
+  country: String!
+}
+
+input CreateAddressInput {
+  name: String!
+  street1: String!
+  street2: String
+  city: String!
+  state: String
+  postalCode: Int!
+  country: String!
+}
+
+input UpdateAddressInput {
+  name: String
+  street1: String
+  street2: String
+  city: String
+  state: String
+  postalCode: Int
+  country: String
+}

@@ -2,12 +2,48 @@
 
 package modelgen
 
-import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-)
+type CreateAddressInput struct {
+	Name       string  `json:"name"`
+	Street1    string  `json:"street1"`
+	Street2    *string `json:"street2"`
+	City       string  `json:"city"`
+	State      *string `json:"state"`
+	PostalCode int     `json:"postalCode"`
+	Country    string  `json:"country"`
+}
 
-type AuthData struct {
-	User             *model.User `json:"user"`
-	Token            *string     `json:"token"`
-	TwoFactorEnabled bool        `json:"twoFactorEnabled"`
+type CreateClientInput struct {
+	Name            string              `json:"name"`
+	Website         *string             `json:"website"`
+	VatNumber       *string             `json:"vatNumber"`
+	BusinessNumber  *string             `json:"businessNumber"`
+	Phone           *string             `json:"phone"`
+	BillingAddress  *CreateAddressInput `json:"billingAddress"`
+	ShippingAddress *CreateAddressInput `json:"shippingAddress"`
+}
+
+type CreateCompanyInput struct {
+	Name    string   `json:"name"`
+	Code    string   `json:"code"`
+	Domains []string `json:"domains"`
+}
+
+type UpdateAddressInput struct {
+	Name       *string `json:"name"`
+	Street1    *string `json:"street1"`
+	Street2    *string `json:"street2"`
+	City       *string `json:"city"`
+	State      *string `json:"state"`
+	PostalCode *int    `json:"postalCode"`
+	Country    *string `json:"country"`
+}
+
+type UpdateClientInput struct {
+	Name            *string             `json:"name"`
+	Website         *string             `json:"website"`
+	VatNumber       *string             `json:"vatNumber"`
+	BusinessNumber  *string             `json:"businessNumber"`
+	Phone           *string             `json:"phone"`
+	BillingAddress  *CreateAddressInput `json:"billingAddress"`
+	ShippingAddress *CreateAddressInput `json:"shippingAddress"`
 }

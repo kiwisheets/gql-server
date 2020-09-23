@@ -1,0 +1,18 @@
+enum PreferredContact {
+  PHONE
+  MOBILE
+  EMAIL
+}
+
+type Contact {
+  id: ID!
+
+  email: String @hasPerm(perm: "ClientContact:Read")
+  phone: String @hasPerm(perm: "ClientContact:Read")
+  mobile: String @hasPerm(perm: "ClientContact:Read")
+  preferredContact: PreferredContact @hasPerm(perm: "ClientContact:Read")
+
+  firstname: String!
+  lastname: String!
+  createdAt: Time!
+}

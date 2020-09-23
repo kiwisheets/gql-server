@@ -9,14 +9,18 @@ import (
 // User model
 type User struct {
 	SoftDelete
-	Email        string `gorm:"UNIQUE_INDEX:idx_email"`
-	Password     string
-	Firstname    string
-	Lastname     string
-	CompanyID    hide.ID       `json:"company"`
-	Company      Company       `json:"-"`
-	BuiltinRoles []BuiltinRole `gorm:"many2many:user_builtinroles" json:"-"`
-	CustomRoles  []CustomRole  `gorm:"many2many:user_customroles" json:"-"`
+	Email            string `gorm:"UNIQUE_INDEX:idx_email"`
+	Phone            *string
+	Mobile           *string
+	PreferredContact *PreferredContact
+	Password         string
+	Firstname        string
+	Lastname         string
+	CompanyID        hide.ID       `json:"company"`
+	Company          Company       `json:"-"`
+	BuiltinRoles     []BuiltinRole `gorm:"many2many:user_builtinroles" json:"-"`
+	CustomRoles      []CustomRole  `gorm:"many2many:user_customroles" json:"-"`
+	TwoFactor        TwoFactor
 }
 
 // Roles returns all roles a user has as the Role interface

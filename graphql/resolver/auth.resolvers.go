@@ -10,12 +10,10 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"github.com/jinzhu/gorm"
 )
 
-func (r *mutationResolver) Login(ctx context.Context, email string, password string, twoFactor *string) (*modelgen.AuthData, error) {
+func (r *mutationResolver) Login(ctx context.Context, email string, password string, twoFactor *string) (*model.AuthData, error) {
 	// TODO: move logic into auth package
 
 	user, err := dataloader.For(ctx).UserByEmail.Load(email)
@@ -28,23 +26,25 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 		return nil, fmt.Errorf("Email or Password Incorrect")
 	}
 
-	// check is 2FA is enabled
-	var twoFA model.TwoFactor
+	twoFactorObject, err := auth.GetTwoFactor(r.DB, user)
 
-	if err := r.DB.Model(&user).Related(&twoFA).Error; err == nil {
-		// attempt 2FA auth
+	if twoFactorObject == nil && err == nil {
+		// twofactor disabled
+
+	} else {
+		// twofactor enabled
+
+		// check if twofactor code is empty
 		if twoFactor == nil || *twoFactor == "" {
-			return &modelgen.AuthData{
+			return &model.AuthData{
 				TwoFactorEnabled: true,
 			}, nil
 		}
-		if !auth.VerifyTwoFactor(&twoFA, *twoFactor) {
+
+		// verify twofactor code, return if invalid
+		if !auth.VerifyTwoFactor(twoFactorObject, *twoFactor) {
 			return nil, fmt.Errorf("Invalid 2FA code")
 		}
-	} else if err != gorm.ErrRecordNotFound {
-		// internal error
-		// TODO: Log this
-		return nil, fmt.Errorf("Internal 2FA Error")
 	}
 
 	token, err := auth.LoginUser(user, &r.Cfg.JWT)
@@ -53,15 +53,19 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 		return nil, fmt.Errorf("Email of Password Incorrect")
 	}
 
-	return &modelgen.AuthData{
+	return &model.AuthData{
 		User:             user,
 		Token:            &token,
-		TwoFactorEnabled: twoFA.Secret != "",
+		TwoFactorEnabled: twoFactorObject != nil,
 	}, nil
 }
 
 func (r *mutationResolver) LoginSecure(ctx context.Context, password string) (string, error) {
 	return auth.LoginUserSecure(auth.For(ctx).User, &r.Cfg.JWT)
+}
+
+func (r *mutationResolver) RefreshToken(ctx context.Context) (string, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) ChangePassword(ctx context.Context, oldPassword string, newPassword string) (bool, error) {
@@ -100,16 +104,7 @@ func (r *queryResolver) TwoFactorBackups(ctx context.Context) ([]string, error) 
 }
 
 func (r *queryResolver) TwoFactorEnabled(ctx context.Context) (bool, error) {
-	// check is 2FA is enabled
-	user := auth.For(ctx).User
-	var twoFA model.TwoFactor
-
-	if err := r.DB.Model(&user).Related(&twoFA).Error; err == nil {
-		// if no error, two factor is enabled
-		return true, nil
-	}
-
-	return false, nil
+	return auth.IsTwoFactorEnabled(r.DB, auth.For(ctx).User)
 }
 
 // Mutation returns generated.MutationResolver implementation.

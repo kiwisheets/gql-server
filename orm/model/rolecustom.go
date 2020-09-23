@@ -1,6 +1,7 @@
 package model
 
 import (
+	"log"
 	"strings"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model/permission/operation"
@@ -40,10 +41,14 @@ func (r CustomRole) CheckPermission(requestedPerm string) bool {
 		return false
 	}
 
-	var sub subject.Subject
 	var op operation.Operation
 
-	sub.FromString(strings[0])
+	sub, err := subject.ParseSubject(strings[0])
+	if err != nil {
+		log.Printf("failed to check permission. unable to parse subject: %s \n", strings[0])
+		return false
+	}
+
 	op.FromString(strings[1])
 
 	// Run through permissions to check for the permission

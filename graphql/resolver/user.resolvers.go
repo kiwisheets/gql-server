@@ -11,26 +11,15 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-func (r *mutationResolver) CreateUser(ctx context.Context, code *string, email string, password string) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, email string, password string) (*model.User, error) {
 	// get code
 
-	var company *model.Company
-
-	if code == nil {
-		// if no code is provided, use currently logged in user's company
-		company = &auth.For(ctx).User.Company
-	} else {
-		// find valid code
-		var err error
-		company, err = dataloader.For(ctx).CompanyByCode.Load(*code)
-		if err != nil {
-			return nil, fmt.Errorf("unable to create User. Company not found")
-		}
-	}
+	company := &auth.For(ctx).User.Company
 
 	// verify that this user has the ability to create a user for this company
 
@@ -52,18 +41,34 @@ func (r *mutationResolver) CreateUser(ctx context.Context, code *string, email s
 	return &user, nil
 }
 
-func (r *mutationResolver) DeleteUser(ctx context.Context, id hide.ID) (bool, error) {
+func (r *mutationResolver) CreateUserForCompany(ctx context.Context, companyID hide.ID, email string, password string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteUser(ctx context.Context, id hide.ID) (*bool, error) {
 	if err := r.DB.Delete(&model.User{
 		SoftDelete: model.SoftDelete{
 			ID: id,
 		},
 	}).Error; err == gorm.ErrRecordNotFound {
-		return false, fmt.Errorf("User not found")
+		return util.Bool(false), fmt.Errorf("User not found")
 	} else if err != nil {
-		return false, fmt.Errorf("No user specified")
+		return util.Bool(false), fmt.Errorf("No user specified")
 	}
 
-	return true, nil
+	return util.Bool(true), nil
+}
+
+func (r *mutationResolver) DeleteUserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteUsers(ctx context.Context, ids []hide.ID) ([]bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteUsersForCompany(ctx context.Context, companyID hide.ID, ids []hide.ID) ([]bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
@@ -76,7 +81,30 @@ func (r *queryResolver) User(ctx context.Context, id hide.ID) (*model.User, erro
 	return user, err
 }
 
-func (r *queryResolver) SearchUsers(ctx context.Context, search string) ([]*model.User, error) {
+func (r *queryResolver) UserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Users(ctx context.Context, page *int) ([]*model.User, error) {
+	limit := 20
+	users := make([]*model.User, limit)
+	if page == nil {
+		page = util.Int(0)
+	}
+	r.DB.Order("firstname").Limit(limit).Offset(limit * *page).Find(&users)
+
+	return users, nil
+}
+
+func (r *queryResolver) UsersForCompany(ctx context.Context, companyID hide.ID, page *int) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) SearchUsers(ctx context.Context, search string, page *int) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) SearchUsersForCompany(ctx context.Context, companyID hide.ID, search string, page *int) ([]*model.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

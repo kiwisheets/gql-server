@@ -1,18 +1,37 @@
 type User {
   id: ID!
 	company: Company! @goField(forceResolver: true) @hasPerm(perm: "Company:Read")
-	email: String!
+
+	email: String! @hasPerm(perm: "UserContact:Read")
+  phone: String @hasPerm(perm: "UserContact:Read")
+  mobile: String @hasPerm(perm: "UserContact:Read")
+  preferredContact: PreferredContact @hasPerm(perm: "UserContact:Read")
+  
   firstname: String!
   lastname: String!
+  createdAt: Time!
 }
 
 extend type Query {
-  me: User! @hasPerm(perm: "Me:Read")
-  user(id: ID!): User! @hasPerm(perm: "User:Read")
-  searchUsers(search: String!): [User!]! @hasPerm(perm: "Users:Read")
+  me: User @hasPerm(perm: "Me:Read")
+
+  user(id: ID!): User @hasPerm(perm: "User:Read")
+  userForCompany(companyID: ID!, id: ID!): User @hasPerm(perm: "OtherUser:Read")
+
+  users(page: Int): [User!] @hasPerm(perm: "Users:Read")
+  usersForCompany(companyID: ID!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
+
+  searchUsers(search: String!, page: Int): [User!] @hasPerm(perm: "Users:Read")
+  searchUsersForCompany(companyID: ID!, search: String!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
 }
 
 extend type Mutation {
-  createUser(code: String, email: String!, password: String!): User @hasPerm(perm: "User:Create")
-  deleteUser(id: ID!): Boolean! @hasPerm(perm: "User:Delete")
+  createUser(email: String!, password: String!): User @hasPerm(perm: "User:Create")
+  createUserForCompany(companyID: ID!, email: String!, password: String!): User @hasPerm(perm: "OtherUser:Create")
+
+  deleteUser(id: ID!): Boolean @hasPerm(perm: "User:Delete")
+  deleteUserForCompany(companyID: ID!, id: ID!): Boolean @hasPerm(perm: "OtherUser:Delete")
+
+  deleteUsers(ids: [ID!]!): [Boolean!] @hasPerm(perm: "Users:Delete")
+  deleteUsersForCompany(companyID: ID!, ids: [ID!]!): [Boolean!] @hasPerm(perm: "OtherUsers:Delete")
 }
