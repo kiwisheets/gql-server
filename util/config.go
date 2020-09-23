@@ -9,12 +9,18 @@ type ServerConfig struct {
 	Port              string
 	GraphQL           GqlConfig
 	JWT               JWTConfig
+	Hash              HashConfig
 	Database          DatabaseConfig
 	Redis             RedisConfig
 }
 
 type JWTConfig struct {
 	Secret string
+}
+
+type HashConfig struct {
+	Salt      string
+	MinLength int
 }
 
 type GqlConfig struct {
@@ -26,6 +32,7 @@ type DatabaseConfig struct {
 	User           string
 	Password       string
 	Database       string
+	Port           string
 	MaxConnections int
 }
 
