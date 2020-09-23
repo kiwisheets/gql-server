@@ -13,7 +13,7 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	argonpass "github.com/dwin/goArgonPass"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var userCtxKey = &contextKey{"user"}
