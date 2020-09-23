@@ -20,11 +20,16 @@ func Server() *util.ServerConfig {
 		JWT: util.JWTConfig{
 			Secret: goenv.MustGetSecretFromEnv("JWT_SECRET_KEY"),
 		},
+		Hash: util.HashConfig{
+			Salt:      goenv.MustGetSecretFromEnv("HASH_SALT"),
+			MinLength: goenv.CanGetInt32("HASH_MIN_LENGTH", 10),
+		},
 		GraphQL: util.GqlConfig{
 			ComplexityLimit: 200,
 		},
 		Database: util.DatabaseConfig{
 			Host:           goenv.MustGet("POSTGRES_HOST"),
+			Port:           goenv.MustGet("POSTGRES_PORT"),
 			User:           goenv.MustGet("POSTGRES_USER"),
 			Password:       goenv.MustGetSecretFromEnv("POSTGRES_PASSWORD"),
 			Database:       goenv.MustGet("POSTGRES_DB"),
