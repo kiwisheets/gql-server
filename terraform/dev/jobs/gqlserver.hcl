@@ -12,7 +12,8 @@ job "graphql-server-dev" {
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
-          "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret"
+          "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret",
+          "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
         ]
       }
 
@@ -28,6 +29,8 @@ job "graphql-server-dev" {
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_redis}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
+        HASH_SALT = "/run/secrets/hash-salt.secret"
+        HASH_MIN_LENGTH = 10
       }
 
       template {
@@ -42,6 +45,13 @@ job "graphql-server-dev" {
 {{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
         EOF
         destination = "secrets/jwt-secret-key.secret"
+      }
+
+      template {
+        data = <<EOF
+{{with secret "kv/data/dev"}}{{.Data.data.hash_salt}}{{end}}
+        EOF
+        destination = "secrets/hash-salt.secret"
       }
 
       vault {
