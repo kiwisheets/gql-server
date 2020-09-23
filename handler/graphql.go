@@ -15,7 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/apollotracing"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // GraphqlHandler constructs and returns a http handler

@@ -3,7 +3,7 @@ package seed
 import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // RequiredUsers ensures that at least a default ServiceAdmin account exists
@@ -28,11 +28,21 @@ func RequiredUsers(db *gorm.DB) {
 	hash, _ := auth.HashPassword("servicepass")
 
 	var serviceAdminRole model.BuiltinRole
+	var standardUserRole model.BuiltinRole
+	var customUserRole model.CustomRole
 
 	// get service admin role
 	db.Where(model.BuiltinRole{
 		Name: "Service Admin",
 	}).First(&serviceAdminRole)
+
+	db.Where(model.BuiltinRole{
+		Name: "Standard User",
+	}).First(&standardUserRole)
+
+	db.Where(model.CustomRole{
+		Name: "Custom User",
+	}).First(&customUserRole)
 
 	var user model.User
 
@@ -48,4 +58,23 @@ func RequiredUsers(db *gorm.DB) {
 			serviceAdminRole,
 		},
 	}).FirstOrCreate(&user)
+
+	var secondUser model.User
+	hash, _ = auth.HashPassword("password")
+
+	db.Where(model.User{
+		CompanyID: company.ID,
+		Email:     "testuser@" + domain.Domain,
+		// Check role
+	}).Attrs(model.User{
+		Firstname: "Test",
+		Lastname:  "User",
+		Password:  hash,
+		BuiltinRoles: []model.BuiltinRole{
+			standardUserRole,
+		},
+		CustomRoles: []model.CustomRole{
+			customUserRole,
+		},
+	}).FirstOrCreate(&secondUser)
 }

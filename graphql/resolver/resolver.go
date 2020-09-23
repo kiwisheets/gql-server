@@ -3,7 +3,7 @@ package resolver
 
 import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // This file will not be regenerated automatically.
