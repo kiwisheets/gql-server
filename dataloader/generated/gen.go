@@ -16,3 +16,5 @@ package generated
 
 // Checks if user has permission by ID
 //go:generate go run github.com/vektah/dataloaden RoleLoader int64 []git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Role
+
+//go:generate go run github.com/vektah/dataloaden AddressLoader int64 *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Address

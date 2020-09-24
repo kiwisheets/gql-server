@@ -55,10 +55,9 @@ func newCompanyByUserIDLoader(db *gorm.DB) *generated.CompanyLoader {
 			userRows, err := db.Model(&model.User{}).Select("id, company_id").Where(userIDs).Rows()
 
 			if err != nil {
-				if userRows != nil {
-					userRows.Close()
+				if userRows == nil {
+					return nil, []error{err}
 				}
-				return nil, []error{err}
 			}
 			defer userRows.Close()
 
@@ -85,10 +84,9 @@ func newCompanyByUserIDLoader(db *gorm.DB) *generated.CompanyLoader {
 			companyRows, err := db.Model(&model.Company{}).Where(companyIDs).Rows()
 
 			if err != nil {
-				if companyRows != nil {
-					companyRows.Close()
+				if companyRows == nil {
+					return nil, []error{err}
 				}
-				return nil, []error{err}
 			}
 			defer companyRows.Close()
 
