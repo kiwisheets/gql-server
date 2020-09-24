@@ -13,6 +13,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.8.0
 	github.com/maxtroughear/goenv v0.0.2
+	github.com/mitchellh/mapstructure v1.3.3
 	github.com/onsi/ginkgo v1.14.1 // indirect
 	github.com/pquerna/otp v1.2.0
 	github.com/speps/go-hashids v2.0.0+incompatible // indirect
