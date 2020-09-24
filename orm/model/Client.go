@@ -4,6 +4,9 @@ import (
 	"github.com/emvi/hide"
 )
 
+const ClientBillingAddressType = "client_billing"
+const ClientShippingAddressType = "client_shipping"
+
 type Client struct {
 	SoftDelete
 	Name string
@@ -13,8 +16,8 @@ type Client struct {
 	BusinessNumber *string
 	Phone          *string
 
-	ShippingAddress *Address `gorm:"polymorphic:Addressee;polymorphicValue:shipping"`
-	BillingAddress  *Address `gorm:"polymorphic:Addressee;polymorphicValue:billing"`
+	BillingAddress  *Address `gorm:"polymorphic:Addressee;polymorphicValue:client_billing"`
+	ShippingAddress *Address `gorm:"polymorphic:Addressee;polymorphicValue:client_shipping"`
 
 	Contacts  []Contact
 	CompanyID hide.ID `json:"company"`

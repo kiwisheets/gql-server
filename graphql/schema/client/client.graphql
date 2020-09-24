@@ -5,8 +5,8 @@ type Client {
   vatNumber: String
   businessNumber: String
   phone: String
-  shippingAddress: Address
-  billingAddress: Address
+  shippingAddress: Address @goField(forceResolver: true)
+  billingAddress: Address @goField(forceResolver: true)
   contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contacts:Read")
   createdAt: Time!
 }

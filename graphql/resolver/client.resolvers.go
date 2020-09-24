@@ -9,12 +9,21 @@ import (
 	"time"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
+	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
 )
+
+func (r *clientResolver) BillingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
+	return dataloader.For(ctx).ClientBillingAddressByClientID.Load(obj.IDint())
+}
+
+func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
+	return dataloader.For(ctx).ClientShippingAddressByClientID.Load(obj.IDint())
+}
 
 func (r *clientResolver) Contacts(ctx context.Context, obj *model.Client) ([]*model.Contact, error) {
 	preferredContact := model.PreferredContactEmail
@@ -40,7 +49,10 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 		Website:        client.Website,
 		VatNumber:      client.VatNumber,
 		BusinessNumber: client.BusinessNumber,
-		BillingAddress: &model.Address{
+	}
+
+	if client.BillingAddress != nil {
+		clientObject.BillingAddress = &model.Address{
 			Name:       client.BillingAddress.Name,
 			Street1:    client.BillingAddress.Street1,
 			Street2:    client.BillingAddress.Street2,
@@ -48,8 +60,11 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 			PostalCode: client.BillingAddress.PostalCode,
 			State:      client.BillingAddress.State,
 			Country:    client.BillingAddress.Country,
-		},
-		ShippingAddress: &model.Address{
+		}
+	}
+
+	if client.ShippingAddress != nil {
+		clientObject.ShippingAddress = &model.Address{
 			Name:       client.ShippingAddress.Name,
 			Street1:    client.ShippingAddress.Street1,
 			Street2:    client.ShippingAddress.Street2,
@@ -57,8 +72,11 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 			PostalCode: client.ShippingAddress.PostalCode,
 			State:      client.ShippingAddress.State,
 			Country:    client.ShippingAddress.Country,
-		},
+		}
 	}
+
+	// changeset.ApplyChanges(, &clientObject)
+
 	err := r.DB.Create(&clientObject).Error
 
 	if clientObject.ID == 0 || err != nil {

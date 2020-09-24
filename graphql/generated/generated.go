@@ -157,6 +157,8 @@ type ComplexityRoot struct {
 }
 
 type ClientResolver interface {
+	ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error)
+	BillingAddress(ctx context.Context, obj *model.Client) (*model.Address, error)
 	Contacts(ctx context.Context, obj *model.Client) ([]*model.Contact, error)
 }
 type CompanyResolver interface {
@@ -1018,8 +1020,8 @@ extend type Mutation {
   vatNumber: String
   businessNumber: String
   phone: String
-  shippingAddress: Address
-  billingAddress: Address
+  shippingAddress: Address @goField(forceResolver: true)
+  billingAddress: Address @goField(forceResolver: true)
   contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contacts:Read")
   createdAt: Time!
 }
@@ -2346,14 +2348,14 @@ func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field g
 		Object:     "Client",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ShippingAddress, nil
+		return ec.resolvers.Client().ShippingAddress(rctx, obj)
 	})
 
 	if resTmp == nil {
@@ -2375,14 +2377,14 @@ func (ec *executionContext) _Client_billingAddress(ctx context.Context, field gr
 		Object:     "Client",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.BillingAddress, nil
+		return ec.resolvers.Client().BillingAddress(rctx, obj)
 	})
 
 	if resTmp == nil {
@@ -6861,9 +6863,27 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 		case "phone":
 			out.Values[i] = ec._Client_phone(ctx, field, obj)
 		case "shippingAddress":
-			out.Values[i] = ec._Client_shippingAddress(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Client_shippingAddress(ctx, field, obj)
+				return res
+			})
 		case "billingAddress":
-			out.Values[i] = ec._Client_billingAddress(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Client_billingAddress(ctx, field, obj)
+				return res
+			})
 		case "contacts":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
