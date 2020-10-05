@@ -40,7 +40,7 @@ jobs:
         id: docker-tag
         with:
           cond: ${{ github.ref == 'refs/heads/master' }}
-          if_true: "latest"
+          if_true: "prod"
           if_false: "develop"
 
       - uses: haya14busa/action-cond@v1

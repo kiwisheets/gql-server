@@ -2,16 +2,19 @@ job "gql-server-prod" {
   datacenters = ["hetzner"]
 
   group "gql-server" {
-    count = 1
+    count = 2
 
     task "gql-server" {
       driver = "docker"
 
       config {
-        image = "kiwisheets/gql-server:latest"
-        port_map = {
-          http = 3000
-        }
+        image = "kiwisheets/gql-server:prod-${version}"
+
+        volumes = [
+          "secrets/db-password.secret:/run/secrets/db-password.secret",
+          "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret",
+          "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
+        ]
       }
 
       env {
@@ -19,61 +22,85 @@ job "gql-server-prod" {
         API_PATH = "/api/"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "${NOMAD_UPSTREAM_IP_postgres}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
+        POSTGRES_PORT = 5432
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "${NOMAD_SECRETS_DIR}/db-password"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "${NOMAD_UPSTREAM_ADDR_redis}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_redis}"
+        JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
+        HASH_SALT = "/run/secrets/hash-salt.secret"
+        HASH_MIN_LENGTH = 10
       }
 
       template {
         data = <<EOF
-          {{with secret "kv/data/prod"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/prod"}}{{.Data.data.postgres_password}}{{end}}
         EOF
-        destination = "${NOMAD_SECRETS_DIR}/db-password"
+        destination = "secrets/db-password.secret"
+      }
+
+      template {
+        data = <<EOF
+{{with secret "kv/data/prod"}}{{.Data.data.jwt_secret}}{{end}}
+        EOF
+        destination = "secrets/jwt-secret-key.secret"
+      }
+
+      template {
+        data = <<EOF
+{{with secret "kv/data/prod"}}{{.Data.data.hash_salt}}{{end}}
+        EOF
+        destination = "secrets/hash-salt.secret"
+      }
+
+      vault {
+        policies = ["gql-server-dev"]
       }
 
       resources {
         cpu    = 256
         memory = 256
-
-        network {
-          mbits = 10
-          port  "http" {}
-        }
       }
+    }
 
-      service {
-        name = "gql-server-prod"
-        port = "http"
+    network {
+      mode = "bridge"
+      port "http" {
+        to = 3000
+      }
+    }
 
-        connect {
-          sidecar_service {
-            proxy {
-              upstreams {
-                destination_name = "postgres"
-                local_bind_port = 5432
-              }
-              upstreams {
-                destination_name = "redis"
-                local_bind_port = 6379
-              }
+    service {
+      name = "gql-server-prod"
+      port = "http"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "postgres"
+              local_bind_port = 5432
+            }
+            upstreams {
+              destination_name = "redis"
+              local_bind_port = 6379
             }
           }
         }
+      }
 
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.gql-server-prod.rule=Host(`app.kiwisheets.com`) && PathPrefix(`/api/`)",
-        ]
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.gql-server-dev.rule=Host(`app.kiwisheets.com`) && PathPrefix(`/api/`)",
+      ]
 
-        check {
-          type     = "http"
-          path     = "/"
-          interval = "2s"
-          timeout  = "2s"
-        }
+      check {
+        type     = "http"
+        path     = "/api/"
+        interval = "2s"
+        timeout  = "2s"
       }
     }
   }
@@ -81,25 +108,45 @@ job "gql-server-prod" {
   group "postgres" {
     count = 1
 
+    volume "gql-postgres" {
+      type      = "csi"
+      read_only = false
+      source    = "${volume_id}"
+    }
+
     task "postgres" {
       driver = "docker"
 
+      volume_mount {
+        volume      = "gql-postgres"
+        destination = "/var/lib/postgresql/data"
+        read_only   = false
+      }
+
       config {
         image = "postgres:latest"
+
+        volumes = [
+          "secrets/db-password.secret:/run/secrets/db-password.secret"
+        ]
       }
 
       env {
         PGDATA = "/var/lib/postgresql/data/db"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
-        POSTGRES_PASSWORD_FILE = "${NOMAD_SECRETS_DIR}/db-password"
+        POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
-          {{with secret "kv/data/prod"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/prod"}}{{.Data.data.postgres_password}}{{end}}
         EOF
-        destination = "${NOMAD_SECRETS_DIR}/db-password"
+        destination = "secrets/db-password.secret"
+      }
+
+      vault {
+        policies = ["gql-server-prod"]
       }
     }
 

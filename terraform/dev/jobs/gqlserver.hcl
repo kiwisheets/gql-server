@@ -2,7 +2,7 @@ job "graphql-server-dev" {
   datacenters = ["hetzner"]
 
   group "gql-server" {
-    count = 2
+    count = 1
 
     task "gql-server" {
       driver = "docker"
