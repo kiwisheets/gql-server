@@ -81,11 +81,11 @@ job "gql-server-prod" {
           proxy {
             upstreams {
               destination_name = "postgres"
-              local_bind_port = 5432
+              local_bind_port = 5433
             }
             upstreams {
               destination_name = "redis"
-              local_bind_port = 6379
+              local_bind_port = 6380
             }
           }
         }
