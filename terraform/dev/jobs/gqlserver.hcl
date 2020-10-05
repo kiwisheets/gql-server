@@ -70,11 +70,6 @@ job "graphql-server-dev" {
       port "http" {
         to = 3000
       }
-      dns {
-        servers = [
-          "10.3.0.2"
-        ]
-      }
     }
 
     service {
