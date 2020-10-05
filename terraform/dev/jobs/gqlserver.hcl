@@ -22,13 +22,13 @@ job "gql-server-dev" {
         API_PATH = "/api/"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
-        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_postgres}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-dev}"
+        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-dev}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_redis}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis-dev}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
         HASH_SALT = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
