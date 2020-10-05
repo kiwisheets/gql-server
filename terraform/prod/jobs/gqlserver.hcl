@@ -56,7 +56,7 @@ job "gql-server-prod" {
       }
 
       vault {
-        policies = ["gql-server-dev"]
+        policies = ["gql-server-prod"]
       }
 
       resources {
@@ -108,7 +108,7 @@ job "gql-server-prod" {
   group "postgres" {
     count = 1
 
-    volume "gql-postgres" {
+    volume "gql-postgres-prod" {
       type      = "csi"
       read_only = false
       source    = "${volume_id}"
@@ -118,7 +118,7 @@ job "gql-server-prod" {
       driver = "docker"
 
       volume_mount {
-        volume      = "gql-postgres"
+        volume      = "gql-postgres-prod"
         destination = "/var/lib/postgresql/data"
         read_only   = false
       }

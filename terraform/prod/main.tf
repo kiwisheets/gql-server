@@ -22,7 +22,7 @@ data "nomad_plugin" "hcloud_volume" {
 }
 
 resource "hcloud_volume" "gql_postgres_prod" {
-  name     = "gql-server-prod"
+  name     = "gql-postgres-prod"
   size     = 10
   location = "nbg1"
 }
