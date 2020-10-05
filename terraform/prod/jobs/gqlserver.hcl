@@ -23,7 +23,7 @@ job "gql-server-prod" {
         PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
-        POSTGRES_PORT = 5432
+        POSTGRES_PORT = $${NOMAD_UPSTREAM_PORT_postgres}
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
@@ -156,7 +156,7 @@ job "gql-server-prod" {
 
     service {
        name = "postgres"
-       port = "5432"
+       port = "5433"
 
        connect {
          sidecar_service {}
@@ -181,7 +181,7 @@ job "gql-server-prod" {
 
     service {
        name = "redis"
-       port = "6379"
+       port = "6380"
 
        connect {
          sidecar_service {}
