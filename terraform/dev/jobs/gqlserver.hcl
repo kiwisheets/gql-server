@@ -23,7 +23,7 @@ job "graphql-server-dev" {
         PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_postgres}"
-        POSTGRES_PORT = $${NOMAD_UPSTREAM_PORT_postgres}
+        POSTGRES_PORT = NOMAD_UPSTREAM_PORT_postgres
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
