@@ -2,7 +2,7 @@ job "graphql-server-dev" {
   datacenters = ["hetzner"]
 
   group "gql-server" {
-    count = 1
+    count = 2
 
     task "gql-server" {
       driver = "docker"
@@ -70,6 +70,11 @@ job "graphql-server-dev" {
       port "http" {
         to = 3000
       }
+      // dns {
+      //   servers = [
+      //     ""
+      //   ]
+      // }
     }
 
     service {
