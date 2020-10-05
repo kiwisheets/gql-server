@@ -12,7 +12,7 @@ provider "nomad" {
   ca_file = "nomad-ca.pem"
 }
 
-resource "nomad_job" "gql-server" {
+resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
     version = var.image_version
   })

@@ -39,7 +39,7 @@ resource "nomad_volume" "gql_postgres_prod" {
   deregister_on_destroy = true
 }
 
-resource "nomad_job" "gql-server" {
+resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
     version   = var.image_version
     volume_id = nomad_volume.gql_postgres_prod.volume_id
