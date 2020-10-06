@@ -93,7 +93,7 @@ job "gql-server-prod" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.gql-server-dev.rule=Host(`app.kiwisheets.com`) && PathPrefix(`/api/`)",
+        "traefik.http.routers.gql-server-prod.rule=Host(`app.kiwisheets.com`) && PathPrefix(`/api/`)",
       ]
 
       check {

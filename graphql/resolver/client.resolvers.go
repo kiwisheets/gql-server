@@ -96,11 +96,7 @@ func (r *mutationResolver) DeleteClient(ctx context.Context, id hide.ID) (*bool,
 
 func (r *queryResolver) Client(ctx context.Context, id hide.ID) (*model.Client, error) {
 	var client model.Client
-	r.DB.Model(&model.Client{
-		SoftDelete: model.SoftDelete{
-			ID: 1,
-		},
-	}).First(&client)
+	r.DB.Model(&model.Client{}).Where(id).First(&client)
 	if client.ID == 0 {
 		return nil, fmt.Errorf("Client not found")
 	}
