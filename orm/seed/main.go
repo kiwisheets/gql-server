@@ -3,6 +3,7 @@ package seed
 import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"gorm.io/gorm"
 )
 
@@ -77,4 +78,16 @@ func RequiredUsers(db *gorm.DB) {
 			customUserRole,
 		},
 	}).FirstOrCreate(&secondUser)
+
+	var demoClient model.Client
+
+	db.Where(model.Client{
+		Name:      "3B",
+		CompanyID: company.ID,
+	}).Attrs(model.Client{
+		Phone:          util.String("+6421456789"),
+		VatNumber:      util.String("1234567890"),
+		BusinessNumber: util.String("0987654321"),
+		Website:        util.String("https://website.com"),
+	}).FirstOrCreate(&demoClient)
 }

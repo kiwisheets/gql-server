@@ -121,7 +121,7 @@ type ComplexityRoot struct {
 		LoginSecure           func(childComplexity int, password string) int
 		NewTwoFactorBackups   func(childComplexity int) int
 		RefreshToken          func(childComplexity int) int
-		UpdateClient          func(childComplexity int, client modelgen.UpdateClientInput) int
+		UpdateClient          func(childComplexity int, id hide.ID, client modelgen.UpdateClientInput) int
 	}
 
 	Query struct {
@@ -174,7 +174,7 @@ type MutationResolver interface {
 	EnableTwoFactor(ctx context.Context, secret string, token string) ([]string, error)
 	DisableTwoFactor(ctx context.Context, password string) (bool, error)
 	CreateClient(ctx context.Context, client modelgen.CreateClientInput) (*model.Client, error)
-	UpdateClient(ctx context.Context, client modelgen.UpdateClientInput) (*model.Client, error)
+	UpdateClient(ctx context.Context, id hide.ID, client modelgen.UpdateClientInput) (*model.Client, error)
 	DeleteClient(ctx context.Context, id hide.ID) (*bool, error)
 	CreateCompany(ctx context.Context, company modelgen.CreateCompanyInput) (*model.Company, error)
 	DeleteCompany(ctx context.Context, id hide.ID) (*bool, error)
@@ -664,7 +664,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateClient(childComplexity, args["client"].(modelgen.UpdateClientInput)), true
+		return e.complexity.Mutation.UpdateClient(childComplexity, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput)), true
 
 	case "Query.client":
 		if e.complexity.Query.Client == nil {
@@ -1058,7 +1058,7 @@ extend type Mutation {
   createClient(client: CreateClientInput!): Client @hasPerm(perm: "Client:Create")
   # createClientForCompany(companyID: ID!, client: CreateClientInput!) @hasPerm(perm: "OtherClient:Create")
 
-  updateClient(client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
+  updateClient(id: ID! client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
 
   deleteClient(id: ID!): Boolean @hasPerm(perm: "Client:Delete")
 }
@@ -1516,15 +1516,24 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Mutation_updateClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 modelgen.UpdateClientInput
-	if tmp, ok := rawArgs["client"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg0, err = ec.unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+	var arg0 hide.ID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["client"] = arg0
+	args["id"] = arg0
+	var arg1 modelgen.UpdateClientInput
+	if tmp, ok := rawArgs["client"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
+		arg1, err = ec.unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["client"] = arg1
 	return args, nil
 }
 
@@ -3501,7 +3510,7 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateClient(rctx, args["client"].(modelgen.UpdateClientInput))
+			return ec.resolvers.Mutation().UpdateClient(rctx, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			perm, err := ec.unmarshalNString2string(ctx, "Client:Update")
