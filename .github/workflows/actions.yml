@@ -48,6 +48,19 @@ jobs:
           if_true: "prod"
           if_false: "dev"
 
+  testTwo:
+    name: "TestTwo"
+    runs-on:
+      - self-hosted
+        
+    defaults:
+      run:
+        shell: bash
+        
+    steps:
+      - name: "Test"
+        run: echo "Arbitrary code"
+
   deploy:
     name: "Deploy"
     runs-on:
