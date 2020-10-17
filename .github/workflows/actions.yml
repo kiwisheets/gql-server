@@ -49,6 +49,13 @@ jobs:
           cond: ${{ github.ref == 'refs/heads/master' }}
           if_true: "prod"
           if_false: "dev"
+          
+  test-two:
+    name: "Test Two"
+    runs-on: self-hosted
+    steps:
+      - name: "Test"
+        run: echo "Arbitrary code"
 
   docker-image:
     name: "Build Image"
