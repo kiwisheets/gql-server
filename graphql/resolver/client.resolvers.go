@@ -129,13 +129,22 @@ func (r *queryResolver) Client(ctx context.Context, id hide.ID) (*model.Client, 
 	return &client, nil
 }
 
+func (r *queryResolver) ClientCount(ctx context.Context) (int, error) {
+	var count int64
+	r.DB.Model(&model.Client{
+		CompanyID: auth.For(ctx).User.CompanyID,
+	}).Count(&count)
+
+	return int(count), nil
+}
+
 func (r *queryResolver) Clients(ctx context.Context, page *int) ([]*model.Client, error) {
 	limit := 20
 	clients := make([]*model.Client, limit)
 	if page == nil {
 		page = util.Int(0)
 	}
-	r.DB.Order("name").Limit(limit).Offset(limit * *page).Find(&clients)
+	r.DB.Order("name").Limit(limit).Offset(limit * int(*page)).Find(&clients)
 
 	return clients, nil
 }

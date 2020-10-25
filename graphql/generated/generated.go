@@ -126,6 +126,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Client                func(childComplexity int, id hide.ID) int
+		ClientCount           func(childComplexity int) int
 		Clients               func(childComplexity int, page *int) int
 		Companies             func(childComplexity int, page *int) int
 		Company               func(childComplexity int) int
@@ -190,6 +191,7 @@ type QueryResolver interface {
 	TwoFactorBackups(ctx context.Context) ([]string, error)
 	TwoFactorEnabled(ctx context.Context) (bool, error)
 	Client(ctx context.Context, id hide.ID) (*model.Client, error)
+	ClientCount(ctx context.Context) (int, error)
 	Clients(ctx context.Context, page *int) ([]*model.Client, error)
 	CompanyName(ctx context.Context, code string) (*string, error)
 	Company(ctx context.Context) (*model.Company, error)
@@ -678,6 +680,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Client(childComplexity, args["id"].(hide.ID)), true
 
+	case "Query.clientCount":
+		if e.complexity.Query.ClientCount == nil {
+			break
+		}
+
+		return e.complexity.Query.ClientCount(childComplexity), true
+
 	case "Query.clients":
 		if e.complexity.Query.Clients == nil {
 			break
@@ -1049,6 +1058,8 @@ input UpdateClientInput {
 extend type Query {
   client(id: ID!): Client @hasPerm(perm: "Client:Read")
   # clientForCompany(companyID: ID!, id: ID!): Client! @hasPerm(perm: "OtherClient:Read")
+
+  clientCount: Int! @hasPerm(perm: "Clients:Read")
 
   clients(page: Int): [Client!] @hasPerm(perm: "Clients:Read")
   # clientsForCompany(companyID: ID!, page: Int): [Client!]! @hasPerm(perm: "OtherClients:Read")
@@ -4280,6 +4291,62 @@ func (ec *executionContext) _Query_client(ctx context.Context, field graphql.Col
 	return ec.marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_clientCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().ClientCount(rctx)
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			perm, err := ec.unmarshalNString2string(ctx, "Clients:Read")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasPerm == nil {
+				return nil, errors.New("directive hasPerm is not implemented")
+			}
+			return ec.directives.HasPerm(ctx, nil, directive0, perm)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7189,6 +7256,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_client(ctx, field)
+				return res
+			})
+		case "clientCount":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clientCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "clients":

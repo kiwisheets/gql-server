@@ -143,13 +143,13 @@ job "gql-server-dev" {
     }
 
     service {
-       name = "gql-postgres-dev"
-       port = "5432"
+      name = "gql-postgres-dev"
+      port = "5432"
 
-       connect {
-         sidecar_service {}
-       }
-     }
+      connect {
+        sidecar_service {}
+      }
+    }
   }
 
   group "redis" {

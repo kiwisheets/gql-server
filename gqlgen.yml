@@ -46,8 +46,3 @@ models:
   ID:
     model:
       - git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.ID
-  Int:
-    model:
-      - github.com/99designs/gqlgen/graphql.Int
-      - github.com/99designs/gqlgen/graphql.Int64
-      - github.com/99designs/gqlgen/graphql.Int32
