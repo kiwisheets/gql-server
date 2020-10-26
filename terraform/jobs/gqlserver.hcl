@@ -1,4 +1,4 @@
-job "gql-server-dev" {
+job "gql-server-${env}" {
   datacenters = ["hetzner"]
 
   group "gql-server" {
@@ -8,7 +8,7 @@ job "gql-server-dev" {
       driver = "docker"
 
       config {
-        image = "kiwisheets/gql-server:develop-${version}"
+        image = "kiwisheets/gql-server:${image_tag}"
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
@@ -22,13 +22,13 @@ job "gql-server-dev" {
         API_PATH = "/api/"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-dev}"
-        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-dev}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-${env}}"
+        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-${env}}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis-dev}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis-${env}}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
         HASH_SALT = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
@@ -36,27 +36,27 @@ job "gql-server-dev" {
 
       template {
         data = <<EOF
-{{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/${env}"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
-{{with secret "kv/data/dev"}}{{.Data.data.jwt_secret}}{{end}}
+{{with secret "kv/data/${env}"}}{{.Data.data.jwt_secret}}{{end}}
         EOF
         destination = "secrets/jwt-secret-key.secret"
       }
 
       template {
         data = <<EOF
-{{with secret "kv/data/dev"}}{{.Data.data.hash_salt}}{{end}}
+{{with secret "kv/data/${env}"}}{{.Data.data.hash_salt}}{{end}}
         EOF
         destination = "secrets/hash-salt.secret"
       }
 
       vault {
-        policies = ["gql-server-dev"]
+        policies = ["gql-server-${env}"]
       }
 
       resources {
@@ -73,18 +73,18 @@ job "gql-server-dev" {
     }
 
     service {
-      name = "gql-server-dev"
+      name = "gql-server-${env}"
       port = "http"
 
       connect {
         sidecar_service {
           proxy {
             upstreams {
-              destination_name = "gql-postgres-dev"
+              destination_name = "gql-postgres-${env}"
               local_bind_port = 5432
             }
             upstreams {
-              destination_name = "gql-redis-dev"
+              destination_name = "gql-redis-${env}"
               local_bind_port = 6379
             }
           }
@@ -93,7 +93,7 @@ job "gql-server-dev" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.gql-server-dev.rule=Host(`beta.kiwisheets.com`) && PathPrefix(`/api/`)",
+        "traefik.http.routers.gql-server-${env}.rule=Host(`${domain_prefix}.kiwisheets.com`) && PathPrefix(`/api/`)",
       ]
 
       check {
@@ -128,13 +128,13 @@ job "gql-server-dev" {
 
       template {
         data = <<EOF
-{{with secret "kv/data/dev"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "kv/data/${env}"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
 
       vault {
-        policies = ["gql-server-dev"]
+        policies = ["gql-server-${env}"]
       }
     }
     
@@ -143,7 +143,7 @@ job "gql-server-dev" {
     }
 
     service {
-       name = "gql-postgres-dev"
+       name = "gql-postgres-${env}"
        port = "5432"
 
        connect {
@@ -168,7 +168,7 @@ job "gql-server-dev" {
     }
 
     service {
-       name = "gql-redis-dev"
+       name = "gql-redis-${env}"
        port = "6379"
 
        connect {

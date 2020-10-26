@@ -14,7 +14,10 @@ provider "nomad" {
 
 resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    version = var.image_version
+    tag           = var.image_tag
+    env           = var.environment
+    instance      = var.instance_count
+    domain_prefix = var.environment == "prod" ? "app" : "beta"
   })
   detach = false
 }
