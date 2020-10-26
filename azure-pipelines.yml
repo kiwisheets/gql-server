@@ -5,6 +5,11 @@
 trigger:
 - master
 
+pr:
+  branches:
+    include:
+    - "*"
+
 resources:
 - repo: self
 
@@ -12,6 +17,17 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
+- stage: Test
+  displayName: Test
+  jobs:
+  - job: Test
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - task: Go@0
+      displayName: Run Golang Tests
+      inputs:
+        command: test
 - stage: Build
   displayName: Build image
   jobs:  
@@ -23,7 +39,14 @@ stages:
     - task: Docker@2
       displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+        repository: 'gql-server'
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+    - task: Docker@2
+      displayName: Push image
+      inputs:
+        containerRegistry: 'Docker'
+        repository: 'gql-server'
+        command: 'push'
+        tags: '$(tag)'
