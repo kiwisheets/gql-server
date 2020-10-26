@@ -12,7 +12,7 @@ resources:
   - repo: self
 
 variables:
-  tag: "$(Build.BuildId)"
+  tag: "$(Build.BuildNumber)"
   repository: "gql-server"
   isMain: $[in(variables['Build.SourceBranch'], 'refs/heads/master')]
 
