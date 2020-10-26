@@ -10,5 +10,5 @@ variable "environment" {
 
 variable "instance_count" {
   type        = number
-  description = "numbe of server instances to launch"
+  description = "number of server instances to launch"
 }
