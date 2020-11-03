@@ -13,7 +13,7 @@ resources:
 
 variables:
   tag: "$(Build.BuildNumber)"
-  repository: "gql-server"
+  repository: "kiwisheets/gql-server"
   isMain: $[in(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 stages:
@@ -52,6 +52,6 @@ stages:
             condition: and(succeeded(), eq(variables.isMain, true))
             inputs:
               containerRegistry: "Docker"
-              repository: "gql-server"
+              repository: "$(repository)"
               command: "push"
               tags: "$(tag)"
