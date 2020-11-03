@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"strings"
 	"time"
 
@@ -13,6 +12,7 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	argonpass "github.com/dwin/goArgonPass"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ type contextKey struct {
 	name string
 }
 
-type authContext struct {
+type AuthContext struct {
 	User   *model.User
 	Secure bool
 }
@@ -77,64 +77,62 @@ func HashPassword(password string) (string, error) {
 }
 
 // Middleware decodes the authorization header
-func Middleware(db *gorm.DB, cfg *util.JWTConfig) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			a := r.Header.Get("authorization")
-			aSecure := r.Header.Get("authorizationsecure")
+func Middleware(db *gorm.DB, cfg *util.JWTConfig) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a := c.Request.Header.Get("authorization")
+		aSecure := c.Request.Header.Get("authorizationsecure")
 
-			// allow unauthenticated users through
-			if a == "" {
-				next.ServeHTTP(w, r)
-				return
+		// allow unauthenticated users through
+		if a == "" {
+			c.Next()
+			return
+		}
+
+		token, err := splitToken(a)
+
+		if err != nil {
+			c.Next()
+			return
+		}
+
+		// process and validate jwt token
+		userID, err := validateTokenAndGetUserID(token, cfg)
+		if err != nil {
+			c.Next()
+			return
+		}
+		// get user from database
+
+		user, err := dataloader.For(c.Request.Context()).UserByID.Load(int64(userID))
+
+		if err != nil {
+			c.Next()
+			return
+		}
+
+		// check if secure token exists and is valid
+		secure := false
+		tokenSecure, err := splitToken(aSecure)
+		if err == nil {
+			userIDSecure, _ := validateTokenAndGetUserID(tokenSecure, cfg)
+			if userIDSecure == user.ID {
+				secure = true
 			}
+		}
 
-			token, err := splitToken(a)
-
-			if err != nil {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			// process and validate jwt token
-			userID, err := validateTokenAndGetUserID(token, cfg)
-			if err != nil {
-				next.ServeHTTP(w, r)
-				return
-			}
-			// get user from database
-
-			user, err := dataloader.For(r.Context()).UserByID.Load(int64(userID))
-
-			if err != nil {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			// check if secure token exists and is valid
-			secure := false
-			tokenSecure, err := splitToken(aSecure)
-			if err == nil {
-				userIDSecure, _ := validateTokenAndGetUserID(tokenSecure, cfg)
-				if userIDSecure == user.ID {
-					secure = true
-				}
-			}
-
-			ctx := context.WithValue(r.Context(), userCtxKey, authContext{
-				User:   user,
-				Secure: secure,
-			})
-
-			r = r.WithContext(ctx)
-			next.ServeHTTP(w, r)
+		ctx := context.WithValue(c.Request.Context(), userCtxKey, AuthContext{
+			User:   user,
+			Secure: secure,
 		})
+
+		c.Request = c.Request.WithContext(ctx)
+		c.Next()
 	}
 }
 
 // For find the user from the context. Middleware must have run
-func For(ctx context.Context) authContext {
-	raw, _ := ctx.Value(userCtxKey).(authContext)
+func For(ctx context.Context) AuthContext {
+	raw, _ := ctx.Value(userCtxKey).(AuthContext)
 	return raw
 }
 

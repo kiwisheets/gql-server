@@ -88,7 +88,7 @@ func VerifyTwoFactor(t *model.TwoFactor, token string) bool {
 	return totp.Validate(token, t.Secret)
 }
 
-func GetBackupKeys(db *gorm.DB, authCtx authContext) ([]string, error) {
+func GetBackupKeys(db *gorm.DB, authCtx AuthContext) ([]string, error) {
 	if !authCtx.Secure {
 		return nil, fmt.Errorf("Login required")
 	}

@@ -2,8 +2,8 @@ package dataloader
 
 import (
 	"context"
-	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
@@ -33,32 +33,31 @@ type Loaders struct {
 }
 
 // Middleware handles dataloader requests
-func Middleware(db *gorm.DB) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			loaders := &Loaders{
-				UserByID:                        newUserByIDLoader(db),
-				UsersByCompanyID:                newUsersByCompanyIDLoader(db),
-				UserByEmail:                     newUserByEmailLoader(db),
-				CompanyByID:                     newCompanyByIDLoader(db),
-				CompanyByUserID:                 newCompanyByUserIDLoader(db),
-				CompanyByCode:                   newCompanyByCodeLoader(db),
-				DomainsByCompanyID:              newDomainsByCompanyIDLoader(db),
-				RolesByUserID:                   newRoleByUserIDLoader(db),
-				PermissionsByUserID:             newPermissionsLoaderByUserIDLoader(db),
-				ClientBillingAddressByClientID:  newAddressByAddresseeIDLoader(db, model.ClientBillingAddressType),
-				ClientShippingAddressByClientID: newAddressByAddresseeIDLoader(db, model.ClientShippingAddressType),
-				//PermissionByUserID: newPermissionsByUserIDLoader(db),
-			}
+func Middleware(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		loaders := &Loaders{
+			UserByID:                        newUserByIDLoader(db),
+			UsersByCompanyID:                newUsersByCompanyIDLoader(db),
+			UserByEmail:                     newUserByEmailLoader(db),
+			CompanyByID:                     newCompanyByIDLoader(db),
+			CompanyByUserID:                 newCompanyByUserIDLoader(db),
+			CompanyByCode:                   newCompanyByCodeLoader(db),
+			DomainsByCompanyID:              newDomainsByCompanyIDLoader(db),
+			RolesByUserID:                   newRoleByUserIDLoader(db),
+			PermissionsByUserID:             newPermissionsLoaderByUserIDLoader(db),
+			ClientBillingAddressByClientID:  newAddressByAddresseeIDLoader(db, model.ClientBillingAddressType),
+			ClientShippingAddressByClientID: newAddressByAddresseeIDLoader(db, model.ClientShippingAddressType),
+			//PermissionByUserID: newPermissionsByUserIDLoader(db),
+		}
 
-			ctx := context.WithValue(
-				r.Context(),
-				loadersKey,
-				loaders,
-			)
-			r = r.WithContext(ctx)
-			next.ServeHTTP(w, r)
-		})
+		ctx := context.WithValue(
+			c.Request.Context(),
+			loadersKey,
+			loaders,
+		)
+
+		c.Request = c.Request.WithContext(ctx)
+		c.Next()
 	}
 }
 
