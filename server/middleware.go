@@ -13,9 +13,7 @@ import (
 
 func registerMiddleware(router *gin.RouterGroup, db *gorm.DB, cfg *util.ServerConfig) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:3000",
-		},
+		AllowOrigins: cfg.AllowedOrigins,
 		AllowMethods: []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders: []string{
 			"Authorization",
@@ -26,6 +24,7 @@ func registerMiddleware(router *gin.RouterGroup, db *gorm.DB, cfg *util.ServerCo
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
+		AllowWebSockets:  true,
 	}))
 	router.Use(dataloader.Middleware(db))
 	router.Use(auth.Middleware(db, &cfg.JWT))

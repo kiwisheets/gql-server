@@ -16,10 +16,11 @@ provider "consul" {
 
 resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    tag           = var.image_tag
-    env           = var.environment
-    instance      = var.instance_count
-    domain_prefix = var.environment == "prod" ? "app" : "beta"
+    tag             = var.image_tag
+    env             = var.environment
+    allowed_origins = var.allowed_origins
+    instance        = var.instance_count
+    domain_prefix   = var.environment == "prod" ? "app" : "beta"
   })
   detach = false
 }

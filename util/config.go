@@ -3,6 +3,7 @@ package util
 type ServerConfig struct {
 	Version           string
 	Environment       string
+	AllowedOrigins    []string
 	APIPath           string
 	PlaygroundPath    string
 	PlaygroundAPIPath string

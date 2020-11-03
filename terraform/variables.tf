@@ -12,3 +12,8 @@ variable "instance_count" {
   type        = number
   description = "number of server instances to launch"
 }
+
+variable "allowed_origins" {
+  type        = string
+  description = "the allowed origins for CORS"
+}

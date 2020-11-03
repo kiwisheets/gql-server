@@ -20,6 +20,7 @@ job "gql-server-${env}" {
       env {
         APP_VERSION = "0.0.0"
         API_PATH = "/api/"
+        ALLOWED_ORIGINS = "${allowed_origins}"
         PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-${env}}"

@@ -13,6 +13,7 @@ func Server() *util.ServerConfig {
 	return &util.ServerConfig{
 		Version:           goenv.MustGet("APP_VERSION"),
 		Environment:       goenv.MustGet("ENVIRONMENT"),
+		AllowedOrigins:    goenv.MustGetSlice("ALLOWED_ORIGINS"),
 		APIPath:           goenv.CanGet("API_PATH", "/"),
 		PlaygroundPath:    goenv.CanGet("PLAYGROUND_PATH", "/graphql"),
 		PlaygroundAPIPath: goenv.CanGet("PLAYGROUND_API_PATH", "/api/"),
