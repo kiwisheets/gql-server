@@ -89,11 +89,11 @@ job "gql-server-${env}" {
             }
           }
         }
-        
+
         sidecar_task {
           resources {
-            cpu    = 16
-            memory = 16
+            cpu    = 20
+            memory = 32
           }
         }
       }
@@ -157,8 +157,8 @@ job "gql-server-${env}" {
 
          sidecar_task {
           resources {
-            cpu    = 16
-            memory = 16
+            cpu    = 20
+            memory = 32
           }
         }
        }
@@ -189,8 +189,8 @@ job "gql-server-${env}" {
 
          sidecar_task {
           resources {
-            cpu    = 16
-            memory = 16
+            cpu    = 20
+            memory = 32
           }
         }
        }
