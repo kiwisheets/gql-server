@@ -15,13 +15,15 @@ job "gql-server-${env}" {
           "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret",
           "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
         ]
+
+        ports = ["http"]
       }
 
       env {
         APP_VERSION = "0.0.0"
         API_PATH = "/api/"
         ALLOWED_ORIGINS = "${allowed_origins}"
-        PORT = 3000
+        PORT = "$${NOMAD_PORT_HTTP}"
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-${env}}"
         POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-${env}}"
@@ -67,10 +69,7 @@ job "gql-server-${env}" {
     }
 
     network {
-      mode = "bridge"
-      port "http" {
-        to = 3000
-      }
+      port "http" {}
     }
 
     service {
@@ -90,16 +89,22 @@ job "gql-server-${env}" {
             }
           }
         }
+        
+        sidecar_task {
+          resources {
+            cpu    = 16
+            memory = 16
+          }
+        }
       }
-
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.gql-server-${env}.rule=Host(`${domain_prefix}.kiwisheets.com`) && PathPrefix(`/api/`)",
+        "traefik.http.routers.gql-server-${env}.rule=Host(`${host}`) && PathPrefix(`/graphql`)",
       ]
 
       check {
         type     = "http"
-        path     = "/api/"
+        path     = "/graphql"
         interval = "2s"
         timeout  = "2s"
       }
@@ -149,6 +154,13 @@ job "gql-server-${env}" {
 
        connect {
          sidecar_service {}
+
+         sidecar_task {
+          resources {
+            cpu    = 16
+            memory = 16
+          }
+        }
        }
      }
   }
@@ -174,6 +186,13 @@ job "gql-server-${env}" {
 
        connect {
          sidecar_service {}
+
+         sidecar_task {
+          resources {
+            cpu    = 16
+            memory = 16
+          }
+        }
        }
      }
   }

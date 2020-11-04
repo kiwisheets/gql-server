@@ -20,7 +20,7 @@ resource "nomad_job" "gql_server" {
     env             = var.environment
     allowed_origins = var.allowed_origins
     instance        = var.instance_count
-    domain_prefix   = var.environment == "prod" ? "app" : "beta"
+    host            = var.host
   })
   detach = false
 }

@@ -17,3 +17,8 @@ variable "allowed_origins" {
   type        = string
   description = "the allowed origins for CORS"
 }
+
+variable "host" {
+  type        = string
+  description = "API host"
+}
