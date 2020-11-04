@@ -15,15 +15,13 @@ job "gql-server-${env}" {
           "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret",
           "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
         ]
-
-        ports = ["http"]
       }
 
       env {
         APP_VERSION = "0.0.0"
-        API_PATH = "/api/"
+        API_PATH = "/graphql"
         ALLOWED_ORIGINS = "${allowed_origins}"
-        PORT = "$${NOMAD_PORT_HTTP}"
+        PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-${env}}"
         POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-${env}}"
@@ -69,7 +67,10 @@ job "gql-server-${env}" {
     }
 
     network {
-      port "http" {}
+      mode = "bridge"
+      port "http" {
+        to = "3000"
+      }
     }
 
     service {
