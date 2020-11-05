@@ -3,7 +3,7 @@ terraform {
     organization = "KiwiSheets"
 
     workspaces {
-      name = "KiwiSheets-GraphQL-Server-${var.environment}"
+      prefix = "KiwiSheets-GraphQL-Server-"
     }
   }
 }
