@@ -6,6 +6,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
@@ -14,15 +15,16 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
+	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util/dereference"
 	"github.com/emvi/hide"
 )
 
-func (r *clientResolver) BillingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
-	return dataloader.For(ctx).ClientBillingAddressByClientID.Load(obj.IDint())
-}
-
 func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
 	return dataloader.For(ctx).ClientShippingAddressByClientID.Load(obj.IDint())
+}
+
+func (r *clientResolver) BillingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
+	return dataloader.For(ctx).ClientBillingAddressByClientID.Load(obj.IDint())
 }
 
 func (r *clientResolver) Contacts(ctx context.Context, obj *model.Client) ([]*model.Contact, error) {
@@ -86,8 +88,31 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 	return &clientObject, nil
 }
 
-func (r *mutationResolver) UpdateClient(ctx context.Context, client modelgen.UpdateClientInput) (*model.Client, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) UpdateClient(ctx context.Context, id hide.ID, client modelgen.UpdateClientInput) (*model.Client, error) {
+	res := r.DB.Model(&model.Client{
+		SoftDelete: model.SoftDelete{
+			ID: id,
+		},
+	}).Updates(model.Client{
+		Name:           dereference.String(client.Name, ""),
+		Phone:          client.Phone,
+		VatNumber:      client.VatNumber,
+		BusinessNumber: client.BusinessNumber,
+		Website:        client.Website,
+	})
+
+	if res.RowsAffected == 1 {
+		var client model.Client
+		r.DB.Model(&model.Client{}).Where(id).First(&client)
+		if client.ID == 0 {
+			return nil, fmt.Errorf("Client not found")
+		}
+		return &client, nil
+	}
+
+	log.Printf("failed to update client: %d", int64(id))
+
+	return nil, fmt.Errorf("failed to update client")
 }
 
 func (r *mutationResolver) DeleteClient(ctx context.Context, id hide.ID) (*bool, error) {
@@ -104,13 +129,22 @@ func (r *queryResolver) Client(ctx context.Context, id hide.ID) (*model.Client, 
 	return &client, nil
 }
 
+func (r *queryResolver) ClientCount(ctx context.Context) (int, error) {
+	var count int64
+	r.DB.Model(&model.Client{
+		CompanyID: auth.For(ctx).User.CompanyID,
+	}).Count(&count)
+
+	return int(count), nil
+}
+
 func (r *queryResolver) Clients(ctx context.Context, page *int) ([]*model.Client, error) {
 	limit := 20
 	clients := make([]*model.Client, limit)
 	if page == nil {
 		page = util.Int(0)
 	}
-	r.DB.Order("name").Limit(limit).Offset(limit * *page).Find(&clients)
+	r.DB.Order("name").Limit(limit).Offset(limit * int(*page)).Find(&clients)
 
 	return clients, nil
 }

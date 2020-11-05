@@ -35,6 +35,8 @@ extend type Query {
   client(id: ID!): Client @hasPerm(perm: "Client:Read")
   # clientForCompany(companyID: ID!, id: ID!): Client! @hasPerm(perm: "OtherClient:Read")
 
+  clientCount: Int! @hasPerm(perm: "Clients:Read")
+
   clients(page: Int): [Client!] @hasPerm(perm: "Clients:Read")
   # clientsForCompany(companyID: ID!, page: Int): [Client!]! @hasPerm(perm: "OtherClients:Read")
 }
@@ -43,7 +45,7 @@ extend type Mutation {
   createClient(client: CreateClientInput!): Client @hasPerm(perm: "Client:Create")
   # createClientForCompany(companyID: ID!, client: CreateClientInput!) @hasPerm(perm: "OtherClient:Create")
 
-  updateClient(client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
+  updateClient(id: ID! client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
 
   deleteClient(id: ID!): Boolean @hasPerm(perm: "Client:Delete")
 }

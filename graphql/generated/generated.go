@@ -121,11 +121,12 @@ type ComplexityRoot struct {
 		LoginSecure           func(childComplexity int, password string) int
 		NewTwoFactorBackups   func(childComplexity int) int
 		RefreshToken          func(childComplexity int) int
-		UpdateClient          func(childComplexity int, client modelgen.UpdateClientInput) int
+		UpdateClient          func(childComplexity int, id hide.ID, client modelgen.UpdateClientInput) int
 	}
 
 	Query struct {
 		Client                func(childComplexity int, id hide.ID) int
+		ClientCount           func(childComplexity int) int
 		Clients               func(childComplexity int, page *int) int
 		Companies             func(childComplexity int, page *int) int
 		Company               func(childComplexity int) int
@@ -174,7 +175,7 @@ type MutationResolver interface {
 	EnableTwoFactor(ctx context.Context, secret string, token string) ([]string, error)
 	DisableTwoFactor(ctx context.Context, password string) (bool, error)
 	CreateClient(ctx context.Context, client modelgen.CreateClientInput) (*model.Client, error)
-	UpdateClient(ctx context.Context, client modelgen.UpdateClientInput) (*model.Client, error)
+	UpdateClient(ctx context.Context, id hide.ID, client modelgen.UpdateClientInput) (*model.Client, error)
 	DeleteClient(ctx context.Context, id hide.ID) (*bool, error)
 	CreateCompany(ctx context.Context, company modelgen.CreateCompanyInput) (*model.Company, error)
 	DeleteCompany(ctx context.Context, id hide.ID) (*bool, error)
@@ -190,6 +191,7 @@ type QueryResolver interface {
 	TwoFactorBackups(ctx context.Context) ([]string, error)
 	TwoFactorEnabled(ctx context.Context) (bool, error)
 	Client(ctx context.Context, id hide.ID) (*model.Client, error)
+	ClientCount(ctx context.Context) (int, error)
 	Clients(ctx context.Context, page *int) ([]*model.Client, error)
 	CompanyName(ctx context.Context, code string) (*string, error)
 	Company(ctx context.Context) (*model.Company, error)
@@ -664,7 +666,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateClient(childComplexity, args["client"].(modelgen.UpdateClientInput)), true
+		return e.complexity.Mutation.UpdateClient(childComplexity, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput)), true
 
 	case "Query.client":
 		if e.complexity.Query.Client == nil {
@@ -677,6 +679,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Client(childComplexity, args["id"].(hide.ID)), true
+
+	case "Query.clientCount":
+		if e.complexity.Query.ClientCount == nil {
+			break
+		}
+
+		return e.complexity.Query.ClientCount(childComplexity), true
 
 	case "Query.clients":
 		if e.complexity.Query.Clients == nil {
@@ -1050,6 +1059,8 @@ extend type Query {
   client(id: ID!): Client @hasPerm(perm: "Client:Read")
   # clientForCompany(companyID: ID!, id: ID!): Client! @hasPerm(perm: "OtherClient:Read")
 
+  clientCount: Int! @hasPerm(perm: "Clients:Read")
+
   clients(page: Int): [Client!] @hasPerm(perm: "Clients:Read")
   # clientsForCompany(companyID: ID!, page: Int): [Client!]! @hasPerm(perm: "OtherClients:Read")
 }
@@ -1058,7 +1069,7 @@ extend type Mutation {
   createClient(client: CreateClientInput!): Client @hasPerm(perm: "Client:Create")
   # createClientForCompany(companyID: ID!, client: CreateClientInput!) @hasPerm(perm: "OtherClient:Create")
 
-  updateClient(client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
+  updateClient(id: ID! client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
 
   deleteClient(id: ID!): Boolean @hasPerm(perm: "Client:Delete")
 }
@@ -1516,15 +1527,24 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Mutation_updateClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 modelgen.UpdateClientInput
-	if tmp, ok := rawArgs["client"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg0, err = ec.unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+	var arg0 hide.ID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["client"] = arg0
+	args["id"] = arg0
+	var arg1 modelgen.UpdateClientInput
+	if tmp, ok := rawArgs["client"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
+		arg1, err = ec.unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["client"] = arg1
 	return args, nil
 }
 
@@ -3501,7 +3521,7 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateClient(rctx, args["client"].(modelgen.UpdateClientInput))
+			return ec.resolvers.Mutation().UpdateClient(rctx, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			perm, err := ec.unmarshalNString2string(ctx, "Client:Update")
@@ -4269,6 +4289,62 @@ func (ec *executionContext) _Query_client(ctx context.Context, field graphql.Col
 	res := resTmp.(*model.Client)
 	fc.Result = res
 	return ec.marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_clientCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().ClientCount(rctx)
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			perm, err := ec.unmarshalNString2string(ctx, "Clients:Read")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasPerm == nil {
+				return nil, errors.New("directive hasPerm is not implemented")
+			}
+			return ec.directives.HasPerm(ctx, nil, directive0, perm)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7180,6 +7256,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_client(ctx, field)
+				return res
+			})
+		case "clientCount":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clientCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "clients":
