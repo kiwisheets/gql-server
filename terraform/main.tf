@@ -25,7 +25,7 @@ data "nomad_plugin" "hcloud_volume" {
 
 resource "hcloud_volume" "gql_postgres" {
   name     = "gql-postgres-${var.environment}"
-  size     = 12
+  size     = env.postgres_volume_size
   location = "nbg1"
 }
 

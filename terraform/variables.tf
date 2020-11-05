@@ -27,3 +27,8 @@ variable "host" {
   type        = string
   description = "API host"
 }
+
+variable "postgres_volume_size" {
+  type        = number
+  description = "postgres volume size"
+}
