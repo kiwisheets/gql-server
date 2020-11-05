@@ -8,7 +8,7 @@ terraform {
   }
 }
 
-provider "hetzner" {
+provider "hcloud" {
   token = var.hcloud_token
 }
 
