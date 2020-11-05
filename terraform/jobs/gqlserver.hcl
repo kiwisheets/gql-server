@@ -31,7 +31,7 @@ job "gql-server-${env}" {
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis-${env}}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
-        HASH_SALT = "/run/secrets/hash-salt.secret"
+        HASH_SALT_FILE = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
       }
 
