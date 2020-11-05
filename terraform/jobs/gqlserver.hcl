@@ -115,6 +115,12 @@ job "gql-server-${env}" {
   group "postgres" {
     count = 1
 
+    volume "gql-postgres-${env}" {
+      type      = "csi"
+      read_only = false
+      source    = "${volume_id}"
+    }
+
     task "postgres" {
       driver = "docker"
 
@@ -131,6 +137,12 @@ job "gql-server-${env}" {
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
+      }
+
+      volume_mount {
+        volume      = "gql-postgres-${env}"
+        destination = "/var/lib/postgresql/data"
+        read_only   = false
       }
 
       template {

@@ -1,3 +1,5 @@
+hcloud_token = "#{HCLOUD_TOKEN}#"
+
 image_tag = "#{IMAGE_TAG}#"
 
 environment = "#{ENV}#"
