@@ -9,6 +9,9 @@ terraform {
     vault = {
       source = "hashicorp/vault"
     }
+    hcloud = {
+      source = "hetznercloud/hcloud"
+    }
   }
   required_version = ">= 0.13"
 }
