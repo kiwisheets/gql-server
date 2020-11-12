@@ -6,8 +6,8 @@ terraform {
     consul = {
       source = "hashicorp/consul"
     }
-    hcloud = {
-      source = "hetznercloud/hcloud"
+    vault = {
+      source = "hashicorp/vault"
     }
   }
   required_version = ">= 0.13"

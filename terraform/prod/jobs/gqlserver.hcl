@@ -1,5 +1,5 @@
-job "gql-server-${env}" {
-  datacenters = ["hetzner"]
+job "gql-server" {
+  datacenters = ["${datacenter}"]
 
   group "gql-server" {
     count = 1
@@ -23,13 +23,13 @@ job "gql-server-${env}" {
         ALLOWED_ORIGINS = "${allowed_origins}"
         PORT = 3000
         ENVIRONMENT = "production"
-        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres-${env}}"
-        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres-${env}}"
+        POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres}"
+        POSTGRES_PORT = "$${NOMAD_UPSTREAM_PORT_gql-postgres}"
         POSTGRES_DB = "kiwisheets"
         POSTGRES_USER = "kiwisheets"
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
-        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis-${env}}"
+        REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis}"
         JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
         HASH_SALT_FILE = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
@@ -37,27 +37,27 @@ job "gql-server-${env}" {
 
       template {
         data = <<EOF
-{{with secret "kv/data/${env}"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "secret/data/gql-server"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
 
       template {
         data = <<EOF
-{{with secret "kv/data/${env}"}}{{.Data.data.jwt_secret}}{{end}}
+{{with secret "secret/data/gql-server"}}{{.Data.data.jwt_secret}}{{end}}
         EOF
         destination = "secrets/jwt-secret-key.secret"
       }
 
       template {
         data = <<EOF
-{{with secret "kv/data/${env}"}}{{.Data.data.hash_salt}}{{end}}
+{{with secret "secret/data/gql-server"}}{{.Data.data.hash_salt}}{{end}}
         EOF
         destination = "secrets/hash-salt.secret"
       }
 
       vault {
-        policies = ["gql-server-${env}"]
+        policies = ["gql-server"]
       }
 
       resources {
@@ -74,18 +74,18 @@ job "gql-server-${env}" {
     }
 
     service {
-      name = "gql-server-${env}"
+      name = "gql-server"
       port = "http"
 
       connect {
         sidecar_service {
           proxy {
             upstreams {
-              destination_name = "gql-postgres-${env}"
+              destination_name = "gql-postgres"
               local_bind_port = 5432
             }
             upstreams {
-              destination_name = "gql-redis-${env}"
+              destination_name = "gql-redis"
               local_bind_port = 6379
             }
           }
@@ -100,7 +100,7 @@ job "gql-server-${env}" {
       }
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.gql-server-${env}.rule=Host(`${host}`) && PathPrefix(`/graphql`)",
+        "traefik.http.routers.gql-server.rule=Host(`${host}`) && PathPrefix(`/graphql`)",
       ]
 
       check {
@@ -115,7 +115,7 @@ job "gql-server-${env}" {
   group "postgres" {
     count = 1
 
-    volume "gql-postgres-${env}" {
+    volume "gql-postgres" {
       type      = "csi"
       read_only = false
       source    = "${volume_id}"
@@ -140,20 +140,20 @@ job "gql-server-${env}" {
       }
 
       volume_mount {
-        volume      = "gql-postgres-${env}"
+        volume      = "gql-postgres"
         destination = "/var/lib/postgresql/data"
         read_only   = false
       }
 
       template {
         data = <<EOF
-{{with secret "kv/data/${env}"}}{{.Data.data.postgres_password}}{{end}}
+{{with secret "secret/data/gql-server"}}{{.Data.data.postgres_password}}{{end}}
         EOF
         destination = "secrets/db-password.secret"
       }
 
       vault {
-        policies = ["gql-server-${env}"]
+        policies = ["gql-server"]
       }
     }
     
@@ -162,7 +162,7 @@ job "gql-server-${env}" {
     }
 
     service {
-       name = "gql-postgres-${env}"
+       name = "gql-postgres"
        port = "5432"
 
        connect {
@@ -194,7 +194,7 @@ job "gql-server-${env}" {
     }
 
     service {
-       name = "gql-redis-${env}"
+       name = "gql-redis"
        port = "6379"
 
        connect {

@@ -1,3 +1,7 @@
+variable "datacenter" {
+  type = string
+}
+
 variable "hcloud_token" {
   type        = string
   description = "Hetzner Cloud API Token"
@@ -6,11 +10,6 @@ variable "hcloud_token" {
 variable "image_tag" {
   type        = string
   description = "image version"
-}
-
-variable "environment" {
-  type        = string
-  description = "prod or dev environment"
 }
 
 variable "instance_count" {
