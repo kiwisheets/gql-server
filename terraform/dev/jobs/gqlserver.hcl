@@ -98,10 +98,6 @@ job "gql-server" {
           }
         }
       }
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.gql-server.rule=Host(`${host}`) && PathPrefix(`/graphql`)",
-      ]
 
       check {
         type     = "http"
@@ -182,19 +178,19 @@ job "gql-server" {
     }
 
     service {
-       name = "gql-redis"
-       port = "6379"
+      name = "gql-redis"
+      port = "6379"
 
-       connect {
-         sidecar_service {}
+      connect {
+        sidecar_service {}
 
-         sidecar_task {
+        sidecar_task {
           resources {
             cpu    = 20
             memory = 32
           }
         }
-       }
-     }
+      }
+    }
   }
 }

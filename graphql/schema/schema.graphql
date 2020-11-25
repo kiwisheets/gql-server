@@ -13,6 +13,6 @@ directive @hasPerms(perms: [String!]!) on FIELD | FIELD_DEFINITION | OBJECT
 # example: @hasPerm(perm: "Company:Edit")
 directive @hasPerm(perm: String!) on FIELD | FIELD_DEFINITION | OBJECT
 
-type Query {
+extend type Query {
   version: String!
 }

@@ -5,15 +5,8 @@ package resolver
 
 import (
 	"context"
-
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 )
 
 func (r *queryResolver) Version(ctx context.Context) (string, error) {
 	return "0.0.0", nil
 }
-
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
-type queryResolver struct{ *Resolver }

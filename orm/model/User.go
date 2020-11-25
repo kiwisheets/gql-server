@@ -23,6 +23,8 @@ type User struct {
 	TwoFactor        TwoFactor
 }
 
+func (User) IsEntity() {}
+
 // Roles returns all roles a user has as the Role interface
 func (u User) Roles() []Role {
 	roles := make([]Role, len(u.BuiltinRoles)+len(u.CustomRoles))

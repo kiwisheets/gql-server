@@ -23,3 +23,5 @@ type Client struct {
 	CompanyID hide.ID `json:"company"`
 	Company   Company `json:"-"`
 }
+
+func (Client) IsEntity() {}

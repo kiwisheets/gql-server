@@ -17,5 +17,8 @@ func Bool(b bool) *bool { return &b }
 // Duration returns a pointer to the passed time.Duration d.
 func Duration(d time.Duration) *time.Duration { return &d }
 
-func intSlice(is []int) *[]int          { return &is }
-func stringSlice(ss []string) *[]string { return &ss }
+// IntSlice returns a pointer to the passed integer slice is
+func IntSlice(is []int) *[]int { return &is }
+
+// StringSlice returns a pointer to the passed string slice ss
+func StringSlice(ss []string) *[]string { return &ss }

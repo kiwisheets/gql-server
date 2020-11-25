@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
@@ -103,9 +102,9 @@ func Middleware(db *gorm.DB, cfg *util.JWTConfig) gin.HandlerFunc {
 		}
 		// get user from database
 
-		user, err := dataloader.For(c.Request.Context()).UserByID.Load(int64(userID))
-
-		if err != nil {
+		var user model.User
+		err = db.Model(&model.User{}).Where(int64(userID)).First(&user).Error
+		if err != nil || user.ID == 0 {
 			c.Next()
 			return
 		}
@@ -121,7 +120,7 @@ func Middleware(db *gorm.DB, cfg *util.JWTConfig) gin.HandlerFunc {
 		}
 
 		ctx := context.WithValue(c.Request.Context(), userCtxKey, AuthContext{
-			User:   user,
+			User:   &user,
 			Secure: secure,
 		})
 

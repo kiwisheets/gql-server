@@ -1,4 +1,4 @@
-type User {
+type User @key(fields: "id") {
   id: ID!
 	company: Company! @goField(forceResolver: true) @hasPerm(perm: "Company:Read")
 

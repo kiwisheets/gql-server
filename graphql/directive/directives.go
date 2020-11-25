@@ -53,13 +53,6 @@ func Register(db *gorm.DB, cfg *util.ServerConfig) generated.DirectiveRoot {
 				}
 			}
 
-			// for _, r := range roles {
-			// 	if r.CheckPermission(perm) {
-			// 		// permission passed
-			// 		return next(ctx)
-			// 	}
-			// }
-
 			return nil, fmt.Errorf("not authorised")
 		},
 		HasPerms: func(ctx context.Context, obj interface{}, next graphql.Resolver, requestedPerms []string) (res interface{}, err error) {
@@ -85,25 +78,6 @@ func Register(db *gorm.DB, cfg *util.ServerConfig) generated.DirectiveRoot {
 					}
 				}
 			}
-
-			// // should probably optimise this directive as it will be called on most requests
-			// roles, err := dataloader.For(ctx).RolesByUserID.Load(auth.For(ctx).User.IDint())
-
-			// if err != nil {
-			// 	return nil, err
-			// }
-
-			// for _, r := range roles {
-			// 	for i, p := range perms {
-			// 		if permsPassed[i] {
-			// 			continue
-			// 		}
-			// 		if r.CheckPermission(p) {
-			// 			// permission passed
-			// 			permsPassed[i] = true
-			// 		}
-			// 	}
-			// }
 
 			for _, p := range permsPassed {
 				if !p {
