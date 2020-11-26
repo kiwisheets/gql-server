@@ -1,6 +1,8 @@
 package server
 
 import (
+	"net/http"
+
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/handler"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -15,6 +17,12 @@ func graphqlHandler(db *gorm.DB, cfg *util.ServerConfig) gin.HandlerFunc {
 	}
 }
 
+func healthHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	}
+}
+
 func playgroundHandler(cfg *util.ServerConfig) gin.HandlerFunc {
 	playground := playground.Handler("GraphQL playground", cfg.PlaygroundAPIPath)
 	return func(c *gin.Context) {
@@ -23,6 +31,8 @@ func playgroundHandler(cfg *util.ServerConfig) gin.HandlerFunc {
 }
 
 func registerRoutes(router *gin.RouterGroup, cfg *util.ServerConfig, db *gorm.DB) {
+	router.GET("/health", healthHandler())
+
 	// support GET for automatic persisted queries
 	router.GET(cfg.APIPath, graphqlHandler(db, cfg))
 	router.POST(cfg.APIPath, graphqlHandler(db, cfg))

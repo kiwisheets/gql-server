@@ -96,12 +96,11 @@ job "gql-server" {
       }
 
       check {
-        type         = "http"
-        path         = "/graphql"
-        address_mode = "driver"
-        port         = 3000
-        interval     = "2s"
-        timeout      = "2s"
+        expose   = true
+        type     = "http"
+        path     = "/health"
+        interval = "2s"
+        timeout  = "2s"
       }
     }
   }
