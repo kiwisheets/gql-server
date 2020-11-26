@@ -95,12 +95,13 @@ job "gql-server" {
         }
       }
 
-      check {
-        type     = "http"
-        path     = "/graphql"
-        interval = "2s"
-        timeout  = "2s"
-      }
+      // check {
+      //   type     = "http"
+      //   path     = "/graphql"
+      //   port     = 3000
+      //   interval = "2s"
+      //   timeout  = "2s"
+      // }
     }
   }
 
