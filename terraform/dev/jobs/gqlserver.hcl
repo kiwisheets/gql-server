@@ -67,6 +67,7 @@ job "gql-server" {
 
     network {
       mode = "bridge"
+      port "health" {}
     }
 
     service {
@@ -84,6 +85,14 @@ job "gql-server" {
               destination_name = "gql-redis"
               local_bind_port = 6379
             }
+            expose {
+              path {
+                path           = "/health"
+                protocol        = "http"
+                local_path_port = 3000
+                listener_port   = "health"
+              }
+            }
           }
         }
 
@@ -96,9 +105,9 @@ job "gql-server" {
       }
 
       check {
-        expose   = true
         type     = "http"
         path     = "/health"
+        port     = "health"
         interval = "2s"
         timeout  = "2s"
       }
