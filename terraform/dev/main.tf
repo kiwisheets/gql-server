@@ -8,10 +8,6 @@ terraform {
   }
 }
 
-provider "hcloud" {
-  token = var.hcloud_token
-}
-
 provider "nomad" {}
 
 provider "consul" {
