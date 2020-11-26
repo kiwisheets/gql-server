@@ -20,7 +20,6 @@ job "gql-server" {
       env {
         APP_VERSION = "0.0.0"
         API_PATH = "/graphql"
-        ALLOWED_ORIGINS = "${allowed_origins}"
         PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres}"
@@ -68,14 +67,11 @@ job "gql-server" {
 
     network {
       mode = "bridge"
-      port "http" {
-        to = "3000"
-      }
     }
 
     service {
       name = "gql-server"
-      port = "http"
+      port = "3000"
 
       connect {
         sidecar_service {

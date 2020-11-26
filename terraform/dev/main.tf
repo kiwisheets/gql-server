@@ -60,11 +60,10 @@ EOT
 
 resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    datacenter      = var.datacenter
-    image_tag       = var.image_tag
-    allowed_origins = var.allowed_origins
-    instance        = var.instance_count
-    host            = var.host
+    datacenter = var.datacenter
+    image_tag  = var.image_tag
+    instance   = var.instance_count
+    host       = var.host
   })
   detach = false
 }

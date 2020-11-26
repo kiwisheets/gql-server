@@ -26,7 +26,6 @@ func registerRoutes(router *gin.RouterGroup, cfg *util.ServerConfig, db *gorm.DB
 	// support GET for automatic persisted queries
 	router.GET(cfg.APIPath, graphqlHandler(db, cfg))
 	router.POST(cfg.APIPath, graphqlHandler(db, cfg))
-	router.OPTIONS(cfg.APIPath, graphqlHandler(db, cfg))
 
 	if cfg.Environment == "development" {
 		router.GET(cfg.PlaygroundPath, playgroundHandler(cfg))
