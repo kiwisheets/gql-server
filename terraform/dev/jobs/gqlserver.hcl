@@ -71,7 +71,7 @@ job "gql-server" {
 
     service {
       name = "gql-server"
-      port = "3000"
+      port = 3000
 
       connect {
         sidecar_service {
