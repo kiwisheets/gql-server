@@ -3,8 +3,8 @@ package dataloader
 import (
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"github.com/kiwisheets/gql-server/dataloader/generated"
+	"github.com/kiwisheets/gql-server/orm/model"
 	"gorm.io/gorm"
 )
 

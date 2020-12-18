@@ -6,10 +6,10 @@ package resolver
 import (
 	"context"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/gql-server/dataloader"
+	"github.com/kiwisheets/gql-server/graphql/generated"
+	"github.com/kiwisheets/gql-server/orm/model"
 )
 
 func (r *entityResolver) FindClientByID(ctx context.Context, id hide.ID) (*model.Client, error) {

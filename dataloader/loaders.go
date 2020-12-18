@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"github.com/kiwisheets/gql-server/dataloader/generated"
+	"github.com/kiwisheets/gql-server/orm/model"
 )
 
 var loadersKey = &contextKey{"dataloaders"}

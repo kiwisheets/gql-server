@@ -1,10 +1,10 @@
 package seed
 
 import (
-	password "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/kiwisheets/auth/permission"
+	password "github.com/kiwisheets/gql-server/auth"
+	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/util"
 	"gorm.io/gorm"
 )
 

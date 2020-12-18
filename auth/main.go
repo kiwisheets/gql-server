@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	argonpass "github.com/dwin/goArgonPass"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
 	"github.com/kiwisheets/auth/token"
+	"github.com/kiwisheets/gql-server/orm/model"
 	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"github.com/kiwisheets/gql-server/orm/model"
 )
 
 // UserSliceLoaderConfig captures the config to create a new UserSliceLoader

@@ -12,13 +12,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
+	"github.com/kiwisheets/gql-server/graphql/modelgen"
+	"github.com/kiwisheets/gql-server/orm/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -2639,7 +2639,7 @@ func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.
 		if data, ok := tmp.([]*model.Contact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Contact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Contact`, tmp)
 	})
 
 	if resTmp == nil {
@@ -2820,7 +2820,7 @@ func (ec *executionContext) _Company_users(ctx context.Context, field graphql.Co
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -3131,7 +3131,7 @@ func (ec *executionContext) _Contact_preferredContact(ctx context.Context, field
 		if data, ok := tmp.(*model.PreferredContact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.PreferredContact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.PreferredContact`, tmp)
 	})
 
 	if resTmp == nil {
@@ -3744,7 +3744,7 @@ func (ec *executionContext) _Mutation_createClient(ctx context.Context, field gr
 		if data, ok := tmp.(*model.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -3804,7 +3804,7 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 		if data, ok := tmp.(*model.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -3924,7 +3924,7 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 		if data, ok := tmp.(*model.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4044,7 +4044,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4104,7 +4104,7 @@ func (ec *executionContext) _Mutation_createUserForCompany(ctx context.Context, 
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4621,7 +4621,7 @@ func (ec *executionContext) _Query_client(ctx context.Context, field graphql.Col
 		if data, ok := tmp.(*model.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4737,7 +4737,7 @@ func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.Co
 		if data, ok := tmp.([]*model.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4850,7 +4850,7 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 		if data, ok := tmp.(*model.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4913,7 +4913,7 @@ func (ec *executionContext) _Query_otherCompany(ctx context.Context, field graph
 		if data, ok := tmp.(*model.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -4973,7 +4973,7 @@ func (ec *executionContext) _Query_companies(ctx context.Context, field graphql.
 		if data, ok := tmp.([]*model.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5058,7 +5058,7 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5118,7 +5118,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5178,7 +5178,7 @@ func (ec *executionContext) _Query_userForCompany(ctx context.Context, field gra
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5238,7 +5238,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5298,7 +5298,7 @@ func (ec *executionContext) _Query_usersForCompany(ctx context.Context, field gr
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5358,7 +5358,7 @@ func (ec *executionContext) _Query_searchUsers(ctx context.Context, field graphq
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5418,7 +5418,7 @@ func (ec *executionContext) _Query_searchUsersForCompany(ctx context.Context, fi
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5639,7 +5639,7 @@ func (ec *executionContext) _User_company(ctx context.Context, field graphql.Col
 		if data, ok := tmp.(*model.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5857,7 +5857,7 @@ func (ec *executionContext) _User_preferredContact(ctx context.Context, field gr
 		if data, ok := tmp.(*model.PreferredContact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model.PreferredContact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.PreferredContact`, tmp)
 	})
 
 	if resTmp == nil {

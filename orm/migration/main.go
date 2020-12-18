@@ -3,8 +3,8 @@ package migration
 import (
 	"log"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/kiwisheets/auth/permission"
+	"github.com/kiwisheets/gql-server/orm/model"
 	"gorm.io/gorm"
 )
 

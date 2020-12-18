@@ -3,11 +3,11 @@ package main
 //go:generate go run github.com/kiwisheets/gqlgencs
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/config"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/server"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/directive"
+	"github.com/kiwisheets/gql-server/config"
+	"github.com/kiwisheets/gql-server/orm"
+	"github.com/kiwisheets/gql-server/server"
 )
 
 func main() {

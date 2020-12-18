@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/directive"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/resolver"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/kiwisheets/gql-server/graphql/directive"
+	"github.com/kiwisheets/gql-server/graphql/generated"
+	"github.com/kiwisheets/gql-server/graphql/resolver"
 	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )

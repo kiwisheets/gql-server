@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
+	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/util"
 	"github.com/pquerna/otp/totp"
 	"gorm.io/gorm"
 )

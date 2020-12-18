@@ -9,14 +9,14 @@ import (
 	"log"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util/dereference"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
+	"github.com/kiwisheets/gql-server/dataloader"
+	"github.com/kiwisheets/gql-server/graphql/generated"
+	"github.com/kiwisheets/gql-server/graphql/modelgen"
+	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/util"
+	"github.com/kiwisheets/gql-server/util/dereference"
 )
 
 func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {

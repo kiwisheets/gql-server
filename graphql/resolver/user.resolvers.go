@@ -7,13 +7,13 @@ import (
 	"context"
 	"fmt"
 
-	internalauth "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
+	internalauth "github.com/kiwisheets/gql-server/auth"
+	"github.com/kiwisheets/gql-server/dataloader"
+	"github.com/kiwisheets/gql-server/graphql/generated"
+	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/util"
 	"gorm.io/gorm"
 )
 

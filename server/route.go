@@ -3,9 +3,9 @@ package server
 import (
 	"net/http"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/kiwisheets/gql-server/handler"
 	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )

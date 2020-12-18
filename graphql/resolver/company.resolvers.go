@@ -7,13 +7,13 @@ import (
 	"context"
 	"fmt"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
+	"github.com/kiwisheets/gql-server/dataloader"
+	"github.com/kiwisheets/gql-server/graphql/generated"
+	"github.com/kiwisheets/gql-server/graphql/modelgen"
+	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/util"
 )
 
 func (r *companyResolver) Users(ctx context.Context, obj *model.Company) ([]*model.User, error) {

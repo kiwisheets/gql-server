@@ -1,4 +1,4 @@
-module git.maxtroughear.dev/max.troughear/digital-timesheet/go-server
+module github.com/kiwisheets/gql-server
 
 go 1.15
 
@@ -27,7 +27,7 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kevinburke/go-bindata v3.22.0+incompatible // indirect
 	github.com/kiwisheets/auth v0.0.5
-	github.com/kiwisheets/gqlgencs v0.0.1 // indirect
+	github.com/kiwisheets/gqlgencs v0.0.1
 	github.com/kiwisheets/util v0.0.5
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.9.0

@@ -4,8 +4,8 @@ Package directive implements directives for the graphql schema
 package directive
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"github.com/kiwisheets/auth/directive"
+	"github.com/kiwisheets/gql-server/graphql/generated"
 )
 
 // Register function registers all directives

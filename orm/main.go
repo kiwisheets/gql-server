@@ -4,9 +4,9 @@ import (
 	"log"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/migration"
-	internalseed "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/seed"
 	"github.com/kiwisheets/auth/seed"
+	"github.com/kiwisheets/gql-server/orm/migration"
+	internalseed "github.com/kiwisheets/gql-server/orm/seed"
 	"github.com/kiwisheets/util"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

@@ -1,9 +1,9 @@
 package server
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"github.com/gin-gonic/gin"
 	"github.com/kiwisheets/auth"
+	"github.com/kiwisheets/gql-server/dataloader"
 	"gorm.io/gorm"
 )
 

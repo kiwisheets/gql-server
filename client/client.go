@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/Yamashou/gqlgenc/client"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
+	"github.com/kiwisheets/gql-server/orm/model"
 )
 
 type Client struct {

@@ -3,9 +3,9 @@ package dataloader
 import (
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
+	"github.com/kiwisheets/gql-server/dataloader/generated"
 	"gorm.io/gorm"
 )
 

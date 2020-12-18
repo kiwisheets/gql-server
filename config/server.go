@@ -3,8 +3,8 @@ package config
 import (
 	"log"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util/key"
 	"github.com/joho/godotenv"
+	"github.com/kiwisheets/gql-server/util/key"
 	"github.com/kiwisheets/util"
 	"github.com/maxtroughear/goenv"
 )
