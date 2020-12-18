@@ -1,3 +1,4 @@
+// Package dataloader contains efficient dataloaders
 package dataloader
 
 import (
@@ -35,8 +36,9 @@ type Loaders struct {
 // Middleware handles dataloader requests
 func Middleware(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		ctx := c.Request.Context()
 		loaders := &Loaders{
-			UserByID:                        newUserByIDLoader(db),
+			UserByID:                        newUserByIDLoader(db, ctx),
 			UsersByCompanyID:                newUsersByCompanyIDLoader(db),
 			UserByEmail:                     newUserByEmailLoader(db),
 			CompanyByID:                     newCompanyByIDLoader(db),
@@ -50,8 +52,8 @@ func Middleware(db *gorm.DB) gin.HandlerFunc {
 			//PermissionByUserID: newPermissionsByUserIDLoader(db),
 		}
 
-		ctx := context.WithValue(
-			c.Request.Context(),
+		ctx = context.WithValue(
+			ctx,
 			loadersKey,
 			loaders,
 		)

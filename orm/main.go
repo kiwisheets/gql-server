@@ -4,10 +4,10 @@ import (
 	"log"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/accesscontrol"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/migration"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/seed"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
+	internalseed "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/seed"
+	"github.com/kiwisheets/auth/seed"
+	"github.com/kiwisheets/util"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -53,10 +53,10 @@ func Init(cfg *util.ServerConfig) *gorm.DB {
 
 	migration.AutoMigrateAll(db)
 
-	accesscontrol.EnsurePermissions(db)
-	accesscontrol.EnsureBuiltinRoles(db)
+	seed.EnsurePermissions(db)
+	seed.EnsureBuiltinRoles(db)
 
-	seed.RequiredUsers(db)
+	internalseed.RequiredUsers(db)
 
 	return db
 }

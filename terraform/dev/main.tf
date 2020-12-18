@@ -59,7 +59,6 @@ resource "nomad_job" "gql_server" {
     datacenter = var.datacenter
     image_tag  = var.image_tag
     instance   = var.instance_count
-    host       = var.host
   })
   detach = false
 }

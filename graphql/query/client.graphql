@@ -1,0 +1,38 @@
+query GET_CLIENT_BY_ID($id: ID!) {
+  client(id: $id) {
+    id
+    name
+    website
+    vatNumber
+    businessNumber
+    phone
+    createdAt
+    shippingAddress {
+      name
+      street1
+      street2
+      city
+      state
+      postalCode
+      country
+    }
+    billingAddress {
+      name
+      street1
+      street2
+      city
+      state
+      postalCode
+      country
+    }
+    contacts {
+      id
+      email
+      phone
+      mobile
+      preferredContact
+      firstname
+      lastname
+    }
+  }
+}

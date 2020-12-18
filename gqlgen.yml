@@ -36,6 +36,7 @@ struct_tag: json
 # if they match it will use them, otherwise it will generate them.
 autobind:
   - git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model
+  - github.com/kiwisheets/auth/permission
 
 # This section declares type mapping between the GraphQL and go type systems
 #

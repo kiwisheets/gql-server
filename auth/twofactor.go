@@ -1,4 +1,4 @@
-package auth
+package internalauth
 
 import (
 	"errors"
@@ -7,13 +7,15 @@ import (
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
+	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth"
 	"github.com/pquerna/otp/totp"
 	"gorm.io/gorm"
 )
 
-func GetTwoFactor(db *gorm.DB, u *model.User) (*model.TwoFactor, error) {
+func GetTwoFactor(db *gorm.DB, u hide.ID) (*model.TwoFactor, error) {
 	var twoFactor model.TwoFactor
-	if err := db.Model(&u).Association("TwoFactor").Find(&twoFactor); err != nil {
+	if err := db.Model(&model.TwoFactor{}).Where("user_id = ?", u).First(&twoFactor).Error; err != nil {
 		log.Println(err.Error())
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -29,15 +31,16 @@ func GetTwoFactor(db *gorm.DB, u *model.User) (*model.TwoFactor, error) {
 	return &twoFactor, nil
 }
 
-func IsTwoFactorEnabled(db *gorm.DB, u *model.User) (bool, error) {
-	if db.Model(&u).Association("TwoFactor").Count() != 0 {
+func IsTwoFactorEnabled(db *gorm.DB, u hide.ID) (bool, error) {
+	var count int64
+	if db.Model(&model.TwoFactor{}).Where("user_id = ?", u).Count(&count); count != 0 {
 		return true, nil
 	}
 	return false, nil
 }
 
 // EnableTwoFactor will enable 2FA for the user passed to it if the token validates against the secret
-func EnableTwoFactor(db *gorm.DB, u *model.User, secret string, token string) ([]string, error) {
+func EnableTwoFactor(db *gorm.DB, u hide.ID, secret string, token string) ([]string, error) {
 	{
 		twoFactor, _ := GetTwoFactor(db, u)
 		if twoFactor != nil {
@@ -49,7 +52,7 @@ func EnableTwoFactor(db *gorm.DB, u *model.User, secret string, token string) ([
 		return nil, fmt.Errorf("Invalid 2FA code")
 	}
 	twoFactor := model.TwoFactor{
-		UserID:     u.ID,
+		UserID:     u,
 		Secret:     secret,
 		BackupKeys: generateBackupKeys(),
 	}
@@ -59,8 +62,8 @@ func EnableTwoFactor(db *gorm.DB, u *model.User, secret string, token string) ([
 	return twoFactor.BackupKeys, nil
 }
 
-func DisableTwoFactor(db *gorm.DB, u *model.User, password string) (bool, error) {
-	if !VerifyPassword(u, password) {
+func DisableTwoFactor(db *gorm.DB, u hide.ID, password string) (bool, error) {
+	if !VerifyPassword(db, u, password) {
 		return false, fmt.Errorf("Password incorrect")
 	}
 
@@ -88,17 +91,16 @@ func VerifyTwoFactor(t *model.TwoFactor, token string) bool {
 	return totp.Validate(token, t.Secret)
 }
 
-func GetBackupKeys(db *gorm.DB, authCtx AuthContext) ([]string, error) {
+func GetBackupKeys(db *gorm.DB, authCtx auth.Context) ([]string, error) {
 	if !authCtx.Secure {
 		return nil, fmt.Errorf("Login required")
 	}
-	var twoFactor model.TwoFactor
-	if err := db.Model(&authCtx.User).Association("TwoFactor").Find(&twoFactor); err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, fmt.Errorf("2FA is not enabled")
-		}
+
+	twoFactor, err := GetTwoFactor(db, authCtx.UserID)
+	if err != nil {
 		return nil, err
 	}
+
 	return twoFactor.BackupKeys, nil
 }
 

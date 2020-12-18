@@ -2,7 +2,7 @@
 package resolver
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
+	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )
 

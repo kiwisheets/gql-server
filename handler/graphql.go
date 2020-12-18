@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,11 +8,10 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/directive"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/resolver"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +22,7 @@ func GraphqlHandler(db *gorm.DB, cfg *util.ServerConfig) http.Handler {
 			DB:  db,
 			Cfg: cfg,
 		},
-		Directives: directive.Register(db, cfg),
+		Directives: directive.Register(),
 	}
 
 	// init APQ cache
@@ -47,23 +45,13 @@ func GraphqlHandler(db *gorm.DB, cfg *util.ServerConfig) http.Handler {
 		Cache: cache,
 	})
 
-	// access control extensions, disable as not as flexible as using directives
-	// gqlHandler.Use(ext.AccessControl{
-	// 	DB: db,
-	// 	E:  accesscontrol.Init(db),
-	// })
-
 	gqlHandler.Use(extension.Introspection{})
 
-	gqlHandler.Use(&extension.ComplexityLimit{
-		Func: func(ctx context.Context, rc *graphql.OperationContext) int {
-			return cfg.GraphQL.ComplexityLimit
-		},
-	})
-
-	// if cfg.Environment == "development" {
-	// 	gqlHandler.Use(apollotracing.Tracer{})
-	// }
+	// gqlHandler.Use(&extension.ComplexityLimit{
+	// 	Func: func(ctx context.Context, rc *graphql.OperationContext) int {
+	// 		return cfg.GraphQL.ComplexityLimit
+	// 	},
+	// })
 
 	return gqlHandler
 }

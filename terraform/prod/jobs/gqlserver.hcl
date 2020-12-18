@@ -20,7 +20,6 @@ job "gql-server" {
       env {
         APP_VERSION = "0.0.0"
         API_PATH = "/graphql"
-        ALLOWED_ORIGINS = "${allowed_origins}"
         PORT = 3000
         ENVIRONMENT = "production"
         POSTGRES_HOST = "$${NOMAD_UPSTREAM_IP_gql-postgres}"
@@ -68,14 +67,12 @@ job "gql-server" {
 
     network {
       mode = "bridge"
-      port "http" {
-        to = "3000"
-      }
+      port "health" {}
     }
 
     service {
       name = "gql-server"
-      port = "http"
+      port = 3000
 
       connect {
         sidecar_service {
@@ -88,6 +85,14 @@ job "gql-server" {
               destination_name = "gql-redis"
               local_bind_port = 6379
             }
+            expose {
+              path {
+                path           = "/health"
+                protocol        = "http"
+                local_path_port = 3000
+                listener_port   = "health"
+              }
+            }
           }
         }
 
@@ -98,14 +103,11 @@ job "gql-server" {
           }
         }
       }
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.gql-server.rule=Host(`${host}`) && PathPrefix(`/graphql`)",
-      ]
 
       check {
         type     = "http"
-        path     = "/graphql"
+        path     = "/health"
+        port     = "health"
         interval = "2s"
         timeout  = "2s"
       }

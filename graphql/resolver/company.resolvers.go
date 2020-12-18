@@ -7,13 +7,13 @@ import (
 	"context"
 	"fmt"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth"
 )
 
 func (r *companyResolver) Users(ctx context.Context, obj *model.Company) ([]*model.User, error) {
@@ -64,21 +64,25 @@ func (r *mutationResolver) DeleteCompany(ctx context.Context, id hide.ID) (*bool
 }
 
 func (r *queryResolver) CompanyName(ctx context.Context, code string) (*string, error) {
-	company, err := dataloader.For(ctx).CompanyByCode.Load(code)
-
-	if company == nil {
-		return util.String(""), fmt.Errorf("No company exists")
+	var company model.Company
+	err := r.DB.Where("code = ?", code).First(&company).Error
+	if err != nil {
+		return nil, fmt.Errorf("No company exists")
 	}
 
 	return &company.Name, err
 }
 
 func (r *queryResolver) Company(ctx context.Context) (*model.Company, error) {
-	return dataloader.For(ctx).CompanyByID.Load(auth.For(ctx).User.IDint())
+	var company model.Company
+	err := r.DB.Where(auth.For(ctx).CompanyID).First(&company).Error
+	return &company, err
 }
 
 func (r *queryResolver) OtherCompany(ctx context.Context, id hide.ID) (*model.Company, error) {
-	return dataloader.For(ctx).CompanyByID.Load(int64(id))
+	var company model.Company
+	err := r.DB.Where(id).First(&company).Error
+	return &company, err
 }
 
 func (r *queryResolver) Companies(ctx context.Context, page *int) ([]*model.Company, error) {

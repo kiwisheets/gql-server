@@ -83,11 +83,10 @@ resource "nomad_volume" "gql_postgres" {
 
 resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    image_tag       = var.image_tag
-    allowed_origins = var.allowed_origins
-    instance        = var.instance_count
-    host            = var.host
-    volume_id       = nomad_volume.gql_postgres.volume_id
+    image_tag = var.image_tag
+    instance  = var.instance_count
+    host      = var.host
+    volume_id = nomad_volume.gql_postgres.volume_id
   })
   detach = false
 }

@@ -1,14 +1,13 @@
 package server
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/gin-gonic/gin"
+	"github.com/kiwisheets/auth"
 	"gorm.io/gorm"
 )
 
-func registerMiddleware(router *gin.RouterGroup, db *gorm.DB, cfg *util.ServerConfig) {
+func registerMiddleware(router *gin.RouterGroup, db *gorm.DB) {
 	router.Use(dataloader.Middleware(db))
-	router.Use(auth.Middleware(db, &cfg.JWT))
+	router.Use(auth.Middleware())
 }

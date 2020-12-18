@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
+	"github.com/kiwisheets/auth/permission"
 	"gorm.io/gorm"
 )
 
@@ -13,9 +14,11 @@ func AutoMigrateAll(db *gorm.DB) {
 	log.Println("Migrating models...")
 	db.AutoMigrate(&model.Domain{})
 	db.AutoMigrate(&model.Company{})
-	db.AutoMigrate(&model.BuiltinRole{})
-	db.AutoMigrate(&model.CustomRole{})
-	db.AutoMigrate(&model.Permission{})
+
+	db.AutoMigrate(&permission.BuiltinRole{})
+	db.AutoMigrate(&permission.CustomRole{})
+	db.AutoMigrate(&permission.Permission{})
+
 	db.AutoMigrate(&model.TwoFactor{})
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Client{})
@@ -30,9 +33,11 @@ func DropAll(db *gorm.DB) {
 	log.Println("Dropping all tables...")
 	db.Migrator().DropTable(&model.Company{})
 	db.Migrator().DropTable(&model.Domain{})
-	db.Migrator().DropTable(&model.BuiltinRole{})
-	db.Migrator().DropTable(&model.CustomRole{})
-	db.Migrator().DropTable(&model.Permission{})
+
+	db.Migrator().DropTable(&permission.BuiltinRole{})
+	db.Migrator().DropTable(&permission.CustomRole{})
+	db.Migrator().DropTable(&permission.Permission{})
+
 	db.Migrator().DropTable(&model.TwoFactor{})
 	db.Migrator().DropTable(&model.User{})
 	db.Migrator().DropTable(&model.Client{})

@@ -9,7 +9,6 @@ import (
 	"log"
 	"time"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/modelgen"
@@ -17,6 +16,7 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util/dereference"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth"
 )
 
 func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
@@ -46,7 +46,7 @@ func (r *clientResolver) Contacts(ctx context.Context, obj *model.Client) ([]*mo
 func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.CreateClientInput) (*model.Client, error) {
 	clientObject := model.Client{
 		Name:           client.Name,
-		CompanyID:      auth.For(ctx).User.CompanyID,
+		CompanyID:      auth.For(ctx).CompanyID,
 		Phone:          client.Phone,
 		Website:        client.Website,
 		VatNumber:      client.VatNumber,
@@ -132,7 +132,7 @@ func (r *queryResolver) Client(ctx context.Context, id hide.ID) (*model.Client, 
 func (r *queryResolver) ClientCount(ctx context.Context) (int, error) {
 	var count int64
 	r.DB.Model(&model.Client{
-		CompanyID: auth.For(ctx).User.CompanyID,
+		CompanyID: auth.For(ctx).CompanyID,
 	}).Count(&count)
 
 	return int(count), nil

@@ -1,5 +1,0 @@
-package accesscontrol
-
-func Init() {
-
-}

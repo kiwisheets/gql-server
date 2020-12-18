@@ -6,6 +6,7 @@ import (
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth/permission"
 	"gorm.io/gorm"
 )
 
@@ -13,17 +14,17 @@ func newRoleByUserIDLoader(db *gorm.DB) *generated.RoleLoader {
 	return generated.NewRoleLoader(generated.RoleLoaderConfig{
 		MaxBatch: 1000,
 		Wait:     1 * time.Millisecond,
-		Fetch: func(userIDs []int64) ([][]model.Role, []error) {
+		Fetch: func(userIDs []int64) ([][]permission.Role, []error) {
 			// db.Model(&model.)
 
-			db.Model(&model.BuiltinRole{})
+			db.Model(&permission.BuiltinRole{})
 
-			roles := make([][]model.Role, len(userIDs))
+			roles := make([][]permission.Role, len(userIDs))
 			errors := make([]error, len(userIDs))
 
 			for i, userID := range userIDs {
 				{
-					var builtinRoles []model.BuiltinRole
+					var builtinRoles []permission.BuiltinRole
 					err := db.Model(&model.User{
 						SoftDelete: model.SoftDelete{
 							ID: hide.ID(userID),
@@ -41,7 +42,7 @@ func newRoleByUserIDLoader(db *gorm.DB) *generated.RoleLoader {
 						roles[i] = append(roles[i], role)
 					}
 				}
-				var customRoles []*model.CustomRole
+				var customRoles []*permission.CustomRole
 				{
 					err := db.Model(&model.User{
 						SoftDelete: model.SoftDelete{

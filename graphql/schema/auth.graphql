@@ -4,9 +4,15 @@ type AuthData {
   twoFactorEnabled: Boolean!
 }
 
+type Permission {
+  subject: String!
+  operation: String!
+}
+
 extend type Query {
   twoFactorBackups: [String!]! @isAuthenticated
   twoFactorEnabled: Boolean! @isAuthenticated
+  scopes: [Permission!] @isAuthenticated
 }
 
 extend type Mutation {

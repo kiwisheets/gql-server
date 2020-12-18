@@ -1,0 +1,7 @@
+client:
+  package: client
+  filename: ./client/client.go
+schema:
+  - graphql/schema/**/*.graphql
+query:
+  - graphql/query/**/*.graphql

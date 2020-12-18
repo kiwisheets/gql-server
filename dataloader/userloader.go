@@ -1,6 +1,7 @@
 package dataloader
 
 import (
+	"context"
 	"time"
 
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader/generated"
@@ -8,12 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func newUserByIDLoader(db *gorm.DB) *generated.UserLoader {
+func newUserByIDLoader(db *gorm.DB, ctx context.Context) *generated.UserLoader {
 	return generated.NewUserLoader(generated.UserLoaderConfig{
 		MaxBatch: 1000,
 		Wait:     1 * time.Millisecond,
 		Fetch: func(ids []int64) ([]*model.User, []error) {
-			rows, err := db.Model(&model.User{}).Where(ids).Rows()
+			rows, err := db.
+				Model(&model.User{}).
+				Where(ids).
+				Rows()
 
 			if err != nil {
 				if rows == nil {

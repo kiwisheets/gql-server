@@ -1,14 +1,16 @@
 package seed
 
 import (
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
+	password "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
+	"github.com/kiwisheets/auth/permission"
 	"gorm.io/gorm"
 )
 
 // RequiredUsers ensures that at least a default ServiceAdmin account exists
 func RequiredUsers(db *gorm.DB) {
+
 	var company model.Company
 
 	db.Where(model.Company{
@@ -26,24 +28,19 @@ func RequiredUsers(db *gorm.DB) {
 	}).FirstOrCreate(&domain)
 
 	// TODO: make default password configurable via env variables
-	hash, _ := auth.HashPassword("servicepass")
+	hash, _ := password.HashPassword("servicepass")
 
-	var serviceAdminRole model.BuiltinRole
-	var standardUserRole model.BuiltinRole
-	var customUserRole model.CustomRole
+	var serviceAdminRole permission.BuiltinRole
+	var standardUserRole permission.BuiltinRole
 
 	// get service admin role
-	db.Where(model.BuiltinRole{
+	db.Where(permission.BuiltinRole{
 		Name: "Service Admin",
 	}).First(&serviceAdminRole)
 
-	db.Where(model.BuiltinRole{
+	db.Where(permission.BuiltinRole{
 		Name: "Standard User",
 	}).First(&standardUserRole)
-
-	db.Where(model.CustomRole{
-		Name: "Custom User",
-	}).First(&customUserRole)
 
 	var user model.User
 
@@ -55,13 +52,13 @@ func RequiredUsers(db *gorm.DB) {
 		Firstname: "Service",
 		Lastname:  "Admin",
 		Password:  hash,
-		BuiltinRoles: []model.BuiltinRole{
+		BuiltinRoles: []permission.BuiltinRole{
 			serviceAdminRole,
 		},
 	}).FirstOrCreate(&user)
 
 	var secondUser model.User
-	hash, _ = auth.HashPassword("password")
+	hash, _ = password.HashPassword("password")
 
 	db.Where(model.User{
 		CompanyID: company.ID,
@@ -71,11 +68,8 @@ func RequiredUsers(db *gorm.DB) {
 		Firstname: "Test",
 		Lastname:  "User",
 		Password:  hash,
-		BuiltinRoles: []model.BuiltinRole{
+		BuiltinRoles: []permission.BuiltinRole{
 			standardUserRole,
-		},
-		CustomRoles: []model.CustomRole{
-			customUserRole,
 		},
 	}).FirstOrCreate(&secondUser)
 

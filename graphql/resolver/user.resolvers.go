@@ -7,23 +7,27 @@ import (
 	"context"
 	"fmt"
 
-	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
+	internalauth "git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/auth"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/dataloader"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/graphql/generated"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/orm/model"
 	"git.maxtroughear.dev/max.troughear/digital-timesheet/go-server/util"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth"
 	"gorm.io/gorm"
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, email string, password string) (*model.User, error) {
 	// get code
 
-	company := &auth.For(ctx).User.Company
+	company, err := dataloader.For(ctx).CompanyByID.Load(int64(auth.For(ctx).CompanyID))
+	if err != nil {
+		return nil, fmt.Errorf("unable to create User. Company not found")
+	}
 
 	// verify that this user has the ability to create a user for this company
 
-	hash, err := auth.HashPassword(password)
+	hash, err := internalauth.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create User. Password invalid")
 	}
@@ -46,7 +50,7 @@ func (r *mutationResolver) CreateUserForCompany(ctx context.Context, companyID h
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, id hide.ID) (*bool, error) {
-	if err := r.DB.Delete(&model.User{
+	if err := r.DB.Where("company_id = ?", auth.For(ctx).CompanyID).Delete(&model.User{
 		SoftDelete: model.SoftDelete{
 			ID: id,
 		},
@@ -72,17 +76,23 @@ func (r *mutationResolver) DeleteUsersForCompany(ctx context.Context, companyID 
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
-	return auth.For(ctx).User, nil
+	var user model.User
+	if err := r.DB.Model(&model.User{}).Where(auth.For(ctx).UserID).First(&user).Error; err != nil {
+		return nil, fmt.Errorf("user not found")
+	}
+	return &user, nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id hide.ID) (*model.User, error) {
-	user, err := dataloader.For(ctx).UserByID.Load(int64(id))
-
-	return user, err
+	var user model.User
+	err := r.DB.Where("company_id = ?", auth.For(ctx).CompanyID).Where(id).First(&user).Error
+	return &user, err
 }
 
 func (r *queryResolver) UserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	var user model.User
+	err := r.DB.Where("company_id = ?", companyID).Where(id).First(&user).Error
+	return &user, err
 }
 
 func (r *queryResolver) Users(ctx context.Context, page *int) ([]*model.User, error) {
@@ -91,13 +101,20 @@ func (r *queryResolver) Users(ctx context.Context, page *int) ([]*model.User, er
 	if page == nil {
 		page = util.Int(0)
 	}
-	r.DB.Order("firstname").Limit(limit).Offset(limit * *page).Find(&users)
+	err := r.DB.Where("company_id = ?", auth.For(ctx).CompanyID).Order("firstname").Limit(limit).Offset(limit * *page).Find(&users).Error
 
-	return users, nil
+	return users, err
 }
 
 func (r *queryResolver) UsersForCompany(ctx context.Context, companyID hide.ID, page *int) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	limit := 20
+	users := make([]*model.User, limit)
+	if page == nil {
+		page = util.Int(0)
+	}
+	err := r.DB.Where("company_id = ?", companyID).Order("firstname").Limit(limit).Offset(limit * *page).Find(&users).Error
+
+	return users, err
 }
 
 func (r *queryResolver) SearchUsers(ctx context.Context, search string, page *int) ([]*model.User, error) {

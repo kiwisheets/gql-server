@@ -18,6 +18,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/emvi/hide"
+	"github.com/kiwisheets/auth/permission"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -44,6 +45,7 @@ type ResolverRoot interface {
 	Company() CompanyResolver
 	Entity() EntityResolver
 	Mutation() MutationResolver
+	Permission() PermissionResolver
 	Query() QueryResolver
 	User() UserResolver
 }
@@ -131,6 +133,11 @@ type ComplexityRoot struct {
 		UpdateClient          func(childComplexity int, id hide.ID, client modelgen.UpdateClientInput) int
 	}
 
+	Permission struct {
+		Operation func(childComplexity int) int
+		Subject   func(childComplexity int) int
+	}
+
 	Query struct {
 		Client                func(childComplexity int, id hide.ID) int
 		ClientCount           func(childComplexity int) int
@@ -140,6 +147,7 @@ type ComplexityRoot struct {
 		CompanyName           func(childComplexity int, code string) int
 		Me                    func(childComplexity int) int
 		OtherCompany          func(childComplexity int, id hide.ID) int
+		Scopes                func(childComplexity int) int
 		SearchUsers           func(childComplexity int, search string, page *int) int
 		SearchUsersForCompany func(childComplexity int, companyID hide.ID, search string, page *int) int
 		TwoFactorBackups      func(childComplexity int) int
@@ -203,9 +211,14 @@ type MutationResolver interface {
 	DeleteUsers(ctx context.Context, ids []hide.ID) ([]bool, error)
 	DeleteUsersForCompany(ctx context.Context, companyID hide.ID, ids []hide.ID) ([]bool, error)
 }
+type PermissionResolver interface {
+	Subject(ctx context.Context, obj *permission.Permission) (string, error)
+	Operation(ctx context.Context, obj *permission.Permission) (string, error)
+}
 type QueryResolver interface {
 	TwoFactorBackups(ctx context.Context) ([]string, error)
 	TwoFactorEnabled(ctx context.Context) (bool, error)
+	Scopes(ctx context.Context) ([]*permission.Permission, error)
 	Client(ctx context.Context, id hide.ID) (*model.Client, error)
 	ClientCount(ctx context.Context) (int, error)
 	Clients(ctx context.Context, page *int) ([]*model.Client, error)
@@ -709,6 +722,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateClient(childComplexity, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput)), true
 
+	case "Permission.operation":
+		if e.complexity.Permission.Operation == nil {
+			break
+		}
+
+		return e.complexity.Permission.Operation(childComplexity), true
+
+	case "Permission.subject":
+		if e.complexity.Permission.Subject == nil {
+			break
+		}
+
+		return e.complexity.Permission.Subject(childComplexity), true
+
 	case "Query.client":
 		if e.complexity.Query.Client == nil {
 			break
@@ -789,6 +816,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OtherCompany(childComplexity, args["id"].(hide.ID)), true
+
+	case "Query.scopes":
+		if e.complexity.Query.Scopes == nil {
+			break
+		}
+
+		return e.complexity.Query.Scopes(childComplexity), true
 
 	case "Query.searchUsers":
 		if e.complexity.Query.SearchUsers == nil {
@@ -1072,9 +1106,15 @@ input UpdateAddressInput {
   twoFactorEnabled: Boolean!
 }
 
+type Permission {
+  subject: String!
+  operation: String!
+}
+
 extend type Query {
   twoFactorBackups: [String!]! @isAuthenticated
   twoFactorEnabled: Boolean! @isAuthenticated
+  scopes: [Permission!] @isAuthenticated
 }
 
 extend type Mutation {
@@ -4315,6 +4355,70 @@ func (ec *executionContext) _Mutation_deleteUsersForCompany(ctx context.Context,
 	return ec.marshalOBoolean2ᚕboolᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Permission_subject(ctx context.Context, field graphql.CollectedField, obj *permission.Permission) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Permission",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Permission().Subject(rctx, obj)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Permission_operation(ctx context.Context, field graphql.CollectedField, obj *permission.Permission) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Permission",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Permission().Operation(rctx, obj)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_twoFactorBackups(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4417,6 +4521,55 @@ func (ec *executionContext) _Query_twoFactorEnabled(ctx context.Context, field g
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_scopes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Scopes(rctx)
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.IsAuthenticated == nil {
+				return nil, errors.New("directive isAuthenticated is not implemented")
+			}
+			return ec.directives.IsAuthenticated(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*permission.Permission); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/auth/permission.Permission`, tmp)
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*permission.Permission)
+	fc.Result = res
+	return ec.marshalOPermission2ᚕᚖgithubᚗcomᚋkiwisheetsᚋauthᚋpermissionᚐPermissionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_client(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7587,6 +7740,56 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
+var permissionImplementors = []string{"Permission"}
+
+func (ec *executionContext) _Permission(ctx context.Context, sel ast.SelectionSet, obj *permission.Permission) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, permissionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Permission")
+		case "subject":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Permission_subject(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "operation":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Permission_operation(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -7628,6 +7831,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			})
+		case "scopes":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_scopes(ctx, field)
 				return res
 			})
 		case "client":
@@ -8320,6 +8534,16 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) marshalNPermission2ᚖgithubᚗcomᚋkiwisheetsᚋauthᚋpermissionᚐPermission(ctx context.Context, sel ast.SelectionSet, v *permission.Permission) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Permission(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -8994,6 +9218,46 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return graphql.MarshalInt(*v)
+}
+
+func (ec *executionContext) marshalOPermission2ᚕᚖgithubᚗcomᚋkiwisheetsᚋauthᚋpermissionᚐPermissionᚄ(ctx context.Context, sel ast.SelectionSet, v []*permission.Permission) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNPermission2ᚖgithubᚗcomᚋkiwisheetsᚋauthᚋpermissionᚐPermission(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) unmarshalOPreferredContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, v interface{}) (*model.PreferredContact, error) {
