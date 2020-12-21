@@ -31,7 +31,6 @@ resource "vault_generic_secret" "gql_server" {
 
   data_json = jsonencode({
     postgres_password = random_password.postgres_password.result
-    jwt_secret        = random_password.jwt_secret.result
     hash_salt         = random_password.hash_salt.result
   })
 }
