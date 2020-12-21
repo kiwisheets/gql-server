@@ -1166,9 +1166,9 @@ extend type Query {
   client(id: ID!): Client @hasPerm(perm: "Client:Read")
   # clientForCompany(companyID: ID!, id: ID!): Client! @hasPerm(perm: "OtherClient:Read")
 
-  clientCount: Int! @hasPerm(perm: "Clients:Read")
+  clientCount: Int! @hasPerm(perm: "Client:Read")
 
-  clients(page: Int): [Client!] @hasPerm(perm: "Clients:Read")
+  clients(page: Int): [Client!] @hasPerm(perm: "Client:Read")
   # clientsForCompany(companyID: ID!, page: Int): [Client!]! @hasPerm(perm: "OtherClients:Read")
 }
 
@@ -1271,10 +1271,10 @@ extend type Query {
   userForCompany(companyID: ID!, id: ID!): User @hasPerm(perm: "OtherUser:Read")
 
   users(page: Int): [User!] @hasPerm(perm: "Users:Read")
-  usersForCompany(companyID: ID!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
+  usersForCompany(companyID: ID!, page: Int): [User!] @hasPerm(perm: "OtherUser:Read")
 
-  searchUsers(search: String!, page: Int): [User!] @hasPerm(perm: "Users:Read")
-  searchUsersForCompany(companyID: ID!, search: String!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
+  searchUsers(search: String!, page: Int): [User!] @hasPerm(perm: "User:Read")
+  searchUsersForCompany(companyID: ID!, search: String!, page: Int): [User!] @hasPerm(perm: "OtherUser:Read")
 }
 
 extend type Mutation {
@@ -1285,7 +1285,7 @@ extend type Mutation {
   deleteUserForCompany(companyID: ID!, id: ID!): Boolean @hasPerm(perm: "OtherUser:Delete")
 
   deleteUsers(ids: [ID!]!): [Boolean!] @hasPerm(perm: "Users:Delete")
-  deleteUsersForCompany(companyID: ID!, ids: [ID!]!): [Boolean!] @hasPerm(perm: "OtherUsers:Delete")
+  deleteUsersForCompany(companyID: ID!, ids: [ID!]!): [Boolean!] @hasPerm(perm: "OtherUser:Delete")
 }
 `, BuiltIn: false},
 	{Name: "federation/directives.graphql", Input: `
@@ -1415,7 +1415,7 @@ func (ec *executionContext) field_Mutation_createClient_args(ctx context.Context
 	var arg0 modelgen.CreateClientInput
 	if tmp, ok := rawArgs["client"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg0, err = ec.unmarshalNCreateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1430,7 +1430,7 @@ func (ec *executionContext) field_Mutation_createCompany_args(ctx context.Contex
 	var arg0 modelgen.CreateCompanyInput
 	if tmp, ok := rawArgs["company"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("company"))
-		arg0, err = ec.unmarshalNCreateCompanyInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1706,7 +1706,7 @@ func (ec *executionContext) field_Mutation_updateClient_args(ctx context.Context
 	var arg1 modelgen.UpdateClientInput
 	if tmp, ok := rawArgs["client"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg1, err = ec.unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2295,7 +2295,7 @@ func (ec *executionContext) _AuthData_user(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthData_token(ctx context.Context, field graphql.CollectedField, obj *model.AuthData) (ret graphql.Marshaler) {
@@ -2565,7 +2565,7 @@ func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
+	return ec.marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Client_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
@@ -2594,7 +2594,7 @@ func (ec *executionContext) _Client_billingAddress(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
+	return ec.marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
@@ -2647,7 +2647,7 @@ func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.Contact)
 	fc.Result = res
-	return ec.marshalOContact2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐContactᚄ(ctx, field.Selections, res)
+	return ec.marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContactᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Client_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
@@ -2831,7 +2831,7 @@ func (ec *executionContext) _Company_users(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Company_domains(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
@@ -3139,7 +3139,7 @@ func (ec *executionContext) _Contact_preferredContact(ctx context.Context, field
 	}
 	res := resTmp.(*model.PreferredContact)
 	fc.Result = res
-	return ec.marshalOPreferredContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
+	return ec.marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contact_firstname(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
@@ -3274,7 +3274,7 @@ func (ec *executionContext) _Entity_findClientByID(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Client)
 	fc.Result = res
-	return ec.marshalNClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+	return ec.marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Entity_findUserByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3313,7 +3313,7 @@ func (ec *executionContext) _Entity_findUserByID(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3352,7 +3352,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.AuthData)
 	fc.Result = res
-	return ec.marshalNAuthData2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAuthData(ctx, field.Selections, res)
+	return ec.marshalNAuthData2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_loginSecure(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3752,7 +3752,7 @@ func (ec *executionContext) _Mutation_createClient(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Client)
 	fc.Result = res
-	return ec.marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3812,7 +3812,7 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Client)
 	fc.Result = res
-	return ec.marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3932,7 +3932,7 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Company)
 	fc.Result = res
-	return ec.marshalOCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
+	return ec.marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4052,7 +4052,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createUserForCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4112,7 +4112,7 @@ func (ec *executionContext) _Mutation_createUserForCompany(ctx context.Context, 
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4324,7 +4324,7 @@ func (ec *executionContext) _Mutation_deleteUsersForCompany(ctx context.Context,
 			return ec.resolvers.Mutation().DeleteUsersForCompany(rctx, args["companyID"].(hide.ID), args["ids"].([]hide.ID))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "OtherUsers:Delete")
+			perm, err := ec.unmarshalNString2string(ctx, "OtherUser:Delete")
 			if err != nil {
 				return nil, err
 			}
@@ -4629,7 +4629,7 @@ func (ec *executionContext) _Query_client(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Client)
 	fc.Result = res
-	return ec.marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_clientCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4654,7 +4654,7 @@ func (ec *executionContext) _Query_clientCount(ctx context.Context, field graphq
 			return ec.resolvers.Query().ClientCount(rctx)
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "Clients:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "Client:Read")
 			if err != nil {
 				return nil, err
 			}
@@ -4717,7 +4717,7 @@ func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.Co
 			return ec.resolvers.Query().Clients(rctx, args["page"].(*int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "Clients:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "Client:Read")
 			if err != nil {
 				return nil, err
 			}
@@ -4745,7 +4745,7 @@ func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Client)
 	fc.Result = res
-	return ec.marshalOClient2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClientᚄ(ctx, field.Selections, res)
+	return ec.marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClientᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_companyName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4861,7 +4861,7 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Company)
 	fc.Result = res
-	return ec.marshalNCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
+	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_otherCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4921,7 +4921,7 @@ func (ec *executionContext) _Query_otherCompany(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.Company)
 	fc.Result = res
-	return ec.marshalOCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
+	return ec.marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_companies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4981,7 +4981,7 @@ func (ec *executionContext) _Query_companies(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.Company)
 	fc.Result = res
-	return ec.marshalOCompany2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx, field.Selections, res)
+	return ec.marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_version(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5066,7 +5066,7 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5126,7 +5126,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_userForCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5186,7 +5186,7 @@ func (ec *executionContext) _Query_userForCompany(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_users(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5246,7 +5246,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_usersForCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5278,7 +5278,7 @@ func (ec *executionContext) _Query_usersForCompany(ctx context.Context, field gr
 			return ec.resolvers.Query().UsersForCompany(rctx, args["companyID"].(hide.ID), args["page"].(*int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "OtherUsers:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "OtherUser:Read")
 			if err != nil {
 				return nil, err
 			}
@@ -5306,7 +5306,7 @@ func (ec *executionContext) _Query_usersForCompany(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_searchUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5338,7 +5338,7 @@ func (ec *executionContext) _Query_searchUsers(ctx context.Context, field graphq
 			return ec.resolvers.Query().SearchUsers(rctx, args["search"].(string), args["page"].(*int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "Users:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "User:Read")
 			if err != nil {
 				return nil, err
 			}
@@ -5366,7 +5366,7 @@ func (ec *executionContext) _Query_searchUsers(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_searchUsersForCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5398,7 +5398,7 @@ func (ec *executionContext) _Query_searchUsersForCompany(ctx context.Context, fi
 			return ec.resolvers.Query().SearchUsersForCompany(rctx, args["companyID"].(hide.ID), args["search"].(string), args["page"].(*int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "OtherUsers:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "OtherUser:Read")
 			if err != nil {
 				return nil, err
 			}
@@ -5426,7 +5426,7 @@ func (ec *executionContext) _Query_searchUsersForCompany(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5650,7 +5650,7 @@ func (ec *executionContext) _User_company(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Company)
 	fc.Result = res
-	return ec.marshalNCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
+	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -5865,7 +5865,7 @@ func (ec *executionContext) _User_preferredContact(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.PreferredContact)
 	fc.Result = res
-	return ec.marshalOPreferredContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
+	return ec.marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_firstname(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -7102,7 +7102,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7110,7 +7110,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7274,7 +7274,7 @@ func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7282,7 +7282,7 @@ func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8397,11 +8397,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthData2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v model.AuthData) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthData2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v model.AuthData) graphql.Marshaler {
 	return ec._AuthData(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthData2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v *model.AuthData) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthData2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v *model.AuthData) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8426,11 +8426,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNClient2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalNClient2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v model.Client) graphql.Marshaler {
 	return ec._Client(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8440,11 +8440,11 @@ func (ec *executionContext) marshalNClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗt
 	return ec._Client(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCompany2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNCompany2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v model.Company) graphql.Marshaler {
 	return ec._Company(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8454,7 +8454,7 @@ func (ec *executionContext) marshalNCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 	return ec._Company(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model.Contact) graphql.Marshaler {
+func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model.Contact) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8464,12 +8464,12 @@ func (ec *executionContext) marshalNContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 	return ec._Contact(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCreateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx context.Context, v interface{}) (modelgen.CreateClientInput, error) {
+func (ec *executionContext) unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx context.Context, v interface{}) (modelgen.CreateClientInput, error) {
 	res, err := ec.unmarshalInputCreateClientInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateCompanyInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx context.Context, v interface{}) (modelgen.CreateCompanyInput, error) {
+func (ec *executionContext) unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx context.Context, v interface{}) (modelgen.CreateCompanyInput, error) {
 	res, err := ec.unmarshalInputCreateCompanyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -8604,16 +8604,16 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUpdateClientInput2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx context.Context, v interface{}) (modelgen.UpdateClientInput, error) {
+func (ec *executionContext) unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx context.Context, v interface{}) (modelgen.UpdateClientInput, error) {
 	res, err := ec.unmarshalInputUpdateClientInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUser2gitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -8637,7 +8637,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -8650,7 +8650,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8996,7 +8996,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAddress2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
+func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9063,7 +9063,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOClient2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9090,7 +9090,7 @@ func (ec *executionContext) marshalOClient2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx, sel, v[i])
+			ret[i] = ec.marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9103,14 +9103,14 @@ func (ec *executionContext) marshalOClient2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax�
 	return ret
 }
 
-func (ec *executionContext) marshalOClient2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Client(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOCompany2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Company) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9137,7 +9137,7 @@ func (ec *executionContext) marshalOCompany2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx, sel, v[i])
+			ret[i] = ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9150,14 +9150,14 @@ func (ec *executionContext) marshalOCompany2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax
 	return ret
 }
 
-func (ec *executionContext) marshalOCompany2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Company(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOContact2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐContactᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Contact) graphql.Marshaler {
+func (ec *executionContext) marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContactᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Contact) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9184,7 +9184,7 @@ func (ec *executionContext) marshalOContact2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐContact(ctx, sel, v[i])
+			ret[i] = ec.marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContact(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9197,7 +9197,7 @@ func (ec *executionContext) marshalOContact2ᚕᚖgitᚗmaxtroughearᚗdevᚋmax
 	return ret
 }
 
-func (ec *executionContext) unmarshalOCreateAddressInput2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx context.Context, v interface{}) (*modelgen.CreateAddressInput, error) {
+func (ec *executionContext) unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx context.Context, v interface{}) (*modelgen.CreateAddressInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -9260,7 +9260,7 @@ func (ec *executionContext) marshalOPermission2ᚕᚖgithubᚗcomᚋkiwisheets�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOPreferredContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, v interface{}) (*model.PreferredContact, error) {
+func (ec *executionContext) unmarshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, v interface{}) (*model.PreferredContact, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -9269,7 +9269,7 @@ func (ec *executionContext) unmarshalOPreferredContact2ᚖgitᚗmaxtroughearᚗd
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPreferredContact2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, sel ast.SelectionSet, v *model.PreferredContact) graphql.Marshaler {
+func (ec *executionContext) marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, sel ast.SelectionSet, v *model.PreferredContact) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9300,7 +9300,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9327,7 +9327,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9340,7 +9340,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgitᚗmaxtroughearᚗdevᚋmaxᚗ
 	return ret
 }
 
-func (ec *executionContext) marshalOUser2ᚖgitᚗmaxtroughearᚗdevᚋmaxᚗtroughearᚋdigitalᚑtimesheetᚋgoᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

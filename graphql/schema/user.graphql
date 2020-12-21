@@ -19,10 +19,10 @@ extend type Query {
   userForCompany(companyID: ID!, id: ID!): User @hasPerm(perm: "OtherUser:Read")
 
   users(page: Int): [User!] @hasPerm(perm: "Users:Read")
-  usersForCompany(companyID: ID!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
+  usersForCompany(companyID: ID!, page: Int): [User!] @hasPerm(perm: "OtherUser:Read")
 
-  searchUsers(search: String!, page: Int): [User!] @hasPerm(perm: "Users:Read")
-  searchUsersForCompany(companyID: ID!, search: String!, page: Int): [User!] @hasPerm(perm: "OtherUsers:Read")
+  searchUsers(search: String!, page: Int): [User!] @hasPerm(perm: "User:Read")
+  searchUsersForCompany(companyID: ID!, search: String!, page: Int): [User!] @hasPerm(perm: "OtherUser:Read")
 }
 
 extend type Mutation {
@@ -33,5 +33,5 @@ extend type Mutation {
   deleteUserForCompany(companyID: ID!, id: ID!): Boolean @hasPerm(perm: "OtherUser:Delete")
 
   deleteUsers(ids: [ID!]!): [Boolean!] @hasPerm(perm: "Users:Delete")
-  deleteUsersForCompany(companyID: ID!, ids: [ID!]!): [Boolean!] @hasPerm(perm: "OtherUsers:Delete")
+  deleteUsersForCompany(companyID: ID!, ids: [ID!]!): [Boolean!] @hasPerm(perm: "OtherUser:Delete")
 }

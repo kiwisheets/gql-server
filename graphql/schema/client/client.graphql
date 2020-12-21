@@ -35,9 +35,9 @@ extend type Query {
   client(id: ID!): Client @hasPerm(perm: "Client:Read")
   # clientForCompany(companyID: ID!, id: ID!): Client! @hasPerm(perm: "OtherClient:Read")
 
-  clientCount: Int! @hasPerm(perm: "Clients:Read")
+  clientCount: Int! @hasPerm(perm: "Client:Read")
 
-  clients(page: Int): [Client!] @hasPerm(perm: "Clients:Read")
+  clients(page: Int): [Client!] @hasPerm(perm: "Client:Read")
   # clientsForCompany(companyID: ID!, page: Int): [Client!]! @hasPerm(perm: "OtherClients:Read")
 }
 

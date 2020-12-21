@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
 	"github.com/kiwisheets/gql-server/dataloader"
@@ -18,6 +16,7 @@ import (
 	"github.com/kiwisheets/gql-server/orm/model"
 	"github.com/kiwisheets/gql-server/util"
 	"github.com/kiwisheets/gql-server/util/dereference"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
