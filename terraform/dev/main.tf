@@ -37,7 +37,7 @@ resource "vault_generic_secret" "gql_server" {
 }
 
 resource "vault_pki_secret_backend_role" "jwt" {
-  backend         = vault_pki_secret_backend.pki.path
+  backend         = "pki"
   name            = "jwt"
   ttl             = "31536000"
   max_ttl         = "31536000"
@@ -50,7 +50,7 @@ resource "vault_pki_secret_backend_role" "jwt" {
 resource "vault_pki_secret_backend_cert" "jwt" {
   backend     = "pki"
   name        = vault_pki_secret_backend_role.jwt.name
-  common_name = "jwt"
+  common_name = "localhost"
 }
 
 resource "vault_generic_secret" "jwt_public" {
