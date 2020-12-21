@@ -1,10 +1,12 @@
 package orm
 
 import (
-	"log"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/kiwisheets/auth/seed"
+	"github.com/kiwisheets/gql-server/config"
 	"github.com/kiwisheets/gql-server/orm/migration"
 	internalseed "github.com/kiwisheets/gql-server/orm/seed"
 	"github.com/kiwisheets/util"
@@ -14,7 +16,7 @@ import (
 )
 
 // Init connects to and initialises the database
-func Init(cfg *util.ServerConfig) *gorm.DB {
+func Init(cfg *config.Config) *gorm.DB {
 	dbCfg := cfg.Database
 
 	connectionString := constructConnectionString(&dbCfg)

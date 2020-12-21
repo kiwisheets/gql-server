@@ -8,15 +8,15 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/kiwisheets/gql-server/config"
 	"github.com/kiwisheets/gql-server/graphql/directive"
 	"github.com/kiwisheets/gql-server/graphql/generated"
 	"github.com/kiwisheets/gql-server/graphql/resolver"
-	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )
 
 // GraphqlHandler constructs and returns a http handler
-func GraphqlHandler(db *gorm.DB, cfg *util.ServerConfig) http.Handler {
+func GraphqlHandler(db *gorm.DB, cfg *config.Config) http.Handler {
 	c := generated.Config{
 		Resolvers: &resolver.Resolver{
 			DB:  db,

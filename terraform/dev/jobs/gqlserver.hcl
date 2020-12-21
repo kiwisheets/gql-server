@@ -1,6 +1,13 @@
 job "gql-server" {
   datacenters = ["${datacenter}"]
 
+  update {
+    auto_revert      = true
+    max_parallel     = 3
+    min_healthy_time = "30s"
+    healthy_deadline = "2m"
+  }
+
   group "gql-server" {
     count = 1
 
@@ -12,7 +19,7 @@ job "gql-server" {
 
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
-          "secrets/jwt-secret-key.secret:/run/secrets/jwt-secret-key.secret",
+          "secrets/jwt-private-key.secret:/run/secrets/jwt-private-key.secret",
           "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
         ]
       }
@@ -29,29 +36,24 @@ job "gql-server" {
         POSTGRES_PASSWORD_FILE = "/run/secrets/db-password.secret"
         POSTGRES_MAX_CONNECTIONS = 20
         REDIS_ADDRESS = "$${NOMAD_UPSTREAM_ADDR_gql-redis}"
-        JWT_SECRET_KEY_FILE = "/run/secrets/jwt-secret-key.secret"
+        JWT_EC_PRIVATE_KEY_FILE = "/run/secrets/jwt-private-key.secret"
         HASH_SALT_FILE = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
       }
 
       template {
-        data = <<EOF
-{{with secret "secret/data/gql-server"}}{{.Data.data.postgres_password}}{{end}}
-        EOF
+        data = "{{with secret \"secret/data/gql-server\"}}{{.Data.data.postgres_password}}{{end}}"
         destination = "secrets/db-password.secret"
       }
 
       template {
-        data = <<EOF
-{{with secret "secret/data/gql-server"}}{{.Data.data.jwt_secret}}{{end}}
-        EOF
-        destination = "secrets/jwt-secret-key.secret"
+        data = "{{with secret \"secret/data/jwt-private\"}}{{.Data.data.key}}{{end}}"
+        destination = "secrets/jwt-private-key.secret"
+        change_mode = "noop"
       }
 
       template {
-        data = <<EOF
-{{with secret "secret/data/gql-server"}}{{.Data.data.hash_salt}}{{end}}
-        EOF
+        data = "{{with secret \"secret/data/gql-server\"}}{{.Data.data.hash_salt}}{{end}}"
         destination = "secrets/hash-salt.secret"
       }
 
@@ -136,9 +138,7 @@ job "gql-server" {
       }
 
       template {
-        data = <<EOF
-{{with secret "secret/data/gql-server"}}{{.Data.data.postgres_password}}{{end}}
-        EOF
+        data = "{{with secret \"secret/data/gql-server\"}}{{.Data.data.postgres_password}}{{end}}"
         destination = "secrets/db-password.secret"
       }
 

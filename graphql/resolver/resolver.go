@@ -2,7 +2,7 @@
 package resolver
 
 import (
-	"github.com/kiwisheets/util"
+	"github.com/kiwisheets/gql-server/config"
 	"gorm.io/gorm"
 )
 
@@ -13,5 +13,5 @@ import (
 // Resolver structure
 type Resolver struct {
 	DB  *gorm.DB
-	Cfg *util.ServerConfig
+	Cfg *config.Config
 }

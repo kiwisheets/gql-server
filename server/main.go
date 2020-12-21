@@ -1,15 +1,15 @@
 package server
 
 import (
-	"log"
+	"github.com/kiwisheets/gql-server/config"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )
 
 // Run starts a new server
-func Run(cfg *util.ServerConfig, db *gorm.DB) {
+func Run(cfg *config.Config, db *gorm.DB) {
 	router := gin.Default()
 
 	registerMiddleware(&router.RouterGroup, db)

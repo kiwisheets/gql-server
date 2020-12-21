@@ -6,8 +6,9 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"

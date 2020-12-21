@@ -5,12 +5,13 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/kiwisheets/gql-server/config"
 	"github.com/kiwisheets/gql-server/handler"
 	"github.com/kiwisheets/util"
 	"gorm.io/gorm"
 )
 
-func graphqlHandler(db *gorm.DB, cfg *util.ServerConfig) gin.HandlerFunc {
+func graphqlHandler(db *gorm.DB, cfg *config.Config) gin.HandlerFunc {
 	gql := handler.GraphqlHandler(db, cfg)
 	return func(c *gin.Context) {
 		gql.ServeHTTP(c.Writer, c.Request)
@@ -30,7 +31,7 @@ func playgroundHandler(cfg *util.GqlConfig) gin.HandlerFunc {
 	}
 }
 
-func registerRoutes(router *gin.RouterGroup, cfg *util.ServerConfig, db *gorm.DB) {
+func registerRoutes(router *gin.RouterGroup, cfg *config.Config, db *gorm.DB) {
 	router.GET("/health", healthHandler())
 
 	// support GET for automatic persisted queries

@@ -3,7 +3,8 @@ package internalauth
 import (
 	"errors"
 	"fmt"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"

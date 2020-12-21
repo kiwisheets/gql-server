@@ -56,7 +56,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	token, err := internalauth.LoginUser(user, permissions, &r.Cfg.JWT)
 
 	if err != nil {
-		return nil, fmt.Errorf("Email of Password Incorrect")
+		return nil, fmt.Errorf("Email or Password Incorrect")
 	}
 
 	return &model.AuthData{
