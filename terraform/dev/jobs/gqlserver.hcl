@@ -2,14 +2,17 @@ job "gql-server" {
   datacenters = ["${datacenter}"]
 
   update {
-    auto_revert      = true
-    max_parallel     = 3
-    min_healthy_time = "30s"
-    healthy_deadline = "2m"
+    auto_revert       = true
+    auto_promote      = true
+    canary            = 1
+    max_parallel      = 3
+    min_healthy_time  = "1m"
+    healthy_deadline  = "5m"
+    progress_deadline = "10m"
   }
 
   group "gql-server" {
-    count = 1
+    count = 2
 
     task "gql-server" {
       driver = "docker"
