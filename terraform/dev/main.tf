@@ -98,3 +98,9 @@ resource "nomad_job" "gql_server" {
   })
   detach = false
 }
+
+resource "consul_intention" "gql-server-tunnel" {
+  source_name      = "tunnel-gql-server"
+  destination_name = "gql-server"
+  action           = "allow"
+}
