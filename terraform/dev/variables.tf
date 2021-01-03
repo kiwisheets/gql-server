@@ -11,3 +11,7 @@ variable "instance_count" {
   type        = number
   description = "number of server instances to launch"
 }
+
+variable "cloudflare_zone_id" {
+  type = string
+}

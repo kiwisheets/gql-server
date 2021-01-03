@@ -202,4 +202,74 @@ job "gql-server" {
       }
     }
   }
+  
+  group "tunnel" {
+    count = 1
+
+    task "cloudflared" {
+      driver = "docker"
+
+      config {
+        image = "cloudflare/cloudflared:${cloudflared_version}"
+
+        args = [
+          "tunnel",
+          "--no-autoupdate"
+        ]
+
+        volumes = [
+          "secrets/cert.pem:/etc/cloudflared/cert.pem"
+        ]
+      }
+
+      env {
+        TUNNEL_URL = "http://127.0.0.1:8080"
+        TUNNEL_HOSTNAME = "api-dev-gql-server.kiwisheets.com"
+      }
+
+      resources {
+        cpu = 25
+        memory = 20
+      }
+
+      template {
+        data = <<EOF
+{{with secret "secret/data/cloudflared"}}{{.Data.data.cert}}{{end}}
+EOF
+        destination = "secrets/cert.pem"
+      }
+
+      vault {
+        policies = ["cloudflared"]
+      }
+    }
+
+    network {
+      mode = "bridge"
+      dns {
+        servers = ["1.1.1.1", "1.0.0.1"]
+      }
+    }
+
+    service {
+      name = "tunnel-gql-server"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "gql-server"
+              local_bind_port = 8080
+            }
+          }
+        }
+        sidecar_task {
+          resources {
+            cpu    = 20
+            memory = 32
+          }
+        }
+      }
+    }
+  }
 }

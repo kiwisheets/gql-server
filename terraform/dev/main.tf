@@ -16,6 +16,8 @@ provider "consul" {
 
 provider "vault" {}
 
+provider "cloudflare" {}
+
 resource "random_password" "postgres_password" {
   length  = 32
   special = false
@@ -89,9 +91,10 @@ EOT
 
 resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
-    datacenter = var.datacenter
-    image_tag  = var.image_tag
-    instance   = var.instance_count
+    datacenter          = var.datacenter
+    image_tag           = var.image_tag
+    instance            = var.instance_count
+    cloudflared_version = "2020.12.0"
   })
   detach = false
 }

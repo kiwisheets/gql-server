@@ -11,6 +11,7 @@ require (
 	github.com/dwin/goArgonPass v1.0.2
 	github.com/emvi/hide v1.1.1
 	github.com/fsnotify/fsnotify v1.4.9
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible
