@@ -59,7 +59,7 @@ func HashPassword(password string) (string, error) {
 
 	start := time.Now()
 
-	hash, err := argonpass.Hash(password, argonpass.ArgonParams{
+	hash, err := argonpass.Hash(password, &argonpass.ArgonParams{
 		Time:        15,
 		Memory:      48 * 1024,
 		Parallelism: 2,

@@ -46,7 +46,7 @@ func Middleware(db *gorm.DB) gin.HandlerFunc {
 			CompanyByCode:                   newCompanyByCodeLoader(db),
 			DomainsByCompanyID:              newDomainsByCompanyIDLoader(db),
 			RolesByUserID:                   newRoleByUserIDLoader(db),
-			PermissionsByUserID:             newPermissionsLoaderByUserIDLoader(db),
+			PermissionsByUserID:             newPermissionsByUserIDLoader(db),
 			ClientBillingAddressByClientID:  newAddressByAddresseeIDLoader(db, model.ClientBillingAddressType),
 			ClientShippingAddressByClientID: newAddressByAddresseeIDLoader(db, model.ClientShippingAddressType),
 			//PermissionByUserID: newPermissionsByUserIDLoader(db),

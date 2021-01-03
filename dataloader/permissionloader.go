@@ -14,7 +14,7 @@ type Result struct {
 	UserID hide.ID
 }
 
-func newPermissionsLoaderByUserIDLoader(db *gorm.DB) *generated.PermissionsLoader {
+func newPermissionsByUserIDLoader(db *gorm.DB) *generated.PermissionsLoader {
 	return generated.NewPermissionsLoader(generated.PermissionsLoaderConfig{
 		MaxBatch: 500,
 		Wait:     1 * time.Millisecond,
