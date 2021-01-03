@@ -1138,7 +1138,7 @@ extend type Mutation {
   phone: String
   shippingAddress: Address @goField(forceResolver: true)
   billingAddress: Address @goField(forceResolver: true)
-  contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contacts:Read")
+  contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contact:Read")
   createdAt: Time!
 }
 
@@ -2619,7 +2619,7 @@ func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.
 			return ec.resolvers.Client().Contacts(rctx, obj)
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			perm, err := ec.unmarshalNString2string(ctx, "Contacts:Read")
+			perm, err := ec.unmarshalNString2string(ctx, "Contact:Read")
 			if err != nil {
 				return nil, err
 			}

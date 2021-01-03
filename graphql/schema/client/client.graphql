@@ -7,7 +7,7 @@ type Client @key(fields: "id") {
   phone: String
   shippingAddress: Address @goField(forceResolver: true)
   billingAddress: Address @goField(forceResolver: true)
-  contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contacts:Read")
+  contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contact:Read")
   createdAt: Time!
 }
 
