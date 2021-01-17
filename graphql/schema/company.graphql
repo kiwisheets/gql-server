@@ -1,9 +1,12 @@
 type Company {
   id: ID!
-	name: String!
-	code: String!
+  name: String!
+  code: String!
   users: [User!]! @goField(forceResolver: true) @hasPerm(perm: "Users:Read")
   domains: [String!]! @goField(forceResolver: true)
+  website: String!
+  billingAddress: Address! @goField(forceResolver: true)
+  shippingAddress: Address! @goField(forceResolver: true)
   createdAt: Time!
 }
 
@@ -11,6 +14,9 @@ input CreateCompanyInput {
   name: String!
   code: String!
   domains: [String!]!
+  website: String!
+  billingAddress: CreateAddressInput!
+  shippingAddress: CreateAddressInput!
 }
 
 extend type Query {
@@ -23,7 +29,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  createCompany(company: CreateCompanyInput!): Company @hasPerm(perm: "OtherCompany:Create")
+  createCompany(company: CreateCompanyInput!): Company
+    @hasPerm(perm: "OtherCompany:Create")
 
   deleteCompany(id: ID!): Boolean @hasPerm(perm: "OtherCompany:Delete")
 }

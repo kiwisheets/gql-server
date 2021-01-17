@@ -1,6 +1,6 @@
 package main
 
-//go:generate go run github.com/kiwisheets/gqlgencs
+//go:generate go run github.com/maxtroughear/gqlgencs
 
 import (
 	"os"

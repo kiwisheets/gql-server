@@ -53,29 +53,8 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 		BusinessNumber: client.BusinessNumber,
 	}
 
-	if client.BillingAddress != nil {
-		clientObject.BillingAddress = &model.Address{
-			Name:       client.BillingAddress.Name,
-			Street1:    client.BillingAddress.Street1,
-			Street2:    client.BillingAddress.Street2,
-			City:       client.BillingAddress.City,
-			PostalCode: client.BillingAddress.PostalCode,
-			State:      client.BillingAddress.State,
-			Country:    client.BillingAddress.Country,
-		}
-	}
-
-	if client.ShippingAddress != nil {
-		clientObject.ShippingAddress = &model.Address{
-			Name:       client.ShippingAddress.Name,
-			Street1:    client.ShippingAddress.Street1,
-			Street2:    client.ShippingAddress.Street2,
-			City:       client.ShippingAddress.City,
-			PostalCode: client.ShippingAddress.PostalCode,
-			State:      client.ShippingAddress.State,
-			Country:    client.ShippingAddress.Country,
-		}
-	}
+	clientObject.BillingAddress = model.MapInputToAddress(*client.BillingAddress)
+	clientObject.ShippingAddress = model.MapInputToAddress(*client.ShippingAddress)
 
 	// changeset.ApplyChanges(, &clientObject)
 

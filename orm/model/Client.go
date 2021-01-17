@@ -16,8 +16,8 @@ type Client struct {
 	BusinessNumber *string
 	Phone          *string
 
-	BillingAddress  *Address `gorm:"polymorphic:Addressee;polymorphicValue:client_billing"`
-	ShippingAddress *Address `gorm:"polymorphic:Addressee;polymorphicValue:client_shipping"`
+	BillingAddress  Address `gorm:"polymorphic:Addressee;polymorphicValue:client_billing"`
+	ShippingAddress Address `gorm:"polymorphic:Addressee;polymorphicValue:client_shipping"`
 
 	Contacts  []Contact
 	CompanyID hide.ID `json:"company"`

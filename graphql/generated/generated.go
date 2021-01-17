@@ -88,12 +88,15 @@ type ComplexityRoot struct {
 	}
 
 	Company struct {
-		Code      func(childComplexity int) int
-		CreatedAt func(childComplexity int) int
-		Domains   func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Users     func(childComplexity int) int
+		BillingAddress  func(childComplexity int) int
+		Code            func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		Domains         func(childComplexity int) int
+		ID              func(childComplexity int) int
+		Name            func(childComplexity int) int
+		ShippingAddress func(childComplexity int) int
+		Users           func(childComplexity int) int
+		Website         func(childComplexity int) int
 	}
 
 	Contact struct {
@@ -186,6 +189,9 @@ type ClientResolver interface {
 type CompanyResolver interface {
 	Users(ctx context.Context, obj *model.Company) ([]*model.User, error)
 	Domains(ctx context.Context, obj *model.Company) ([]string, error)
+
+	BillingAddress(ctx context.Context, obj *model.Company) (*model.Address, error)
+	ShippingAddress(ctx context.Context, obj *model.Company) (*model.Address, error)
 }
 type EntityResolver interface {
 	FindClientByID(ctx context.Context, id hide.ID) (*model.Client, error)
@@ -394,6 +400,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Client.Website(childComplexity), true
 
+	case "Company.billingAddress":
+		if e.complexity.Company.BillingAddress == nil {
+			break
+		}
+
+		return e.complexity.Company.BillingAddress(childComplexity), true
+
 	case "Company.code":
 		if e.complexity.Company.Code == nil {
 			break
@@ -429,12 +442,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Company.Name(childComplexity), true
 
+	case "Company.shippingAddress":
+		if e.complexity.Company.ShippingAddress == nil {
+			break
+		}
+
+		return e.complexity.Company.ShippingAddress(childComplexity), true
+
 	case "Company.users":
 		if e.complexity.Company.Users == nil {
 			break
 		}
 
 		return e.complexity.Company.Users(childComplexity), true
+
+	case "Company.website":
+		if e.complexity.Company.Website == nil {
+			break
+		}
+
+		return e.complexity.Company.Website(childComplexity), true
 
 	case "Contact.createdAt":
 		if e.complexity.Contact.CreatedAt == nil {
@@ -1136,9 +1163,11 @@ extend type Mutation {
   vatNumber: String
   businessNumber: String
   phone: String
-  shippingAddress: Address @goField(forceResolver: true)
-  billingAddress: Address @goField(forceResolver: true)
-  contacts: [Contact!] @goField(forceResolver: true) @hasPerm(perm: "Contact:Read")
+  shippingAddress: Address! @goField(forceResolver: true)
+  billingAddress: Address! @goField(forceResolver: true)
+  contacts: [Contact!]
+    @goField(forceResolver: true)
+    @hasPerm(perm: "Contact:Read")
   createdAt: Time!
 }
 
@@ -1148,8 +1177,8 @@ input CreateClientInput {
   vatNumber: String
   businessNumber: String
   phone: String
-  billingAddress: CreateAddressInput
-  shippingAddress: CreateAddressInput
+  billingAddress: CreateAddressInput!
+  shippingAddress: CreateAddressInput!
 }
 
 input UpdateClientInput {
@@ -1173,10 +1202,12 @@ extend type Query {
 }
 
 extend type Mutation {
-  createClient(client: CreateClientInput!): Client @hasPerm(perm: "Client:Create")
+  createClient(client: CreateClientInput!): Client
+    @hasPerm(perm: "Client:Create")
   # createClientForCompany(companyID: ID!, client: CreateClientInput!) @hasPerm(perm: "OtherClient:Create")
 
-  updateClient(id: ID! client: UpdateClientInput!): Client @hasPerm(perm: "Client:Update")
+  updateClient(id: ID!, client: UpdateClientInput!): Client
+    @hasPerm(perm: "Client:Update")
 
   deleteClient(id: ID!): Boolean @hasPerm(perm: "Client:Delete")
 }
@@ -1202,10 +1233,13 @@ type Contact {
 `, BuiltIn: false},
 	{Name: "graphql/schema/company.graphql", Input: `type Company {
   id: ID!
-	name: String!
-	code: String!
+  name: String!
+  code: String!
   users: [User!]! @goField(forceResolver: true) @hasPerm(perm: "Users:Read")
   domains: [String!]! @goField(forceResolver: true)
+  website: String!
+  billingAddress: Address! @goField(forceResolver: true)
+  shippingAddress: Address! @goField(forceResolver: true)
   createdAt: Time!
 }
 
@@ -1213,6 +1247,9 @@ input CreateCompanyInput {
   name: String!
   code: String!
   domains: [String!]!
+  website: String!
+  billingAddress: CreateAddressInput!
+  shippingAddress: CreateAddressInput!
 }
 
 extend type Query {
@@ -1225,7 +1262,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  createCompany(company: CreateCompanyInput!): Company @hasPerm(perm: "OtherCompany:Create")
+  createCompany(company: CreateCompanyInput!): Company
+    @hasPerm(perm: "OtherCompany:Create")
 
   deleteCompany(id: ID!): Boolean @hasPerm(perm: "OtherCompany:Delete")
 }
@@ -2561,11 +2599,14 @@ func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field g
 	})
 
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Client_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
@@ -2590,11 +2631,14 @@ func (ec *executionContext) _Client_billingAddress(ctx context.Context, field gr
 	})
 
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
@@ -2864,6 +2908,102 @@ func (ec *executionContext) _Company_domains(ctx context.Context, field graphql.
 	res := resTmp.([]string)
 	fc.Result = res
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Company_website(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Company",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Website, nil
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Company_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Company",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Company().BillingAddress(rctx, obj)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Address)
+	fc.Result = res
+	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Company_shippingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Company",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Company().ShippingAddress(rctx, obj)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Address)
+	fc.Result = res
+	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Company_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
@@ -7102,7 +7242,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7110,7 +7250,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7147,6 +7287,30 @@ func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("domains"))
 			it.Domains, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "website":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("website"))
+			it.Website, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "billingAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
+			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "shippingAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
+			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7443,6 +7607,9 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 					}
 				}()
 				res = ec._Client_shippingAddress(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "billingAddress":
@@ -7454,6 +7621,9 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 					}
 				}()
 				res = ec._Client_billingAddress(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "contacts":
@@ -7532,6 +7702,39 @@ func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, 
 					}
 				}()
 				res = ec._Company_domains(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "website":
+			out.Values[i] = ec._Company_website(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "billingAddress":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Company_billingAddress(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "shippingAddress":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Company_shippingAddress(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8397,6 +8600,20 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNAddress2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v model.Address) graphql.Marshaler {
+	return ec._Address(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Address(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNAuthData2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v model.AuthData) graphql.Marshaler {
 	return ec._AuthData(ctx, sel, &v)
 }
@@ -8462,6 +8679,11 @@ func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgql�
 		return graphql.Null
 	}
 	return ec._Contact(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx context.Context, v interface{}) (*modelgen.CreateAddressInput, error) {
+	res, err := ec.unmarshalInputCreateAddressInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx context.Context, v interface{}) (modelgen.CreateClientInput, error) {
@@ -8994,13 +9216,6 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Address(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

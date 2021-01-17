@@ -1,0 +1,32 @@
+version: "3"
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      PGDATA: /var/lib/postgresql/data/db
+      POSTGRES_DB: dts
+      POSTGRES_USER: dts
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pg-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  # rabbit:
+  #   image: rabbitmq:management
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+
+volumes:
+  pg-db:

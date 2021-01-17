@@ -16,7 +16,22 @@ func RequiredUsers(db *gorm.DB) {
 	db.Where(model.Company{
 		Code: "sa",
 	}).Attrs(model.Company{
-		Name: "Service Admins",
+		Name:    "Service Admins",
+		Website: "https://kiwisheets.com",
+		BillingAddress: model.Address{
+			Name:       "Test",
+			Street1:    "123 Some Street",
+			City:       "Auckland",
+			PostalCode: 1234,
+			Country:    "New Zealand",
+		},
+		ShippingAddress: model.Address{
+			Name:       "Test",
+			Street1:    "123 Some Street",
+			City:       "Auckland",
+			PostalCode: 1234,
+			Country:    "New Zealand",
+		},
 	}).FirstOrCreate(&company)
 
 	var domain model.Domain
@@ -83,5 +98,19 @@ func RequiredUsers(db *gorm.DB) {
 		VatNumber:      util.String("1234567890"),
 		BusinessNumber: util.String("0987654321"),
 		Website:        util.String("https://website.com"),
+		BillingAddress: model.Address{
+			Name:       "Aaron",
+			Street1:    "123 Make Believe Street",
+			City:       "Auckland",
+			PostalCode: 1234,
+			Country:    "New Zealand",
+		},
+		ShippingAddress: model.Address{
+			Name:       "Aaron",
+			Street1:    "123 Make Believe Street",
+			City:       "Auckland",
+			PostalCode: 1234,
+			Country:    "New Zealand",
+		},
 	}).FirstOrCreate(&demoClient)
 }

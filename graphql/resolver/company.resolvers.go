@@ -31,10 +31,19 @@ func (r *companyResolver) Domains(ctx context.Context, obj *model.Company) ([]st
 	return domainStrings, errs
 }
 
+func (r *companyResolver) BillingAddress(ctx context.Context, obj *model.Company) (*model.Address, error) {
+	return dataloader.For(ctx).CompanyBillingAddressByCompanyID.Load(obj.IDint())
+}
+
+func (r *companyResolver) ShippingAddress(ctx context.Context, obj *model.Company) (*model.Address, error) {
+	return dataloader.For(ctx).CompanyShippingAddressByCompanyID.Load(obj.IDint())
+}
+
 func (r *mutationResolver) CreateCompany(ctx context.Context, company modelgen.CreateCompanyInput) (*model.Company, error) {
 	companyObject := model.Company{
-		Code: company.Code,
-		Name: company.Name,
+		Code:    company.Code,
+		Name:    company.Name,
+		Website: company.Website,
 	}
 
 	// domain strings to domain models
@@ -43,6 +52,11 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, company modelgen.C
 			Domain: d,
 		})
 	}
+
+	// address mapping
+
+	companyObject.BillingAddress = model.MapInputToAddress(*company.BillingAddress)
+	companyObject.ShippingAddress = model.MapInputToAddress(*company.ShippingAddress)
 
 	if err := r.DB.Create(&companyObject).Error; err != nil {
 		return nil, fmt.Errorf("Unable to create Company. Already exists")
@@ -100,3 +114,13 @@ func (r *queryResolver) Companies(ctx context.Context, page *int) ([]*model.Comp
 func (r *Resolver) Company() generated.CompanyResolver { return &companyResolver{r} }
 
 type companyResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *companyResolver) Website(ctx context.Context, obj *model.Company) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}

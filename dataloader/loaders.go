@@ -19,17 +19,19 @@ type contextKey struct {
 
 // Loaders structure contains usable dataloaders
 type Loaders struct {
-	UserByID                        *generated.UserLoader
-	UsersByCompanyID                *generated.UserSliceLoader
-	UserByEmail                     *generated.UserStringLoader
-	CompanyByID                     *generated.CompanyLoader
-	CompanyByUserID                 *generated.CompanyLoader
-	CompanyByCode                   *generated.CompanyStringLoader
-	DomainsByCompanyID              *generated.DomainSliceLoader
-	RolesByUserID                   *generated.RoleLoader
-	PermissionsByUserID             *generated.PermissionsLoader
-	ClientBillingAddressByClientID  *generated.AddressLoader
-	ClientShippingAddressByClientID *generated.AddressLoader
+	UserByID                          *generated.UserLoader
+	UsersByCompanyID                  *generated.UserSliceLoader
+	UserByEmail                       *generated.UserStringLoader
+	CompanyByID                       *generated.CompanyLoader
+	CompanyByUserID                   *generated.CompanyLoader
+	CompanyByCode                     *generated.CompanyStringLoader
+	DomainsByCompanyID                *generated.DomainSliceLoader
+	RolesByUserID                     *generated.RoleLoader
+	PermissionsByUserID               *generated.PermissionsLoader
+	ClientBillingAddressByClientID    *generated.AddressLoader
+	ClientShippingAddressByClientID   *generated.AddressLoader
+	CompanyBillingAddressByCompanyID  *generated.AddressLoader
+	CompanyShippingAddressByCompanyID *generated.AddressLoader
 	//PermissionByUserID *generated.PermissionsLoader
 }
 
@@ -38,17 +40,19 @@ func Middleware(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
 		loaders := &Loaders{
-			UserByID:                        newUserByIDLoader(db, ctx),
-			UsersByCompanyID:                newUsersByCompanyIDLoader(db),
-			UserByEmail:                     newUserByEmailLoader(db),
-			CompanyByID:                     newCompanyByIDLoader(db),
-			CompanyByUserID:                 newCompanyByUserIDLoader(db),
-			CompanyByCode:                   newCompanyByCodeLoader(db),
-			DomainsByCompanyID:              newDomainsByCompanyIDLoader(db),
-			RolesByUserID:                   newRoleByUserIDLoader(db),
-			PermissionsByUserID:             newPermissionsByUserIDLoader(db),
-			ClientBillingAddressByClientID:  newAddressByAddresseeIDLoader(db, model.ClientBillingAddressType),
-			ClientShippingAddressByClientID: newAddressByAddresseeIDLoader(db, model.ClientShippingAddressType),
+			UserByID:                          newUserByIDLoader(db, ctx),
+			UsersByCompanyID:                  newUsersByCompanyIDLoader(db),
+			UserByEmail:                       newUserByEmailLoader(db),
+			CompanyByID:                       newCompanyByIDLoader(db),
+			CompanyByUserID:                   newCompanyByUserIDLoader(db),
+			CompanyByCode:                     newCompanyByCodeLoader(db),
+			DomainsByCompanyID:                newDomainsByCompanyIDLoader(db),
+			RolesByUserID:                     newRoleByUserIDLoader(db),
+			PermissionsByUserID:               newPermissionsByUserIDLoader(db),
+			ClientBillingAddressByClientID:    newAddressByAddresseeIDLoader(db, model.ClientBillingAddressType),
+			ClientShippingAddressByClientID:   newAddressByAddresseeIDLoader(db, model.ClientShippingAddressType),
+			CompanyBillingAddressByCompanyID:  newAddressByAddresseeIDLoader(db, model.CompanyBillingAddressType),
+			CompanyShippingAddressByCompanyID: newAddressByAddresseeIDLoader(db, model.CompanyShippingAddressType),
 			//PermissionByUserID: newPermissionsByUserIDLoader(db),
 		}
 

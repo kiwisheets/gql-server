@@ -23,9 +23,12 @@ type CreateClientInput struct {
 }
 
 type CreateCompanyInput struct {
-	Name    string   `json:"name"`
-	Code    string   `json:"code"`
-	Domains []string `json:"domains"`
+	Name            string              `json:"name"`
+	Code            string              `json:"code"`
+	Domains         []string            `json:"domains"`
+	Website         string              `json:"website"`
+	BillingAddress  *CreateAddressInput `json:"billingAddress"`
+	ShippingAddress *CreateAddressInput `json:"shippingAddress"`
 }
 
 type UpdateAddressInput struct {

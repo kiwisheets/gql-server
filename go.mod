@@ -7,7 +7,6 @@ require (
 	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/Microsoft/hcsshim v0.8.14 // indirect
 	github.com/NeowayLabs/wabbit v0.0.0-20201021105516-ded4a9ef19d2 // indirect
-	github.com/Yamashou/gqlgenc v0.0.0-20201222083355-342988708f7f
 	github.com/abice/go-enum v0.2.3
 	github.com/bradleyjkemp/cupaloy v2.3.0+incompatible // indirect
 	github.com/containerd/cgroups v0.0.0-20201119153540-4cbc285b3327 // indirect
@@ -36,13 +35,14 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kevinburke/go-bindata v3.22.0+incompatible // indirect
 	github.com/kiwisheets/auth v0.0.8
-	github.com/kiwisheets/gqlgencs v0.0.1
 	github.com/kiwisheets/util v0.0.9
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/goveralls v0.0.7 // indirect
 	github.com/maxtroughear/goenv v0.0.3
+	github.com/maxtroughear/gqlgenc v0.0.0-20210117100838-4eccc0cc402c
+	github.com/maxtroughear/gqlgencs v0.0.3
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/mkideal/cli v0.2.3 // indirect
 	github.com/moby/sys/mount v0.2.0 // indirect
@@ -54,6 +54,7 @@ require (
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pquerna/otp v1.3.0
+	github.com/sethgrid/pester v1.1.0
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/streadway/amqp v1.0.0 // indirect
