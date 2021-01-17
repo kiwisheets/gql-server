@@ -1,4 +1,4 @@
-query GET_COMPANY {
+query GetCompany {
   company {
     id
     name

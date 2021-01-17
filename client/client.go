@@ -134,7 +134,7 @@ type Version struct {
 	Version string "json:\"version\" graphql:\"version\""
 }
 
-const GetClientByIDQuery = `query GET_CLIENT_BY_ID ($id: ID!) {
+const GetClientByIDQuery = `query GetClientByID ($id: ID!) {
 	client(id: $id) {
 		id
 		name
@@ -187,7 +187,7 @@ func (c *Client) GetClientByID(ctx context.Context, id hide.ID, httpRequestOptio
 	return &res, nil
 }
 
-const GetCompanyQuery = `query GET_COMPANY {
+const GetCompanyQuery = `query GetCompany {
 	company {
 		id
 		name

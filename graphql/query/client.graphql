@@ -1,4 +1,4 @@
-query GET_CLIENT_BY_ID($id: ID!) {
+query GetClientByID($id: ID!) {
   client(id: $id) {
     id
     name
