@@ -10,7 +10,7 @@ import (
 
 func AutoMigrateAll(db *gorm.DB) {
 
-	db.DisableForeignKeyConstraintWhenMigrating = true
+	// db.DisableForeignKeyConstraintWhenMigrating = true
 	log.Println("Migrating models...")
 	db.AutoMigrate(&model.Domain{})
 	db.AutoMigrate(&model.Company{})
@@ -25,7 +25,7 @@ func AutoMigrateAll(db *gorm.DB) {
 	db.AutoMigrate(&model.Contact{})
 	db.AutoMigrate(&model.Address{})
 	log.Println("Done")
-	db.DisableForeignKeyConstraintWhenMigrating = false
+	// db.DisableForeignKeyConstraintWhenMigrating = false
 }
 
 func DropAll(db *gorm.DB) {
