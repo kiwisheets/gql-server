@@ -75,6 +75,9 @@ job "gql-server" {
       port "health" {
         to = -1
       }
+      dns {
+        servers = ["1.1.1.1", "1.0.0.1"]
+      }
     }
 
     service {
