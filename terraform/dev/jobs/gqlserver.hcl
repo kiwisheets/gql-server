@@ -72,7 +72,9 @@ job "gql-server" {
 
     network {
       mode = "bridge"
-      port "health" {}
+      port "health" {
+        to = -1
+      }
     }
 
     service {
@@ -110,11 +112,12 @@ job "gql-server" {
       }
 
       check {
-        type     = "http"
-        path     = "/health"
-        port     = "health"
-        interval = "2s"
-        timeout  = "2s"
+        address_mode = "alloc"
+        type         = "http"
+        path         = "/health"
+        port         = "health"
+        interval     = "10s"
+        timeout      = "3s"
       }
     }
   }
