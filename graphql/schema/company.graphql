@@ -1,4 +1,4 @@
-type Company {
+type Company @key(fields: "id") {
   id: ID!
   name: String!
   code: String!
