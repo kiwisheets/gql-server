@@ -20,6 +20,14 @@ func (r *entityResolver) FindClientByID(ctx context.Context, id hide.ID) (*model
 	return client, err
 }
 
+func (r *entityResolver) FindCompanyByID(ctx context.Context, id hide.ID) (*model.Company, error) {
+	company := &model.Company{}
+
+	err := r.DB.Where(id).Find(&company).Error
+
+	return company, err
+}
+
 func (r *entityResolver) FindUserByID(ctx context.Context, id hide.ID) (*model.User, error) {
 	user, err := dataloader.For(ctx).UserByID.Load(int64(id))
 

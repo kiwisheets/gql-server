@@ -234,8 +234,8 @@ job "gql-server" {
       }
 
       resources {
-        cpu = 25
-        memory = 20
+        cpu = 50
+        memory = 40
       }
 
       template {

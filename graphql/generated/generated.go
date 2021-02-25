@@ -111,8 +111,9 @@ type ComplexityRoot struct {
 	}
 
 	Entity struct {
-		FindClientByID func(childComplexity int, id hide.ID) int
-		FindUserByID   func(childComplexity int, id hide.ID) int
+		FindClientByID  func(childComplexity int, id hide.ID) int
+		FindCompanyByID func(childComplexity int, id hide.ID) int
+		FindUserByID    func(childComplexity int, id hide.ID) int
 	}
 
 	Mutation struct {
@@ -195,6 +196,7 @@ type CompanyResolver interface {
 }
 type EntityResolver interface {
 	FindClientByID(ctx context.Context, id hide.ID) (*model.Client, error)
+	FindCompanyByID(ctx context.Context, id hide.ID) (*model.Company, error)
 	FindUserByID(ctx context.Context, id hide.ID) (*model.User, error)
 }
 type MutationResolver interface {
@@ -530,6 +532,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindClientByID(childComplexity, args["id"].(hide.ID)), true
+
+	case "Entity.findCompanyByID":
+		if e.complexity.Entity.FindCompanyByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findCompanyByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindCompanyByID(childComplexity, args["id"].(hide.ID)), true
 
 	case "Entity.findUserByID":
 		if e.complexity.Entity.FindUserByID == nil {
@@ -1231,7 +1245,7 @@ type Contact {
   createdAt: Time!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schema/company.graphql", Input: `type Company {
+	{Name: "graphql/schema/company.graphql", Input: `type Company @key(fields: "id") {
   id: ID!
   name: String!
   code: String!
@@ -1338,11 +1352,12 @@ directive @extends on OBJECT
 `, BuiltIn: true},
 	{Name: "federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Client | User
+union _Entity = Client | Company | User
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
 		findClientByID(id: ID!,): Client!
+	findCompanyByID(id: ID!,): Company!
 	findUserByID(id: ID!,): User!
 
 }
@@ -1394,6 +1409,21 @@ func (ec *executionContext) dir_hasPerms_args(ctx context.Context, rawArgs map[s
 }
 
 func (ec *executionContext) field_Entity_findClientByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 hide.ID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findCompanyByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 hide.ID
@@ -3415,6 +3445,45 @@ func (ec *executionContext) _Entity_findClientByID(ctx context.Context, field gr
 	res := resTmp.(*model.Client)
 	fc.Result = res
 	return ec.marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Entity_findCompanyByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Entity_findCompanyByID_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindCompanyByID(rctx, args["id"].(hide.ID))
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Company)
+	fc.Result = res
+	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Entity_findUserByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7471,6 +7540,13 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._Client(ctx, sel, obj)
+	case model.Company:
+		return ec._Company(ctx, sel, &obj)
+	case *model.Company:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Company(ctx, sel, obj)
 	case model.User:
 		return ec._User(ctx, sel, &obj)
 	case *model.User:
@@ -7653,7 +7729,7 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
-var companyImplementors = []string{"Company"}
+var companyImplementors = []string{"Company", "_Entity"}
 
 func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, obj *model.Company) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, companyImplementors)
@@ -7830,6 +7906,20 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findClientByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "findCompanyByID":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findCompanyByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

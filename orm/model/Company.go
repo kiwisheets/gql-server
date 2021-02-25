@@ -18,3 +18,5 @@ type Company struct {
 	BillingAddress  Address `gorm:"polymorphic:Addressee;polymorphicValue:company_billing"`
 	ShippingAddress Address `gorm:"polymorphic:Addressee;polymorphicValue:company_shipping"`
 }
+
+func (Company) IsEntity() {}
