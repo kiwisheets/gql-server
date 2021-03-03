@@ -12,7 +12,7 @@ job "gql-server" {
   }
 
   group "gql-server" {
-    count = 2
+    count = ${instances}
 
     task "gql-server" {
       driver = "docker"

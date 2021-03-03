@@ -93,8 +93,8 @@ resource "nomad_job" "gql_server" {
   jobspec = templatefile("${path.module}/jobs/gqlserver.hcl", {
     datacenter          = var.datacenter
     image_tag           = var.image_tag
-    instance            = var.instance_count
-    cloudflared_version = "2020.12.0"
+    instances           = var.instance_count
+    cloudflared_version = "2021.2.2"
   })
   detach = false
 }
