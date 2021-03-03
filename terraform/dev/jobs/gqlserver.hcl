@@ -1,15 +1,15 @@
 job "gql-server" {
   datacenters = ["${datacenter}"]
 
-  update {
-    auto_revert       = true
-    auto_promote      = true
-    canary            = 1
-    max_parallel      = 3
-    min_healthy_time  = "1m"
-    healthy_deadline  = "5m"
-    progress_deadline = "10m"
-  }
+  // update {
+  //   auto_revert       = true
+  //   auto_promote      = true
+  //   canary            = 1
+  //   max_parallel      = 3
+  //   min_healthy_time  = "1m"
+  //   healthy_deadline  = "5m"
+  //   progress_deadline = "10m"
+  // }
 
   group "gql-server" {
     count = ${instances}
