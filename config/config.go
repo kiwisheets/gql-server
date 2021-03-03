@@ -9,5 +9,4 @@ type Config struct {
 	JWT         JWTConfig
 	Hash        util.HashConfig
 	Database    util.DatabaseConfig
-	Redis       util.RedisConfig
 }

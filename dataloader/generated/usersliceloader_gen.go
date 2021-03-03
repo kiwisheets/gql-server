@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 )
 
 // UserSliceLoaderConfig captures the config to create a new UserSliceLoader

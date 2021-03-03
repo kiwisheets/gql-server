@@ -9,10 +9,10 @@ import (
 
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth"
-	internalauth "github.com/kiwisheets/gql-server/auth"
+	authpassword "github.com/kiwisheets/gql-server/auth/password"
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"github.com/kiwisheets/gql-server/util"
 	"gorm.io/gorm"
 )
@@ -27,7 +27,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, email string, passwor
 
 	// verify that this user has the ability to create a user for this company
 
-	hash, err := internalauth.HashPassword(password)
+	hash, err := authpassword.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create User. Password invalid")
 	}

@@ -6,7 +6,7 @@ import (
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
 	"github.com/kiwisheets/gql-server/dataloader/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"gorm.io/gorm"
 )
 

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/kiwisheets/gql-server/dataloader/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 )
 
 var loadersKey = &contextKey{"dataloaders"}

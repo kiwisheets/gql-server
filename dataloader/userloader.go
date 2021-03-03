@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/kiwisheets/gql-server/dataloader/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"gorm.io/gorm"
 )
 

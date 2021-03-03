@@ -9,7 +9,7 @@ import (
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 )
 
 func (r *entityResolver) FindClientByID(ctx context.Context, id hide.ID) (*model.Client, error) {

@@ -37,6 +37,9 @@ func Server() *Config {
 			PlaygroundAPIPath: goenv.CanGet("PLAYGROUND_API_PATH", "/api/"),
 			Port:              goenv.MustGet("PORT"),
 			Environment:       goenv.MustGet("ENVIRONMENT"),
+			Redis: util.RedisConfig{
+				Address: goenv.MustGet("REDIS_ADDRESS"),
+			},
 		},
 		Database: util.DatabaseConfig{
 			Host:           goenv.MustGet("POSTGRES_HOST"),
@@ -45,9 +48,6 @@ func Server() *Config {
 			Password:       goenv.MustGetSecretFromEnv("POSTGRES_PASSWORD"),
 			Database:       goenv.MustGet("POSTGRES_DB"),
 			MaxConnections: goenv.CanGetInt32("POSTGRES_MAX_CONNECTIONS", 20),
-		},
-		Redis: util.RedisConfig{
-			Address: goenv.MustGet("REDIS_ADDRESS"),
 		},
 	}
 

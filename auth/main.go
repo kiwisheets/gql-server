@@ -10,7 +10,7 @@ import (
 	"github.com/kiwisheets/auth/permission"
 	"github.com/kiwisheets/auth/token"
 	"github.com/kiwisheets/gql-server/config"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -51,27 +51,6 @@ func VerifyPassword(db *gorm.DB, userID hide.ID, password string) bool {
 	log.Printf("Password hash verify took %s", elapsed)
 
 	return err == nil
-}
-
-// HashPassword attempts to hash the supplied password
-func HashPassword(password string) (string, error) {
-	// debug check time
-
-	start := time.Now()
-
-	hash, err := argonpass.Hash(password, &argonpass.ArgonParams{
-		Time:        15,
-		Memory:      48 * 1024,
-		Parallelism: 2,
-		OutputSize:  1,
-		Function:    "argon2id",
-		SaltSize:    8,
-	})
-
-	elapsed := time.Since(start)
-	log.Printf("Password hash took %s", elapsed)
-
-	return hash, err
 }
 
 func splitToken(header string) (string, error) {

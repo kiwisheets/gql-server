@@ -1,4 +1,4 @@
-package dereference
+package deref
 
 func String(s *string, or string) string {
 	if s == nil {

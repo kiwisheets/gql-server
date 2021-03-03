@@ -14,13 +14,13 @@ federation:
 
 # Where should any generated models go?
 model:
-  filename: graphql/modelgen/models.go
-  package: modelgen
+  filename: model/modelgen.go
+  package: model
 
 # Where should the resolver implementations go?
 resolver:
   layout: follow-schema
-  dir: graphql/resolver
+  dir: resolver
   package: resolver
 
 # Optional: turn on use `gqlgen:"fieldName"` tags in your models
@@ -35,7 +35,7 @@ struct_tag: json
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-  - github.com/kiwisheets/gql-server/orm/model
+  - github.com/kiwisheets/gql-server/model
   - github.com/kiwisheets/auth/permission
 
 # This section declares type mapping between the GraphQL and go type systems
@@ -46,4 +46,4 @@ autobind:
 models:
   ID:
     model:
-      - github.com/kiwisheets/gql-server/orm/model.ID
+      - github.com/kiwisheets/gql-server/model.ID

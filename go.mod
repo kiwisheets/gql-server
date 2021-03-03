@@ -13,6 +13,8 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/joho/godotenv v1.3.0
 	github.com/kiwisheets/auth v0.0.9
+	github.com/kiwisheets/orm v0.0.1
+	github.com/kiwisheets/server v0.1.2
 	github.com/kiwisheets/util v0.0.11
 	github.com/lib/pq v1.9.0
 	github.com/maxtroughear/goenv v0.0.4

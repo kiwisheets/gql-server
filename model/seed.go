@@ -1,9 +1,8 @@
-package seed
+package model
 
 import (
 	"github.com/kiwisheets/auth/permission"
-	password "github.com/kiwisheets/gql-server/auth"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/auth/password"
 	"github.com/kiwisheets/gql-server/util"
 	"gorm.io/gorm"
 )
@@ -11,21 +10,21 @@ import (
 // RequiredUsers ensures that at least a default ServiceAdmin account exists
 func RequiredUsers(db *gorm.DB) {
 
-	var company model.Company
+	var company Company
 
-	db.Where(model.Company{
+	db.Where(Company{
 		Code: "sa",
-	}).Attrs(model.Company{
+	}).Attrs(Company{
 		Name:    "Service Admins",
 		Website: "https://kiwisheets.com",
-		BillingAddress: model.Address{
+		BillingAddress: Address{
 			Name:       "Test",
 			Street1:    "123 Some Street",
 			City:       "Auckland",
 			PostalCode: 1234,
 			Country:    "New Zealand",
 		},
-		ShippingAddress: model.Address{
+		ShippingAddress: Address{
 			Name:       "Test",
 			Street1:    "123 Some Street",
 			City:       "Auckland",
@@ -34,10 +33,10 @@ func RequiredUsers(db *gorm.DB) {
 		},
 	}).FirstOrCreate(&company)
 
-	var domain model.Domain
+	var domain Domain
 
 	// TODO: make default domain configurable via env variables
-	db.Where(model.Domain{
+	db.Where(Domain{
 		Domain:    "kiwisheets.com",
 		CompanyID: company.ID,
 	}).FirstOrCreate(&domain)
@@ -57,12 +56,12 @@ func RequiredUsers(db *gorm.DB) {
 		Name: "Standard User",
 	}).First(&standardUserRole)
 
-	var user model.User
+	var user User
 
-	db.Where(model.User{
+	db.Where(User{
 		CompanyID: company.ID,
 		// Check role
-	}).Attrs(model.User{
+	}).Attrs(User{
 		Email:     "serviceadmin@" + domain.Domain,
 		Firstname: "Service",
 		Lastname:  "Admin",
@@ -72,14 +71,14 @@ func RequiredUsers(db *gorm.DB) {
 		},
 	}).FirstOrCreate(&user)
 
-	var secondUser model.User
+	var secondUser User
 	hash, _ = password.HashPassword("password")
 
-	db.Where(model.User{
+	db.Where(User{
 		CompanyID: company.ID,
 		Email:     "testuser@" + domain.Domain,
 		// Check role
-	}).Attrs(model.User{
+	}).Attrs(User{
 		Firstname: "Test",
 		Lastname:  "User",
 		Password:  hash,
@@ -88,24 +87,24 @@ func RequiredUsers(db *gorm.DB) {
 		},
 	}).FirstOrCreate(&secondUser)
 
-	var demoClient model.Client
+	var demoClient Client
 
-	db.Where(model.Client{
+	db.Where(Client{
 		Name:      "3B",
 		CompanyID: company.ID,
-	}).Attrs(model.Client{
+	}).Attrs(Client{
 		Phone:          util.String("+6421456789"),
 		VatNumber:      util.String("1234567890"),
 		BusinessNumber: util.String("0987654321"),
 		Website:        util.String("https://website.com"),
-		BillingAddress: model.Address{
+		BillingAddress: Address{
 			Name:       "Aaron",
 			Street1:    "123 Make Believe Street",
 			City:       "Auckland",
 			PostalCode: 1234,
 			Country:    "New Zealand",
 		},
-		ShippingAddress: model.Address{
+		ShippingAddress: Address{
 			Name:       "Aaron",
 			Street1:    "123 Make Believe Street",
 			City:       "Auckland",

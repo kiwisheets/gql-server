@@ -10,9 +10,10 @@ import (
 	"github.com/kiwisheets/auth"
 	"github.com/kiwisheets/auth/permission"
 	internalauth "github.com/kiwisheets/gql-server/auth"
+	"github.com/kiwisheets/gql-server/auth/password"
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 )
 
 func (r *mutationResolver) Login(ctx context.Context, email string, password string, twoFactor *string) (*model.AuthData, error) {
@@ -90,7 +91,7 @@ func (r *mutationResolver) ChangePassword(ctx context.Context, oldPassword strin
 		return false, fmt.Errorf("Password Incorrect")
 	}
 
-	hash, err := internalauth.HashPassword(newPassword)
+	hash, err := password.HashPassword(newPassword)
 	if err != nil {
 		return false, fmt.Errorf("Bad password")
 	}

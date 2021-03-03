@@ -11,8 +11,7 @@ import (
 	"github.com/kiwisheets/auth"
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
-	"github.com/kiwisheets/gql-server/graphql/modelgen"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"github.com/kiwisheets/gql-server/util"
 )
 
@@ -39,7 +38,7 @@ func (r *companyResolver) ShippingAddress(ctx context.Context, obj *model.Compan
 	return dataloader.For(ctx).CompanyShippingAddressByCompanyID.Load(obj.IDint())
 }
 
-func (r *mutationResolver) CreateCompany(ctx context.Context, company modelgen.CreateCompanyInput) (*model.Company, error) {
+func (r *mutationResolver) CreateCompany(ctx context.Context, company model.CreateCompanyInput) (*model.Company, error) {
 	companyObject := model.Company{
 		Code:    company.Code,
 		Name:    company.Name,

@@ -12,10 +12,9 @@ import (
 	"github.com/kiwisheets/auth"
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
-	"github.com/kiwisheets/gql-server/graphql/modelgen"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"github.com/kiwisheets/gql-server/util"
-	"github.com/kiwisheets/gql-server/util/dereference"
+	"github.com/kiwisheets/gql-server/util/deref"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -43,7 +42,7 @@ func (r *clientResolver) Contacts(ctx context.Context, obj *model.Client) ([]*mo
 	}}, nil
 }
 
-func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.CreateClientInput) (*model.Client, error) {
+func (r *mutationResolver) CreateClient(ctx context.Context, client model.CreateClientInput) (*model.Client, error) {
 	clientObject := model.Client{
 		Name:           client.Name,
 		CompanyID:      auth.For(ctx).CompanyID,
@@ -67,13 +66,13 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client modelgen.Cre
 	return &clientObject, nil
 }
 
-func (r *mutationResolver) UpdateClient(ctx context.Context, id hide.ID, client modelgen.UpdateClientInput) (*model.Client, error) {
+func (r *mutationResolver) UpdateClient(ctx context.Context, id hide.ID, client model.UpdateClientInput) (*model.Client, error) {
 	res := r.DB.Model(&model.Client{
 		SoftDelete: model.SoftDelete{
 			ID: id,
 		},
 	}).Updates(model.Client{
-		Name:           dereference.String(client.Name, ""),
+		Name:           deref.String(client.Name, ""),
 		Phone:          client.Phone,
 		VatNumber:      client.VatNumber,
 		BusinessNumber: client.BusinessNumber,

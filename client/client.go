@@ -9,7 +9,7 @@ import (
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
 	"github.com/maxtroughear/gqlgenc/client"
 	"github.com/sethgrid/pester"
 )
@@ -44,7 +44,6 @@ type Query struct {
 	Entities              []fedruntime.Entity      "json:\"_entities\" graphql:\"_entities\""
 	Service               fedruntime.Service       "json:\"_service\" graphql:\"_service\""
 }
-
 type Mutation struct {
 	Login                 model.AuthData "json:\"login\" graphql:\"login\""
 	LoginSecure           string         "json:\"loginSecure\" graphql:\"loginSecure\""
@@ -236,7 +235,7 @@ func (c *Client) Version(ctx context.Context, httpRequestOptions ...client.HTTPR
 	vars := map[string]interface{}{}
 
 	var res Version
-	if err := c.Client.Post(ctx, "Version", VersionQuery, &res, vars, httpRequestOptions...); err != nil {
+	if err := c.Client.Post(ctx, "VERSION", VersionQuery, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

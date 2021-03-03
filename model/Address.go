@@ -2,7 +2,6 @@ package model
 
 import (
 	"github.com/emvi/hide"
-	"github.com/kiwisheets/gql-server/graphql/modelgen"
 )
 
 type Address struct {
@@ -19,7 +18,7 @@ type Address struct {
 	AddresseeType string
 }
 
-func MapInputToAddress(in modelgen.CreateAddressInput) Address {
+func MapInputToAddress(in CreateAddressInput) Address {
 	return Address{
 		Name:       in.Name,
 		Street1:    in.Street1,

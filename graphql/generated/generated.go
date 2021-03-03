@@ -17,8 +17,8 @@ import (
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/emvi/hide"
 	"github.com/kiwisheets/auth/permission"
-	"github.com/kiwisheets/gql-server/graphql/modelgen"
-	"github.com/kiwisheets/gql-server/orm/model"
+	"github.com/kiwisheets/gql-server/model"
+	model1 "github.com/kiwisheets/gql-server/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -118,8 +118,8 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		ChangePassword        func(childComplexity int, oldPassword string, newPassword string) int
-		CreateClient          func(childComplexity int, client modelgen.CreateClientInput) int
-		CreateCompany         func(childComplexity int, company modelgen.CreateCompanyInput) int
+		CreateClient          func(childComplexity int, client model.CreateClientInput) int
+		CreateCompany         func(childComplexity int, company model.CreateCompanyInput) int
 		CreateUser            func(childComplexity int, email string, password string) int
 		CreateUserForCompany  func(childComplexity int, companyID hide.ID, email string, password string) int
 		DeleteClient          func(childComplexity int, id hide.ID) int
@@ -134,7 +134,7 @@ type ComplexityRoot struct {
 		LoginSecure           func(childComplexity int, password string) int
 		NewTwoFactorBackups   func(childComplexity int) int
 		RefreshToken          func(childComplexity int) int
-		UpdateClient          func(childComplexity int, id hide.ID, client modelgen.UpdateClientInput) int
+		UpdateClient          func(childComplexity int, id hide.ID, client model.UpdateClientInput) int
 	}
 
 	Permission struct {
@@ -183,37 +183,37 @@ type ComplexityRoot struct {
 }
 
 type ClientResolver interface {
-	ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error)
-	BillingAddress(ctx context.Context, obj *model.Client) (*model.Address, error)
-	Contacts(ctx context.Context, obj *model.Client) ([]*model.Contact, error)
+	ShippingAddress(ctx context.Context, obj *model1.Client) (*model1.Address, error)
+	BillingAddress(ctx context.Context, obj *model1.Client) (*model1.Address, error)
+	Contacts(ctx context.Context, obj *model1.Client) ([]*model1.Contact, error)
 }
 type CompanyResolver interface {
-	Users(ctx context.Context, obj *model.Company) ([]*model.User, error)
-	Domains(ctx context.Context, obj *model.Company) ([]string, error)
+	Users(ctx context.Context, obj *model1.Company) ([]*model1.User, error)
+	Domains(ctx context.Context, obj *model1.Company) ([]string, error)
 
-	BillingAddress(ctx context.Context, obj *model.Company) (*model.Address, error)
-	ShippingAddress(ctx context.Context, obj *model.Company) (*model.Address, error)
+	BillingAddress(ctx context.Context, obj *model1.Company) (*model1.Address, error)
+	ShippingAddress(ctx context.Context, obj *model1.Company) (*model1.Address, error)
 }
 type EntityResolver interface {
-	FindClientByID(ctx context.Context, id hide.ID) (*model.Client, error)
-	FindCompanyByID(ctx context.Context, id hide.ID) (*model.Company, error)
-	FindUserByID(ctx context.Context, id hide.ID) (*model.User, error)
+	FindClientByID(ctx context.Context, id hide.ID) (*model1.Client, error)
+	FindCompanyByID(ctx context.Context, id hide.ID) (*model1.Company, error)
+	FindUserByID(ctx context.Context, id hide.ID) (*model1.User, error)
 }
 type MutationResolver interface {
-	Login(ctx context.Context, email string, password string, twoFactor *string) (*model.AuthData, error)
+	Login(ctx context.Context, email string, password string, twoFactor *string) (*model1.AuthData, error)
 	LoginSecure(ctx context.Context, password string) (string, error)
 	RefreshToken(ctx context.Context) (string, error)
 	ChangePassword(ctx context.Context, oldPassword string, newPassword string) (bool, error)
 	NewTwoFactorBackups(ctx context.Context) ([]string, error)
 	EnableTwoFactor(ctx context.Context, secret string, token string) ([]string, error)
 	DisableTwoFactor(ctx context.Context, password string) (bool, error)
-	CreateClient(ctx context.Context, client modelgen.CreateClientInput) (*model.Client, error)
-	UpdateClient(ctx context.Context, id hide.ID, client modelgen.UpdateClientInput) (*model.Client, error)
+	CreateClient(ctx context.Context, client model.CreateClientInput) (*model1.Client, error)
+	UpdateClient(ctx context.Context, id hide.ID, client model.UpdateClientInput) (*model1.Client, error)
 	DeleteClient(ctx context.Context, id hide.ID) (*bool, error)
-	CreateCompany(ctx context.Context, company modelgen.CreateCompanyInput) (*model.Company, error)
+	CreateCompany(ctx context.Context, company model.CreateCompanyInput) (*model1.Company, error)
 	DeleteCompany(ctx context.Context, id hide.ID) (*bool, error)
-	CreateUser(ctx context.Context, email string, password string) (*model.User, error)
-	CreateUserForCompany(ctx context.Context, companyID hide.ID, email string, password string) (*model.User, error)
+	CreateUser(ctx context.Context, email string, password string) (*model1.User, error)
+	CreateUserForCompany(ctx context.Context, companyID hide.ID, email string, password string) (*model1.User, error)
 	DeleteUser(ctx context.Context, id hide.ID) (*bool, error)
 	DeleteUserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*bool, error)
 	DeleteUsers(ctx context.Context, ids []hide.ID) ([]bool, error)
@@ -227,24 +227,24 @@ type QueryResolver interface {
 	TwoFactorBackups(ctx context.Context) ([]string, error)
 	TwoFactorEnabled(ctx context.Context) (bool, error)
 	Scopes(ctx context.Context) ([]*permission.Permission, error)
-	Client(ctx context.Context, id hide.ID) (*model.Client, error)
+	Client(ctx context.Context, id hide.ID) (*model1.Client, error)
 	ClientCount(ctx context.Context) (int, error)
-	Clients(ctx context.Context, page *int) ([]*model.Client, error)
+	Clients(ctx context.Context, page *int) ([]*model1.Client, error)
 	CompanyName(ctx context.Context, code string) (*string, error)
-	Company(ctx context.Context) (*model.Company, error)
-	OtherCompany(ctx context.Context, id hide.ID) (*model.Company, error)
-	Companies(ctx context.Context, page *int) ([]*model.Company, error)
+	Company(ctx context.Context) (*model1.Company, error)
+	OtherCompany(ctx context.Context, id hide.ID) (*model1.Company, error)
+	Companies(ctx context.Context, page *int) ([]*model1.Company, error)
 	Version(ctx context.Context) (string, error)
-	Me(ctx context.Context) (*model.User, error)
-	User(ctx context.Context, id hide.ID) (*model.User, error)
-	UserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*model.User, error)
-	Users(ctx context.Context, page *int) ([]*model.User, error)
-	UsersForCompany(ctx context.Context, companyID hide.ID, page *int) ([]*model.User, error)
-	SearchUsers(ctx context.Context, search string, page *int) ([]*model.User, error)
-	SearchUsersForCompany(ctx context.Context, companyID hide.ID, search string, page *int) ([]*model.User, error)
+	Me(ctx context.Context) (*model1.User, error)
+	User(ctx context.Context, id hide.ID) (*model1.User, error)
+	UserForCompany(ctx context.Context, companyID hide.ID, id hide.ID) (*model1.User, error)
+	Users(ctx context.Context, page *int) ([]*model1.User, error)
+	UsersForCompany(ctx context.Context, companyID hide.ID, page *int) ([]*model1.User, error)
+	SearchUsers(ctx context.Context, search string, page *int) ([]*model1.User, error)
+	SearchUsersForCompany(ctx context.Context, companyID hide.ID, search string, page *int) ([]*model1.User, error)
 }
 type UserResolver interface {
-	Company(ctx context.Context, obj *model.User) (*model.Company, error)
+	Company(ctx context.Context, obj *model1.User) (*model1.Company, error)
 }
 
 type executableSchema struct {
@@ -579,7 +579,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateClient(childComplexity, args["client"].(modelgen.CreateClientInput)), true
+		return e.complexity.Mutation.CreateClient(childComplexity, args["client"].(model.CreateClientInput)), true
 
 	case "Mutation.createCompany":
 		if e.complexity.Mutation.CreateCompany == nil {
@@ -591,7 +591,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateCompany(childComplexity, args["company"].(modelgen.CreateCompanyInput)), true
+		return e.complexity.Mutation.CreateCompany(childComplexity, args["company"].(model.CreateCompanyInput)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -761,7 +761,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateClient(childComplexity, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput)), true
+		return e.complexity.Mutation.UpdateClient(childComplexity, args["id"].(hide.ID), args["client"].(model.UpdateClientInput)), true
 
 	case "Permission.operation":
 		if e.complexity.Permission.Operation == nil {
@@ -1480,10 +1480,10 @@ func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 modelgen.CreateClientInput
+	var arg0 model.CreateClientInput
 	if tmp, ok := rawArgs["client"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg0, err = ec.unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateClientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1495,10 +1495,10 @@ func (ec *executionContext) field_Mutation_createClient_args(ctx context.Context
 func (ec *executionContext) field_Mutation_createCompany_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 modelgen.CreateCompanyInput
+	var arg0 model.CreateCompanyInput
 	if tmp, ok := rawArgs["company"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("company"))
-		arg0, err = ec.unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateCompanyInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1771,10 +1771,10 @@ func (ec *executionContext) field_Mutation_updateClient_args(ctx context.Context
 		}
 	}
 	args["id"] = arg0
-	var arg1 modelgen.UpdateClientInput
+	var arg1 model.UpdateClientInput
 	if tmp, ok := rawArgs["client"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
-		arg1, err = ec.unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐUpdateClientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2119,7 +2119,7 @@ func (ec *executionContext) _fieldMiddleware(ctx context.Context, obj interface{
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Address_name(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_name(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2151,7 +2151,7 @@ func (ec *executionContext) _Address_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_street1(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_street1(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2183,7 +2183,7 @@ func (ec *executionContext) _Address_street1(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_street2(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_street2(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2212,7 +2212,7 @@ func (ec *executionContext) _Address_street2(ctx context.Context, field graphql.
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_city(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_city(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2244,7 +2244,7 @@ func (ec *executionContext) _Address_city(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_state(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_state(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2273,7 +2273,7 @@ func (ec *executionContext) _Address_state(ctx context.Context, field graphql.Co
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_postalCode(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_postalCode(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2305,7 +2305,7 @@ func (ec *executionContext) _Address_postalCode(ctx context.Context, field graph
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_country(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_country(ctx context.Context, field graphql.CollectedField, obj *model1.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2337,7 +2337,7 @@ func (ec *executionContext) _Address_country(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthData_user(ctx context.Context, field graphql.CollectedField, obj *model.AuthData) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthData_user(ctx context.Context, field graphql.CollectedField, obj *model1.AuthData) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2361,12 +2361,12 @@ func (ec *executionContext) _AuthData_user(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthData_token(ctx context.Context, field graphql.CollectedField, obj *model.AuthData) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthData_token(ctx context.Context, field graphql.CollectedField, obj *model1.AuthData) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2395,7 +2395,7 @@ func (ec *executionContext) _AuthData_token(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthData_twoFactorEnabled(ctx context.Context, field graphql.CollectedField, obj *model.AuthData) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthData_twoFactorEnabled(ctx context.Context, field graphql.CollectedField, obj *model1.AuthData) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2427,7 +2427,7 @@ func (ec *executionContext) _AuthData_twoFactorEnabled(ctx context.Context, fiel
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_id(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_id(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2459,7 +2459,7 @@ func (ec *executionContext) _Client_id(ctx context.Context, field graphql.Collec
 	return ec.marshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_name(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_name(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2491,7 +2491,7 @@ func (ec *executionContext) _Client_name(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_website(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_website(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2520,7 +2520,7 @@ func (ec *executionContext) _Client_website(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_vatNumber(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_vatNumber(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2549,7 +2549,7 @@ func (ec *executionContext) _Client_vatNumber(ctx context.Context, field graphql
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_businessNumber(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_businessNumber(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2578,7 +2578,7 @@ func (ec *executionContext) _Client_businessNumber(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_phone(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_phone(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2607,7 +2607,7 @@ func (ec *executionContext) _Client_phone(ctx context.Context, field graphql.Col
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2634,12 +2634,12 @@ func (ec *executionContext) _Client_shippingAddress(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Address)
+	res := resTmp.(*model1.Address)
 	fc.Result = res
 	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2666,12 +2666,12 @@ func (ec *executionContext) _Client_billingAddress(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Address)
+	res := resTmp.(*model1.Address)
 	fc.Result = res
 	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2710,21 +2710,21 @@ func (ec *executionContext) _Client_contacts(ctx context.Context, field graphql.
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.Contact); ok {
+		if data, ok := tmp.([]*model1.Contact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Contact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.Contact`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Contact)
+	res := resTmp.([]*model1.Contact)
 	fc.Result = res
 	return ec.marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContactᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Client_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+func (ec *executionContext) _Client_createdAt(ctx context.Context, field graphql.CollectedField, obj *model1.Client) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2756,7 +2756,7 @@ func (ec *executionContext) _Client_createdAt(ctx context.Context, field graphql
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_id(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_id(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2788,7 +2788,7 @@ func (ec *executionContext) _Company_id(ctx context.Context, field graphql.Colle
 	return ec.marshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_name(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_name(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2820,7 +2820,7 @@ func (ec *executionContext) _Company_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_code(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_code(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2852,7 +2852,7 @@ func (ec *executionContext) _Company_code(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_users(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_users(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2891,10 +2891,10 @@ func (ec *executionContext) _Company_users(ctx context.Context, field graphql.Co
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.User); ok {
+		if data, ok := tmp.([]*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -2903,12 +2903,12 @@ func (ec *executionContext) _Company_users(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.User)
+	res := resTmp.([]*model1.User)
 	fc.Result = res
 	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_domains(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_domains(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2940,7 +2940,7 @@ func (ec *executionContext) _Company_domains(ctx context.Context, field graphql.
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_website(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_website(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2972,7 +2972,7 @@ func (ec *executionContext) _Company_website(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_billingAddress(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2999,12 +2999,12 @@ func (ec *executionContext) _Company_billingAddress(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Address)
+	res := resTmp.(*model1.Address)
 	fc.Result = res
 	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_shippingAddress(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_shippingAddress(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3031,12 +3031,12 @@ func (ec *executionContext) _Company_shippingAddress(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Address)
+	res := resTmp.(*model1.Address)
 	fc.Result = res
 	return ec.marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+func (ec *executionContext) _Company_createdAt(ctx context.Context, field graphql.CollectedField, obj *model1.Company) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3068,7 +3068,7 @@ func (ec *executionContext) _Company_createdAt(ctx context.Context, field graphq
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3100,7 +3100,7 @@ func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.Colle
 	return ec.marshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_email(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_email(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3153,7 +3153,7 @@ func (ec *executionContext) _Contact_email(ctx context.Context, field graphql.Co
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_phone(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_phone(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3206,7 +3206,7 @@ func (ec *executionContext) _Contact_phone(ctx context.Context, field graphql.Co
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_mobile(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_mobile(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3259,7 +3259,7 @@ func (ec *executionContext) _Contact_mobile(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_preferredContact(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_preferredContact(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3298,21 +3298,21 @@ func (ec *executionContext) _Contact_preferredContact(ctx context.Context, field
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.PreferredContact); ok {
+		if data, ok := tmp.(*model1.PreferredContact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.PreferredContact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.PreferredContact`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.PreferredContact)
+	res := resTmp.(*model1.PreferredContact)
 	fc.Result = res
 	return ec.marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_firstname(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_firstname(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3344,7 +3344,7 @@ func (ec *executionContext) _Contact_firstname(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_lastname(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_lastname(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3376,7 +3376,7 @@ func (ec *executionContext) _Contact_lastname(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_createdAt(ctx context.Context, field graphql.CollectedField, obj *model1.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3442,7 +3442,7 @@ func (ec *executionContext) _Entity_findClientByID(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Client)
+	res := resTmp.(*model1.Client)
 	fc.Result = res
 	return ec.marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
@@ -3481,7 +3481,7 @@ func (ec *executionContext) _Entity_findCompanyByID(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Company)
+	res := resTmp.(*model1.Company)
 	fc.Result = res
 	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
@@ -3520,7 +3520,7 @@ func (ec *executionContext) _Entity_findUserByID(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -3559,7 +3559,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.AuthData)
+	res := resTmp.(*model1.AuthData)
 	fc.Result = res
 	return ec.marshalNAuthData2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx, field.Selections, res)
 }
@@ -3930,7 +3930,7 @@ func (ec *executionContext) _Mutation_createClient(ctx context.Context, field gr
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().CreateClient(rctx, args["client"].(modelgen.CreateClientInput))
+			return ec.resolvers.Mutation().CreateClient(rctx, args["client"].(model.CreateClientInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			perm, err := ec.unmarshalNString2string(ctx, "Client:Create")
@@ -3950,16 +3950,16 @@ func (ec *executionContext) _Mutation_createClient(ctx context.Context, field gr
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Client); ok {
+		if data, ok := tmp.(*model1.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Client)
+	res := resTmp.(*model1.Client)
 	fc.Result = res
 	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
@@ -3990,7 +3990,7 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateClient(rctx, args["id"].(hide.ID), args["client"].(modelgen.UpdateClientInput))
+			return ec.resolvers.Mutation().UpdateClient(rctx, args["id"].(hide.ID), args["client"].(model.UpdateClientInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			perm, err := ec.unmarshalNString2string(ctx, "Client:Update")
@@ -4010,16 +4010,16 @@ func (ec *executionContext) _Mutation_updateClient(ctx context.Context, field gr
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Client); ok {
+		if data, ok := tmp.(*model1.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Client)
+	res := resTmp.(*model1.Client)
 	fc.Result = res
 	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
@@ -4110,7 +4110,7 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().CreateCompany(rctx, args["company"].(modelgen.CreateCompanyInput))
+			return ec.resolvers.Mutation().CreateCompany(rctx, args["company"].(model.CreateCompanyInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			perm, err := ec.unmarshalNString2string(ctx, "OtherCompany:Create")
@@ -4130,16 +4130,16 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Company); ok {
+		if data, ok := tmp.(*model1.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Company)
+	res := resTmp.(*model1.Company)
 	fc.Result = res
 	return ec.marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
@@ -4250,16 +4250,16 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.User); ok {
+		if data, ok := tmp.(*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -4310,16 +4310,16 @@ func (ec *executionContext) _Mutation_createUserForCompany(ctx context.Context, 
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.User); ok {
+		if data, ok := tmp.(*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -4827,16 +4827,16 @@ func (ec *executionContext) _Query_client(ctx context.Context, field graphql.Col
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Client); ok {
+		if data, ok := tmp.(*model1.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Client)
+	res := resTmp.(*model1.Client)
 	fc.Result = res
 	return ec.marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx, field.Selections, res)
 }
@@ -4943,16 +4943,16 @@ func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.Co
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.Client); ok {
+		if data, ok := tmp.([]*model1.Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.Client`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Client)
+	res := resTmp.([]*model1.Client)
 	fc.Result = res
 	return ec.marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClientᚄ(ctx, field.Selections, res)
 }
@@ -5056,10 +5056,10 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Company); ok {
+		if data, ok := tmp.(*model1.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5068,7 +5068,7 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Company)
+	res := resTmp.(*model1.Company)
 	fc.Result = res
 	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
@@ -5119,16 +5119,16 @@ func (ec *executionContext) _Query_otherCompany(ctx context.Context, field graph
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Company); ok {
+		if data, ok := tmp.(*model1.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Company)
+	res := resTmp.(*model1.Company)
 	fc.Result = res
 	return ec.marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
@@ -5179,16 +5179,16 @@ func (ec *executionContext) _Query_companies(ctx context.Context, field graphql.
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.Company); ok {
+		if data, ok := tmp.([]*model1.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Company)
+	res := resTmp.([]*model1.Company)
 	fc.Result = res
 	return ec.marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx, field.Selections, res)
 }
@@ -5264,16 +5264,16 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.User); ok {
+		if data, ok := tmp.(*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -5324,16 +5324,16 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.User); ok {
+		if data, ok := tmp.(*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -5384,16 +5384,16 @@ func (ec *executionContext) _Query_userForCompany(ctx context.Context, field gra
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.User); ok {
+		if data, ok := tmp.(*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx, field.Selections, res)
 }
@@ -5444,16 +5444,16 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.User); ok {
+		if data, ok := tmp.([]*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.User)
+	res := resTmp.([]*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
@@ -5504,16 +5504,16 @@ func (ec *executionContext) _Query_usersForCompany(ctx context.Context, field gr
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.User); ok {
+		if data, ok := tmp.([]*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.User)
+	res := resTmp.([]*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
@@ -5564,16 +5564,16 @@ func (ec *executionContext) _Query_searchUsers(ctx context.Context, field graphq
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.User); ok {
+		if data, ok := tmp.([]*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.User)
+	res := resTmp.([]*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
@@ -5624,16 +5624,16 @@ func (ec *executionContext) _Query_searchUsersForCompany(ctx context.Context, fi
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.([]*model.User); ok {
+		if data, ok := tmp.([]*model1.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/orm/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/kiwisheets/gql-server/model.User`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.User)
+	res := resTmp.([]*model1.User)
 	fc.Result = res
 	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
@@ -5774,7 +5774,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5806,7 +5806,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_company(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_company(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5845,10 +5845,10 @@ func (ec *executionContext) _User_company(ctx context.Context, field graphql.Col
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.Company); ok {
+		if data, ok := tmp.(*model1.Company); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.Company`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.Company`, tmp)
 	})
 
 	if resTmp == nil {
@@ -5857,12 +5857,12 @@ func (ec *executionContext) _User_company(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Company)
+	res := resTmp.(*model1.Company)
 	fc.Result = res
 	return ec.marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5918,7 +5918,7 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_phone(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_phone(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5971,7 +5971,7 @@ func (ec *executionContext) _User_phone(ctx context.Context, field graphql.Colle
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_mobile(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_mobile(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6024,7 +6024,7 @@ func (ec *executionContext) _User_mobile(ctx context.Context, field graphql.Coll
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_preferredContact(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_preferredContact(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6063,21 +6063,21 @@ func (ec *executionContext) _User_preferredContact(ctx context.Context, field gr
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.PreferredContact); ok {
+		if data, ok := tmp.(*model1.PreferredContact); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/orm/model.PreferredContact`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/kiwisheets/gql-server/model.PreferredContact`, tmp)
 	})
 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.PreferredContact)
+	res := resTmp.(*model1.PreferredContact)
 	fc.Result = res
 	return ec.marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_firstname(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_firstname(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6109,7 +6109,7 @@ func (ec *executionContext) _User_firstname(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_lastname(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_lastname(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6141,7 +6141,7 @@ func (ec *executionContext) _User_lastname(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.CollectedField, obj *model1.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7193,8 +7193,8 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputCreateAddressInput(ctx context.Context, obj interface{}) (modelgen.CreateAddressInput, error) {
-	var it modelgen.CreateAddressInput
+func (ec *executionContext) unmarshalInputCreateAddressInput(ctx context.Context, obj interface{}) (model.CreateAddressInput, error) {
+	var it model.CreateAddressInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -7261,8 +7261,8 @@ func (ec *executionContext) unmarshalInputCreateAddressInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context, obj interface{}) (modelgen.CreateClientInput, error) {
-	var it modelgen.CreateClientInput
+func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context, obj interface{}) (model.CreateClientInput, error) {
+	var it model.CreateClientInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -7311,7 +7311,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7319,7 +7319,7 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7329,8 +7329,8 @@ func (ec *executionContext) unmarshalInputCreateClientInput(ctx context.Context,
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context, obj interface{}) (modelgen.CreateCompanyInput, error) {
-	var it modelgen.CreateCompanyInput
+func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context, obj interface{}) (model.CreateCompanyInput, error) {
+	var it model.CreateCompanyInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -7371,7 +7371,7 @@ func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7379,7 +7379,7 @@ func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7389,8 +7389,8 @@ func (ec *executionContext) unmarshalInputCreateCompanyInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputUpdateAddressInput(ctx context.Context, obj interface{}) (modelgen.UpdateAddressInput, error) {
-	var it modelgen.UpdateAddressInput
+func (ec *executionContext) unmarshalInputUpdateAddressInput(ctx context.Context, obj interface{}) (model.UpdateAddressInput, error) {
+	var it model.UpdateAddressInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -7457,8 +7457,8 @@ func (ec *executionContext) unmarshalInputUpdateAddressInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context, obj interface{}) (modelgen.UpdateClientInput, error) {
-	var it modelgen.UpdateClientInput
+func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context, obj interface{}) (model.UpdateClientInput, error) {
+	var it model.UpdateClientInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -7507,7 +7507,7 @@ func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingAddress"))
-			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.BillingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7515,7 +7515,7 @@ func (ec *executionContext) unmarshalInputUpdateClientInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shippingAddress"))
-			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx, v)
+			it.ShippingAddress, err = ec.unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7533,23 +7533,23 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
-	case model.Client:
+	case model1.Client:
 		return ec._Client(ctx, sel, &obj)
-	case *model.Client:
+	case *model1.Client:
 		if obj == nil {
 			return graphql.Null
 		}
 		return ec._Client(ctx, sel, obj)
-	case model.Company:
+	case model1.Company:
 		return ec._Company(ctx, sel, &obj)
-	case *model.Company:
+	case *model1.Company:
 		if obj == nil {
 			return graphql.Null
 		}
 		return ec._Company(ctx, sel, obj)
-	case model.User:
+	case model1.User:
 		return ec._User(ctx, sel, &obj)
-	case *model.User:
+	case *model1.User:
 		if obj == nil {
 			return graphql.Null
 		}
@@ -7565,7 +7565,7 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 
 var addressImplementors = []string{"Address"}
 
-func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, obj *model.Address) graphql.Marshaler {
+func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, obj *model1.Address) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, addressImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -7616,7 +7616,7 @@ func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, 
 
 var authDataImplementors = []string{"AuthData"}
 
-func (ec *executionContext) _AuthData(ctx context.Context, sel ast.SelectionSet, obj *model.AuthData) graphql.Marshaler {
+func (ec *executionContext) _AuthData(ctx context.Context, sel ast.SelectionSet, obj *model1.AuthData) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, authDataImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -7647,7 +7647,7 @@ func (ec *executionContext) _AuthData(ctx context.Context, sel ast.SelectionSet,
 
 var clientImplementors = []string{"Client", "_Entity"}
 
-func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, obj *model.Client) graphql.Marshaler {
+func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, obj *model1.Client) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, clientImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -7731,7 +7731,7 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 
 var companyImplementors = []string{"Company", "_Entity"}
 
-func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, obj *model.Company) graphql.Marshaler {
+func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, obj *model1.Company) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, companyImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -7834,7 +7834,7 @@ func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, 
 
 var contactImplementors = []string{"Contact"}
 
-func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, obj *model.Contact) graphql.Marshaler {
+func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, obj *model1.Contact) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, contactImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -8356,7 +8356,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var userImplementors = []string{"User", "_Entity"}
 
-func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
+func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model1.User) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -8690,11 +8690,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAddress2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v model.Address) graphql.Marshaler {
+func (ec *executionContext) marshalNAddress2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v model1.Address) graphql.Marshaler {
 	return ec._Address(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
+func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model1.Address) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8704,11 +8704,11 @@ func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋkiwisheetsᚋgql�
 	return ec._Address(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAuthData2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v model.AuthData) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthData2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v model1.AuthData) graphql.Marshaler {
 	return ec._AuthData(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthData2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v *model.AuthData) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthData2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐAuthData(ctx context.Context, sel ast.SelectionSet, v *model1.AuthData) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8733,11 +8733,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNClient2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalNClient2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v model1.Client) graphql.Marshaler {
 	return ec._Client(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model1.Client) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8747,11 +8747,11 @@ func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑ
 	return ec._Client(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCompany2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNCompany2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v model1.Company) graphql.Marshaler {
 	return ec._Company(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model1.Company) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8761,7 +8761,7 @@ func (ec *executionContext) marshalNCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgql�
 	return ec._Company(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model.Contact) graphql.Marshaler {
+func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model1.Contact) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8771,28 +8771,28 @@ func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋkiwisheetsᚋgql�
 	return ec._Contact(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx context.Context, v interface{}) (*modelgen.CreateAddressInput, error) {
+func (ec *executionContext) unmarshalNCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx context.Context, v interface{}) (*model.CreateAddressInput, error) {
 	res, err := ec.unmarshalInputCreateAddressInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateClientInput(ctx context.Context, v interface{}) (modelgen.CreateClientInput, error) {
+func (ec *executionContext) unmarshalNCreateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateClientInput(ctx context.Context, v interface{}) (model.CreateClientInput, error) {
 	res, err := ec.unmarshalInputCreateClientInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateCompanyInput(ctx context.Context, v interface{}) (modelgen.CreateCompanyInput, error) {
+func (ec *executionContext) unmarshalNCreateCompanyInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateCompanyInput(ctx context.Context, v interface{}) (model.CreateCompanyInput, error) {
 	res, err := ec.unmarshalInputCreateCompanyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx context.Context, v interface{}) (hide.ID, error) {
-	res, err := model.UnmarshalID(v)
+	res, err := model1.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNID2githubᚗcomᚋemviᚋhideᚐID(ctx context.Context, sel ast.SelectionSet, v hide.ID) graphql.Marshaler {
-	res := model.MarshalID(v)
+	res := model1.MarshalID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -8916,16 +8916,16 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐUpdateClientInput(ctx context.Context, v interface{}) (modelgen.UpdateClientInput, error) {
+func (ec *executionContext) unmarshalNUpdateClientInput2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐUpdateClientInput(ctx context.Context, v interface{}) (model.UpdateClientInput, error) {
 	res, err := ec.unmarshalInputUpdateClientInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model1.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model1.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -8962,7 +8962,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgql�
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model1.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -9368,7 +9368,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model1.Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9408,14 +9408,14 @@ func (ec *executionContext) marshalOClient2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgql
 	return ret
 }
 
-func (ec *executionContext) marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+func (ec *executionContext) marshalOClient2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model1.Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Client(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model1.Company) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9455,14 +9455,14 @@ func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgq
 	return ret
 }
 
-func (ec *executionContext) marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
+func (ec *executionContext) marshalOCompany2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model1.Company) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Company(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContactᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Contact) graphql.Marshaler {
+func (ec *executionContext) marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐContactᚄ(ctx context.Context, sel ast.SelectionSet, v []*model1.Contact) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9502,7 +9502,7 @@ func (ec *executionContext) marshalOContact2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgq
 	return ret
 }
 
-func (ec *executionContext) unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋgraphqlᚋmodelgenᚐCreateAddressInput(ctx context.Context, v interface{}) (*modelgen.CreateAddressInput, error) {
+func (ec *executionContext) unmarshalOCreateAddressInput2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋmodelᚐCreateAddressInput(ctx context.Context, v interface{}) (*model.CreateAddressInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -9565,16 +9565,16 @@ func (ec *executionContext) marshalOPermission2ᚕᚖgithubᚗcomᚋkiwisheets�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, v interface{}) (*model.PreferredContact, error) {
+func (ec *executionContext) unmarshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, v interface{}) (*model1.PreferredContact, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(model.PreferredContact)
+	var res = new(model1.PreferredContact)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, sel ast.SelectionSet, v *model.PreferredContact) graphql.Marshaler {
+func (ec *executionContext) marshalOPreferredContact2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐPreferredContact(ctx context.Context, sel ast.SelectionSet, v *model1.PreferredContact) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9605,7 +9605,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model1.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -9645,7 +9645,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋkiwisheetsᚋgql�
 	return ret
 }
 
-func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋkiwisheetsᚋgqlᚑserverᚋormᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model1.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
