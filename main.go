@@ -18,7 +18,6 @@ func main() {
 	app := graphqlapi.NewDefault()
 	defer app.Shutdown()
 
-	// connect to db
 	db := model.Init(&cfg.Database)
 	defer db.Close()
 
@@ -38,6 +37,6 @@ func main() {
 	}
 
 	server := app.SetupServer(generated.NewExecutableSchema(c), &cfg.GraphQL, db.DB)
-	server.RouterGroup.Use(dataloader.Middleware(db.DB))
+	server.RegisterMiddleware(dataloader.Middleware(db.DB))
 	server.Run(app.Logger)
 }

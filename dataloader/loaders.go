@@ -11,9 +11,9 @@ import (
 	"github.com/kiwisheets/gql-server/model"
 )
 
-var loadersKey = &contextKey{"dataloaders"}
+var loadersKey = &dataloaderContextKey{"dataloaders"}
 
-type contextKey struct {
+type dataloaderContextKey struct {
 	name string
 }
 

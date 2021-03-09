@@ -31,15 +31,14 @@ func Server() *Config {
 			MinLength: goenv.CanGetInt32("HASH_MIN_LENGTH", 10),
 		},
 		GraphQL: util.GqlConfig{
-			APIPath:           goenv.CanGet("API_PATH", "/"),
 			ComplexityLimit:   200,
+			Environment:       goenv.MustGet("ENVIRONMENT"),
+			APIPath:           goenv.CanGet("API_PATH", "/"),
 			PlaygroundPath:    goenv.CanGet("PLAYGROUND_PATH", "/graphql"),
 			PlaygroundAPIPath: goenv.CanGet("PLAYGROUND_API_PATH", "/api/"),
+			PlaygroundEnabled: goenv.MustGet("ENVIRONMENT") == "development",
 			Port:              goenv.MustGet("PORT"),
-			Environment:       goenv.MustGet("ENVIRONMENT"),
-			Redis: util.RedisConfig{
-				Address: goenv.MustGet("REDIS_ADDRESS"),
-			},
+			Redis:             util.RedisConfig{Address: goenv.MustGet("REDIS_ADDRESS")},
 		},
 		Database: util.DatabaseConfig{
 			Host:           goenv.MustGet("POSTGRES_HOST"),
