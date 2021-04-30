@@ -8,6 +8,7 @@ import (
 	"github.com/kiwisheets/gql-server/dataloader"
 	"github.com/kiwisheets/gql-server/graphql/generated"
 	"github.com/kiwisheets/gql-server/model"
+	"github.com/kiwisheets/gql-server/mq"
 	"github.com/kiwisheets/gql-server/resolver"
 	"github.com/kiwisheets/server/graphqlapi"
 )
@@ -21,12 +22,16 @@ func main() {
 	db := model.Init(&cfg.Database)
 	defer db.Close()
 
+	mq := mq.Init()
+	defer mq.Close()
+
 	directive.Development(cfg.GraphQL.Environment == "development")
 
 	c := generated.Config{
 		Resolvers: &resolver.Resolver{
 			DB:  db.DB,
 			Cfg: cfg,
+			MQ:  mq,
 		},
 		Directives: generated.DirectiveRoot{
 			IsAuthenticated:       directive.IsAuthenticated,

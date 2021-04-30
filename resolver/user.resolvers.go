@@ -57,7 +57,7 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id hide.ID) (*bool, e
 	}).Error; err == gorm.ErrRecordNotFound {
 		return util.Bool(false), fmt.Errorf("User not found")
 	} else if err != nil {
-		return util.Bool(false), fmt.Errorf("No user specified")
+		return util.Bool(false), fmt.Errorf("no user specified")
 	}
 
 	return util.Bool(true), nil

@@ -5,6 +5,7 @@ package resolver
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -15,7 +16,9 @@ import (
 	"github.com/kiwisheets/gql-server/model"
 	"github.com/kiwisheets/gql-server/util"
 	"github.com/kiwisheets/gql-server/util/deref"
+	"github.com/maxtroughear/logrusextension"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
 func (r *clientResolver) ShippingAddress(ctx context.Context, obj *model.Client) (*model.Address, error) {
@@ -55,12 +58,26 @@ func (r *mutationResolver) CreateClient(ctx context.Context, client model.Create
 	clientObject.BillingAddress = model.MapInputToAddress(*client.BillingAddress)
 	clientObject.ShippingAddress = model.MapInputToAddress(*client.ShippingAddress)
 
-	// changeset.ApplyChanges(, &clientObject)
-
-	err := r.DB.Create(&clientObject).Error
-
-	if clientObject.ID == 0 || err != nil {
-		return nil, fmt.Errorf("Unable to create Client")
+	if err := r.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&clientObject).Error; err != nil || clientObject.ID == 0 {
+			return err
+		}
+		msg, err := json.Marshal(clientObject)
+		if err != nil {
+			// continue but log error
+			logrusextension.From(ctx).WithFields(log.Fields{
+				"clientID": clientObject.ID,
+			}).Error("error converting client to JSON")
+		}
+		if err := r.MQ.CreateClient.Produce(msg); err != nil {
+			// continue but log error
+			logrusextension.From(ctx).WithFields(log.Fields{
+				"clientID": clientObject.ID,
+			}).Error("sending client_update to mq")
+		}
+		return nil
+	}); err != nil {
+		return nil, err
 	}
 
 	return &clientObject, nil

@@ -58,7 +58,7 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, company model.Crea
 	companyObject.ShippingAddress = model.MapInputToAddress(*company.ShippingAddress)
 
 	if err := r.DB.Create(&companyObject).Error; err != nil {
-		return nil, fmt.Errorf("Unable to create Company. Already exists")
+		return nil, fmt.Errorf("unable to create Company. Already exists")
 	}
 
 	return &companyObject, nil
@@ -80,7 +80,7 @@ func (r *queryResolver) CompanyName(ctx context.Context, code string) (*string, 
 	var company model.Company
 	err := r.DB.Where("code = ?", code).First(&company).Error
 	if err != nil {
-		return nil, fmt.Errorf("No company exists")
+		return nil, fmt.Errorf("no company exists")
 	}
 
 	return &company.Name, err

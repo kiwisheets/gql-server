@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/99designs/gqlgen v0.13.0
 	github.com/abice/go-enum v0.3.0
+	github.com/cheshir/go-mq v1.1.0
 	github.com/dwin/goArgonPass v1.2.1
 	github.com/emvi/hide v1.1.2
 	github.com/fsnotify/fsnotify v1.4.9
@@ -18,6 +19,7 @@ require (
 	github.com/maxtroughear/goenv v0.0.4
 	github.com/maxtroughear/gqlgenc v0.0.2
 	github.com/maxtroughear/gqlgencs v0.0.5
+	github.com/maxtroughear/logrusextension v0.0.1
 	github.com/pquerna/otp v1.3.0
 	github.com/sethgrid/pester v1.1.0
 	github.com/sirupsen/logrus v1.8.0

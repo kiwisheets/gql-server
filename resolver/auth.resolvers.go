@@ -21,7 +21,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 
 	user, err := dataloader.For(ctx).UserByEmail.Load(email)
 	if err != nil || user == nil {
-		return nil, fmt.Errorf("Email or Password Incorrect")
+		return nil, fmt.Errorf("email or Password Incorrect")
 	}
 
 	permissions, err := dataloader.For(ctx).PermissionsByUserID.Load(user.IDint())
@@ -30,7 +30,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	}
 
 	if !internalauth.VerifyPassword(r.DB, user.ID, password) {
-		return nil, fmt.Errorf("Email or Password Incorrect")
+		return nil, fmt.Errorf("email or Password Incorrect")
 	}
 
 	twoFactorObject, err := internalauth.GetTwoFactor(r.DB, user.ID)
@@ -50,14 +50,14 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 
 		// verify twofactor code, return if invalid
 		if !internalauth.VerifyTwoFactor(twoFactorObject, *twoFactor) {
-			return nil, fmt.Errorf("Invalid 2FA code")
+			return nil, fmt.Errorf("invalid 2FA code")
 		}
 	}
 
 	token, err := internalauth.LoginUser(user, permissions, &r.Cfg.JWT)
 
 	if err != nil {
-		return nil, fmt.Errorf("Email or Password Incorrect")
+		return nil, fmt.Errorf("email or Password Incorrect")
 	}
 
 	return &model.AuthData{
@@ -70,7 +70,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 func (r *mutationResolver) LoginSecure(ctx context.Context, password string) (string, error) {
 	user, err := dataloader.For(ctx).UserByID.Load(int64(auth.For(ctx).UserID))
 	if err != nil || user == nil {
-		return "", fmt.Errorf("Email or Password Incorrect")
+		return "", fmt.Errorf("email or Password Incorrect")
 	}
 	permissions, err := dataloader.For(ctx).PermissionsByUserID.Load(user.IDint())
 	if err != nil {
@@ -88,12 +88,12 @@ func (r *mutationResolver) ChangePassword(ctx context.Context, oldPassword strin
 	userID := auth.For(ctx).UserID
 
 	if !internalauth.VerifyPassword(r.DB, userID, oldPassword) {
-		return false, fmt.Errorf("Password Incorrect")
+		return false, fmt.Errorf("password Incorrect")
 	}
 
 	hash, err := password.HashPassword(newPassword)
 	if err != nil {
-		return false, fmt.Errorf("Bad password")
+		return false, fmt.Errorf("bad password")
 	}
 
 	if err := r.DB.Model(&model.User{}).Where(userID).Update("Password", hash).Error; err != nil {

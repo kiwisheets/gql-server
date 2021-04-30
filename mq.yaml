@@ -1,0 +1,16 @@
+reconnect_delay: 1s
+exchanges:
+  - name: "client"
+    type: "topic"
+    options:
+      durable: true
+
+producers:
+  - name: "client_create"
+    exchange: "client"
+    routing_key: "client.created"
+    sync: true
+  - name: "client_update"
+    exchange: "client"
+    routing_key: "client.updated"
+    sync: true
