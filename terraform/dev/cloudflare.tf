@@ -10,6 +10,7 @@ resource "cloudflare_access_policy" "gql_server_policy" {
   zone_id        = var.cloudflare_zone_id
   name           = "Service Auth"
   decision       = "non_identity"
+  precedence     = 1
 
   include {
     any_valid_service_token = true
