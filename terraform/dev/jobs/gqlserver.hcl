@@ -67,7 +67,10 @@ job "gql-server" {
       }
 
       vault {
-        policies = ["gql-server"]
+        policies = [
+          "gql-server",
+          "rabbitmq"
+        ]
       }
 
       resources {
