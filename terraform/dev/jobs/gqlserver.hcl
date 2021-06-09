@@ -24,7 +24,8 @@ job "gql-server" {
           "secrets/db-password.secret:/run/secrets/db-password.secret",
           "secrets/jwt-private-key.secret:/run/secrets/jwt-private-key.secret",
           "secrets/hash-salt.secret:/run/secrets/hash-salt.secret",
-          "secrets/rabbitmq-dsn.secret:/run/secrets/rabbitmq-dsn.secret"
+          "secrets/rabbitmq-dsn.secret:/run/secrets/rabbitmq-dsn.secret",
+          "secrets/newrelic-license.secret:/run/secrets/newrelic-license.secret"
         ]
       }
 
@@ -44,6 +45,7 @@ job "gql-server" {
         HASH_SALT_FILE = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
         RABBITMQ_DSN_FILE = "/run/secrets/rabbitmq-dsn.secret"
+        NR_LICENSE_KEY_FILE = "/run/secrets/newrelic-license.secret"
       }
 
       template {
@@ -67,10 +69,16 @@ job "gql-server" {
         destination = "secrets/rabbitmq-dsn.secret"
       }
 
+      template {
+        data = "{{with secret \"secret/data/newrelic\"}}{{.Data.data.license}}{{end}}"
+        destination = "secrets/newrelic-license.secret"
+      }
+
       vault {
         policies = [
           "gql-server",
-          "rabbitmq"
+          "rabbitmq",
+          "newrelic"
         ]
       }
 
