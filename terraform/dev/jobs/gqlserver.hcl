@@ -105,6 +105,10 @@ job "gql-server" {
               destination_name = "gql-redis"
               local_bind_port = 6379
             }
+            upstreams {
+              destination_name = "rabbitmq"
+              local_bind_port  = 5672
+            }
             expose {
               path {
                 path           = "/health"
