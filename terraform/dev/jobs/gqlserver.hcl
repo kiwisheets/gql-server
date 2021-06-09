@@ -42,6 +42,7 @@ job "gql-server" {
         JWT_EC_PRIVATE_KEY_FILE = "/run/secrets/jwt-private-key.secret"
         HASH_SALT_FILE = "/run/secrets/hash-salt.secret"
         HASH_MIN_LENGTH = 10
+        RABBITMQ_DSN_FILE = "/run/secrets/rabbitmq-dsn.secret"
       }
 
       template {
@@ -58,6 +59,11 @@ job "gql-server" {
       template {
         data = "{{with secret \"secret/data/gql-server\"}}{{.Data.data.hash_salt}}{{end}}"
         destination = "secrets/hash-salt.secret"
+      }
+
+      template {
+        data = "amqp://admin:{{with secret \"secret/data/rabbitmq\"}}{{.Data.data.rabbitmq_password}}{{end}}@localhost:5672"
+        destination = "secrets/rabbitmq-dsn.secret"
       }
 
       vault {
