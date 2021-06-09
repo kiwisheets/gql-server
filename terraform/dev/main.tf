@@ -104,3 +104,9 @@ resource "consul_intention" "gql-server-tunnel" {
   destination_name = "gql-server"
   action           = "allow"
 }
+
+resource "consul_intention" "rabbit" {
+  source_name      = "gql-server"
+  destination_name = "rabbitmq"
+  action           = "allow"
+}
