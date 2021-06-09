@@ -23,7 +23,8 @@ job "gql-server" {
         volumes = [
           "secrets/db-password.secret:/run/secrets/db-password.secret",
           "secrets/jwt-private-key.secret:/run/secrets/jwt-private-key.secret",
-          "secrets/hash-salt.secret:/run/secrets/hash-salt.secret"
+          "secrets/hash-salt.secret:/run/secrets/hash-salt.secret",
+          "secrets/rabbitmq-dsn.secret:/run/secrets/rabbitmq-dsn.secret"
         ]
       }
 
